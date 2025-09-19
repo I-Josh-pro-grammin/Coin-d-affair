@@ -30,7 +30,7 @@ const mockAds = Array.from({ length: 42 }, (_, i) => ({
 
 export function LatestAdsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const itemsPerPage = 35; // 5 columns × 7 rows
+  const itemsPerPage = 30; // 5 columns × 6 rows (7 columns total, 2 hidden)
   const totalSlides = Math.ceil(mockAds.length / itemsPerPage);
 
   const getCurrentAds = () => {
@@ -81,8 +81,8 @@ export function LatestAdsSection() {
           </div>
         </div>
 
-        {/* Ads Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-4">
+        {/* Ads Grid - 5 visible columns from 7 total (2 hidden, shown via slideshow) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-4" style={{ gridTemplateRows: 'repeat(6, 1fr)' }}>
           {getCurrentAds().map((ad) => (
             <div key={ad.id} className="ad-card group">
               <div className="relative">
