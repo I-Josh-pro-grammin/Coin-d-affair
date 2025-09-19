@@ -211,7 +211,9 @@ const CategoryListing = () => {
 
                 <div className="p-4">
                   <h3 className="font-medium text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-                    {item.title}
+                    <Link to={`/annonce/${item.id}`}>
+                      {item.title}
+                    </Link>
                   </h3>
                   
                   <div className="flex items-center text-xl font-bold text-blue-600 mb-2">
@@ -258,7 +260,9 @@ const CategoryListing = () => {
                   />
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900 mb-1 hover:text-blue-600 cursor-pointer">
-                      {item.title}
+                      <Link to={`/annonce/${item.id}`}>
+                        {item.title}
+                      </Link>
                     </h3>
                     <p className="text-xl font-bold text-blue-600 mb-1">{item.price}</p>
                     {item.year && item.mileage && item.fuel && (

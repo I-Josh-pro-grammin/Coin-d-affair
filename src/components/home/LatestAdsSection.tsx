@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Clock, MapPin, Euro } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Mock data for latest ads
 const mockAds = Array.from({ length: 42 }, (_, i) => ({
@@ -102,7 +103,9 @@ export function LatestAdsSection() {
               
               <div className="p-3">
                 <h3 className="font-medium text-gray-900 text-sm mb-1 group-hover:text-blue-600 transition-colors line-clamp-1">
-                  {ad.title}
+                  <Link to={`/annonce/${ad.id}`}>
+                    {ad.title}
+                  </Link>
                 </h3>
                 
                 <div className="flex items-center text-lg font-bold text-blue-600 mb-1">
