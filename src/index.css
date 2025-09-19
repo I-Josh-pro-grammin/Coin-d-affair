@@ -129,8 +129,13 @@ Primary: White, Secondary: Blue with gradients, Clean & Modern
   }
   
   .nav-link {
-    @apply text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-all duration-200 font-medium;
+    @apply text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-all duration-200 font-medium relative;
   }
+  .nav-link::after {
+    content: "";
+    @apply absolute left-4 right-4 bottom-1 h-[2px] bg-blue-600 rounded-full opacity-0 scale-x-0 transform transition-all duration-200;
+  }
+  .nav-link:hover::after { opacity: 1; transform: scaleX(1); }
   
   .category-card {
     @apply relative overflow-hidden rounded-xl h-48 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-soft hover:shadow-card;
@@ -139,4 +144,53 @@ Primary: White, Secondary: Blue with gradients, Clean & Modern
   .ad-card {
     @apply bg-white rounded-lg overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer;
   }
+
+  /* Glassy navbar and animated dropdowns */
+  .glass-nav {
+    @apply bg-white/70 backdrop-blur-md border-b border-gray-200/60 shadow-[0_8px_20px_-12px_rgba(30,64,175,0.15)];
+  }
+  .dropdown-panel {
+    @apply bg-white rounded-xl shadow-card border border-gray-100/80 py-2 will-change-transform;
+    animation: slideDown 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .icon-btn {
+    @apply p-2 rounded-full text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors;
+  }
+  .search-rounded {
+    @apply pl-10 pr-4 py-3 rounded-full border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow;
+  }
+  .cta-strong {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-full font-medium shadow-soft hover:shadow-hover hover:from-blue-700 hover:to-blue-800 transition-all;
+  }
+
+  /* Extra animations & effects */
+  .animated-gradient {
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,0.15), transparent),
+                radial-gradient(1000px 500px at 110% 10%, rgba(29,78,216,0.12), transparent),
+                linear-gradient(135deg, rgba(248,250,252,1), rgba(239,246,255,1));
+  }
+  .float-in {
+    animation: floatIn 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .shine-overlay::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(60deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+    transform: translateX(-100%) rotate(8deg);
+    transition: transform .6s ease;
+    pointer-events: none;
+  }
+  .shine-overlay:hover::before { transform: translateX(0) rotate(8deg); }
 }

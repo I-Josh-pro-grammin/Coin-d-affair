@@ -33,7 +33,7 @@ const topCategories = [
 
 export function CategoriesSection() {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white animated-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold font-poppins text-gray-900 mb-4">
@@ -49,7 +49,7 @@ export function CategoriesSection() {
             <Link
               key={category.name}
               to={`/categorie/${category.name.toLowerCase()}`}
-              className="relative overflow-hidden rounded-xl h-64 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-soft hover:shadow-card group"
+              className="relative overflow-hidden rounded-xl h-64 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-soft hover:shadow-card group float-in shine-overlay"
             >
               {/* Background Image */}
               <div 

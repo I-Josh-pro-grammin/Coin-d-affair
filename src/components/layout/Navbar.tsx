@@ -7,7 +7,7 @@ export function Navbar() {
   const isLoggedIn = false; // This would come from your auth context
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className="glass-nav sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -22,7 +22,7 @@ export function Navbar() {
               <Input
                 type="text"
                 placeholder="Que recherchez-vous ?"
-                className="pl-10 search-input"
+                className="search-rounded"
               />
             </div>
           </div>
@@ -31,22 +31,22 @@ export function Navbar() {
           <div className="flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-                <Link to="/messages" className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200">
+                <Link to="/messages" className="icon-btn">
                   <MessageCircle className="h-6 w-6" />
                 </Link>
-                <Link to="/favoris" className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200">
+                <Link to="/favoris" className="icon-btn">
                   <Heart className="h-6 w-6" />
                 </Link>
-                <Link to="/notifications" className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200">
+                <Link to="/notifications" className="icon-btn">
                   <Bell className="h-6 w-6" />
                 </Link>
-                <Link to="/profil" className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200">
+                <Link to="/profil" className="icon-btn">
                   <User className="h-6 w-6" />
                 </Link>
               </>
             ) : (
               <Link to="/connexion">
-                <Button className="btn-primary">
+                <Button className="cta-strong">
                   <LogIn className="h-4 w-4 mr-2" />
                   Se connecter
                 </Button>

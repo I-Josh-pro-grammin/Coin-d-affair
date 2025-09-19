@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -35,9 +35,28 @@ const categories = [
 
 export function CategoryNav() {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
+
+  const openMenu = (name: string) => {
+    if (closeTimeoutRef.current) {
+      window.clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setHoveredCategory(name);
+  };
+
+  const scheduleClose = () => {
+    if (closeTimeoutRef.current) {
+      window.clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = window.setTimeout(() => {
+      setHoveredCategory(null);
+      closeTimeoutRef.current = null;
+    }, 150);
+  };
 
   return (
-    <nav className="bg-gradient-subtle border-b border-gray-100">
+    <nav className="bg-gradient-subtle/60 backdrop-blur-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-12">
           <div className="flex space-x-8">
@@ -45,8 +64,8 @@ export function CategoryNav() {
               <div
                 key={category.name}
                 className="relative"
-                onMouseEnter={() => setHoveredCategory(category.name)}
-                onMouseLeave={() => setHoveredCategory(null)}
+                onMouseEnter={() => openMenu(category.name)}
+                onMouseLeave={scheduleClose}
               >
                 <button className="nav-link flex items-center group">
                   {category.name}
@@ -55,7 +74,11 @@ export function CategoryNav() {
 
                 {/* Dropdown */}
                 {hoveredCategory === category.name && (
-                  <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-card border border-gray-100 py-2 z-50">
+                  <div
+                    className="absolute top-full left-0 w-56 dropdown-panel z-50"
+                    onMouseEnter={() => openMenu(category.name)}
+                    onMouseLeave={scheduleClose}
+                  >
                     {category.subcategories.map((subcategory) => (
                       <Link
                         key={subcategory}
