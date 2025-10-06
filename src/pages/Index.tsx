@@ -1,9 +1,8 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { CategoryNav } from "@/components/layout/CategoryNav";
 import { HeroSection } from "@/components/home/HeroSection";
-import { PromotionsSection } from "@/components/home/PromotionsSection";
-import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { LatestAdsSection } from "@/components/home/LatestAdsSection";
+import { NewsletterSection } from "@/components/home/NewsletterSection";
 import { Footer } from "@/components/layout/Footer";
 
 const Index = () => {
@@ -13,9 +12,8 @@ const Index = () => {
       <CategoryNav />
       <main>
         <HeroSection />
-        <PromotionsSection />
-        <CategoriesSection />
         <LatestAdsSection />
+        <NewsletterSection />
       </main>
       <Footer />
     </div>

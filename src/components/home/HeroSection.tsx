@@ -1,58 +1,44 @@
-import { Search, Plus } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
 
 export function HeroSection() {
   return (
-    <section className="bg-gradient-primary text-white py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-5xl font-bold font-poppins mb-6 leading-tight">
-          Bienvenue sur <span className="text-yellow-300">CoinD'affaires</span>
+    <section className="relative h-[500px] overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=1600&q=80')",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
+
+      {/* Content Overlay */}
+      <div className="relative h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+        {/* Large "shop" Text */}
+        <h1 className="text-[120px] md:text-[200px] font-bold text-white/90 leading-none mb-4">
+          shop
         </h1>
-        <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto">
-          Découvrez des milliers d'annonces près de chez vous. Achetez, vendez, trouvez tout ce dont vous avez besoin !
+
+        {/* Tagline */}
+        <p className="text-2xl md:text-3xl font-medium text-gray-900 mb-8 bg-white px-6 py-2 rounded-lg">
+          Trouvez Tout Ce Dont Vous Avez Besoin
         </p>
 
-        {/* Search Form */}
-        <div className="bg-white rounded-2xl p-6 shadow-hover max-w-4xl mx-auto mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            <div className="md:col-span-6">
-              <label className="block text-left text-gray-700 font-medium mb-2">
-                Que recherchez-vous ?
-              </label>
-              <Input
-                type="text"
-                placeholder="Ex: iPhone, voiture, appartement..."
-                className="search-input"
-              />
-            </div>
-            <div className="md:col-span-4">
-              <label className="block text-left text-gray-700 font-medium mb-2">
-                Où ?
-              </label>
-              <Input
-                type="text"
-                placeholder="Ville, département..."
-                className="search-input"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Button className="btn-primary w-full">
-                <Search className="h-4 w-4 mr-2" />
-                Rechercher
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Button */}
-        <Link to="/deposer-annonce">
-          <Button className="btn-secondary text-blue-600 border-white hover:bg-white">
-            <Plus className="h-5 w-5 mr-2" />
-            Déposer une annonce gratuitement
+        {/* Search Bar */}
+        <div className="flex items-center gap-2 bg-white rounded-full px-6 py-3 shadow-lg max-w-md w-full">
+          <Search className="h-5 w-5 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Rechercher sur CoinD'affaires"
+            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-0"
+          />
+          <Button size="sm" className="rounded-full bg-gray-900 hover:bg-gray-800">
+            Search
           </Button>
-        </Link>
+        </div>
       </div>
     </section>
   );
