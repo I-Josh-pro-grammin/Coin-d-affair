@@ -1,108 +1,95 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Logo and Description */}
-          <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="flex items-center mb-4">
-              <h2 className="text-2xl font-bold font-poppins bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
-                CoinD'affaires
-              </h2>
-            </Link>
-            <p className="text-gray-400 mb-6 max-w-md">
-              La plateforme de référence pour vos petites annonces en France. 
-              Achetez, vendez et trouvez tout ce dont vous avez besoin près de chez vous.
-            </p>
+    <>
+      {/* Newsletter Section */}
+      <section className="bg-gray-800 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between">
+            <div className="lg:w-1/2 mb-8 lg:mb-0">
+              <h2 className="text-2xl font-bold mb-4">Ready to Get Our New Stuff?</h2>
+              <div className="flex">
+                <Input 
+                  type="email" 
+                  placeholder="Your Email" 
+                  className="rounded-r-none"
+                />
+                <Button className="bg-gray-700 hover:bg-gray-600 rounded-l-none">
+                  Send
+                </Button>
+              </div>
+            </div>
             
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
+            <div className="lg:w-1/2 text-right">
+              <h3 className="text-xl font-bold mb-2">Stuffus for Homes and Needs</h3>
+              <p className="text-gray-300">
+                We'll listen to your needs, identify the best approach, and then create a bespoke smart EV charging solution that's right for you.
+              </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold font-poppins mb-4">Liens rapides</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/a-propos" className="text-gray-400 hover:text-white transition-colors">
-                  À propos
-                </Link>
-              </li>
-              <li>
-                <Link to="/aide" className="text-gray-400 hover:text-white transition-colors">
-                  Aide
-                </Link>
-              </li>
-              <li>
-                <Link to="/mentions-legales" className="text-gray-400 hover:text-white transition-colors">
-                  Mentions légales
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/deposer-annonce" className="text-gray-400 hover:text-white transition-colors">
-                  Déposer une annonce
-                </Link>
-              </li>
-            </ul>
-          </div>
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-start">
+            {/* Left Side */}
+            <div className="flex space-x-12 mb-8 md:mb-0">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
+                <ul className="space-y-2">
+                  <li><Link to="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</Link></li>
+                  <li><Link to="/team" className="text-gray-600 hover:text-gray-900 transition-colors">Meet The Team</Link></li>
+                  <li><Link to="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">Contact Us</Link></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Support</h3>
+                <ul className="space-y-2">
+                  <li><Link to="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">Contact Us</Link></li>
+                  <li><Link to="/shipping" className="text-gray-600 hover:text-gray-900 transition-colors">Shipping</Link></li>
+                  <li><Link to="/returns" className="text-gray-600 hover:text-gray-900 transition-colors">Return</Link></li>
+                  <li><Link to="/faq" className="text-gray-600 hover:text-gray-900 transition-colors">FAQ</Link></li>
+                </ul>
+              </div>
+            </div>
 
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold font-poppins mb-4">Contact</h3>
-            <div className="space-y-3">
-              <div className="flex items-center text-gray-400">
-                <Mail className="h-4 w-4 mr-3" />
-                <span>contact@coindaffaires.fr</span>
+            {/* Right Side */}
+            <div className="flex flex-col items-end">
+              <div className="flex space-x-4 mb-4">
+                <a href="#" className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
+                  <Twitter className="h-4 w-4 text-white" />
+                </a>
+                <a href="#" className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
+                  <Facebook className="h-4 w-4 text-white" />
+                </a>
+                <a href="#" className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
+                  <Linkedin className="h-4 w-4 text-white" />
+                </a>
+                <a href="#" className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
+                  <Instagram className="h-4 w-4 text-white" />
+                </a>
               </div>
-              <div className="flex items-center text-gray-400">
-                <Phone className="h-4 w-4 mr-3" />
-                <span>01 23 45 67 89</span>
-              </div>
-              <div className="flex items-center text-gray-400">
-                <MapPin className="h-4 w-4 mr-3" />
-                <span>Paris, France</span>
+              
+              <div className="text-sm text-gray-500 text-right">
+                <p className="mb-2">Copyright © 2023 Uangku. All Rights Reserved.</p>
+                <div className="flex space-x-4">
+                  <Link to="/terms" className="hover:text-gray-700 transition-colors">Terms of Service</Link>
+                  <Link to="/privacy" className="hover:text-gray-700 transition-colors">Privacy Policy</Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-gray-400 text-sm">
-            © {currentYear} CoinD'affaires. Tous droits réservés.
-          </div>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/politique-confidentialite" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Politique de confidentialité
-            </Link>
-            <Link to="/conditions-utilisation" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Conditions d'utilisation
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }
