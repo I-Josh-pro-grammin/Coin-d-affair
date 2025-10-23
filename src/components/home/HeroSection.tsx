@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 
 export function HeroSection() {
   return (
-    <section className="relative h-96 bg-cover bg-center bg-no-repeat" 
+    <section className="relative h-96 bg-cover bg-center bg-no-repeat -mt-24 pt-24" 
              style={{ 
                backgroundImage: "url('https://images.unsplash.com/photo-1586023492125-27b2c045efd5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
                backgroundSize: "cover"
@@ -32,7 +32,7 @@ export function HeroSection() {
               <Search className="h-5 w-5 text-gray-400 mr-3" />
               <Input
                 type="text"
-                placeholder="Q Search on Stuffsus"
+                placeholder="Search on CoinD'Affaires"
                 className="border-0 focus:ring-0 text-lg"
               />
               <Button className="bg-gray-700 text-white px-6 py-2 rounded-md hover:bg-gray-800">

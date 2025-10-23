@@ -8,34 +8,6 @@ export function Footer() {
 
   return (
     <>
-      {/* Newsletter Section */}
-      <section className="bg-gray-800 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between">
-            <div className="lg:w-1/2 mb-8 lg:mb-0">
-              <h2 className="text-2xl font-bold mb-4">Ready to Get Our New Stuff?</h2>
-              <div className="flex">
-                <Input 
-                  type="email" 
-                  placeholder="Your Email" 
-                  className="rounded-r-none"
-                />
-                <Button className="bg-gray-700 hover:bg-gray-600 rounded-l-none">
-                  Send
-                </Button>
-              </div>
-            </div>
-            
-            <div className="lg:w-1/2 text-right">
-              <h3 className="text-xl font-bold mb-2">Stuffus for Homes and Needs</h3>
-              <p className="text-gray-300">
-                We'll listen to your needs, identify the best approach, and then create a bespoke smart EV charging solution that's right for you.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
