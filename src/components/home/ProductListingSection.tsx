@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Home, Music, Smartphone, HardDrive, ChevronDown, Star, Tag, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,10 +62,14 @@ const products = [
 ];
 
 const categories = [
-  { name: "For Home", icon: Home },
-  { name: "For Music", icon: Music },
-  { name: "For Phone", icon: Smartphone },
-  { name: "For Storage", icon: HardDrive }
+  { name: "Électronique", emoji: "📱", count: 245 },
+  { name: "Maison & Jardin", emoji: "🏠", count: 189 },
+  { name: "Véhicules", emoji: "🚗", count: 156 },
+  { name: "Mode & Beauté", emoji: "👗", count: 312 },
+  { name: "Sports & Loisirs", emoji: "⚽", count: 178 },
+  { name: "Livres & Médias", emoji: "📚", count: 203 },
+  { name: "Jouets & Enfants", emoji: "🧸", count: 167 },
+  { name: "Services", emoji: "🛠️", count: 94 }
 ];
 
 const renderStars = (rating: number) => {
@@ -94,6 +99,16 @@ const renderStars = (rating: number) => {
 };
 
 export function ProductListingSection() {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const handleCategoryChange = (categoryName: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(categoryName)
+        ? prev.filter(cat => cat !== categoryName)
+        : [...prev, categoryName]
+    );
+  };
+
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,12 +116,12 @@ export function ProductListingSection() {
           {/* Sidebar */}
           <div className="w-64 flex-shrink-0">
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Category</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Catégories</h3>
               
               {/* All Product Filter */}
               <div className="mb-6">
                 <Button className="w-full justify-between bg-gray-100 hover:bg-gray-200 text-gray-900">
-                  All Product
+                  Tous les produits
                   <div className="flex items-center gap-2">
                     <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">32</span>
                     <ChevronDown className="h-4 w-4" />
@@ -115,44 +130,24 @@ export function ProductListingSection() {
               </div>
 
               {/* Category Checkboxes */}
-              <div className="space-y-4 mb-8">
+              <div className="space-y-2 mb-8">
                 {categories.map((category) => (
-                  <div key={category.name} className="flex items-center space-x-3">
-                    <Checkbox id={category.name} />
-                    <label htmlFor={category.name} className="flex items-center space-x-2 text-sm text-gray-700 cursor-pointer">
-                      <category.icon className="h-4 w-4" />
-                      <span>{category.name}</span>
-                    </label>
-                  </div>
+                  <label key={category.name} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4" 
+                        checked={selectedCategories.includes(category.name)}
+                        onChange={() => handleCategoryChange(category.name)}
+                      />
+                      <span className="text-lg">{category.emoji}</span>
+                      <span className="text-sm font-medium">{category.name}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">({category.count})</span>
+                  </label>
                 ))}
               </div>
 
-              {/* Additional Filters */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Star className="h-4 w-4 text-gray-600" />
-                    <span className="text-sm text-gray-700">New Arrival</span>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Star className="h-4 w-4 text-gray-600" />
-                    <span className="text-sm text-gray-700">Best Seller</span>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Tag className="h-4 w-4 text-gray-600" />
-                    <span className="text-sm text-gray-700">On Discount</span>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-gray-400" />
-                </div>
-              </div>
             </div>
           </div>
 
