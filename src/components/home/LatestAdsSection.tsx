@@ -1,137 +1,181 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Clock, MapPin, Euro } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Star, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 // Mock data for latest ads
-const mockAds = Array.from({ length: 42 }, (_, i) => ({
+const mockAds = Array.from({ length: 24 }, (_, i) => ({
   id: i + 1,
   title: [
+    "Phone Holder Sakti",
+    "Headsound",
+    "Adudu Cleaner",
+    "CCTV Maling",
+    "Stuffus Peker 32",
+    "Stuffus RT75",
     "iPhone 14 Pro Max",
-    "Appartement T3",
-    "BMW Série 3",
     "MacBook Pro M2",
-    "Vélo électrique",
-    "Canapé d'angle",
-    "Télévision Samsung",
-    "Montre connectée",
-    "Cuisine équipée",
-    "Scooter Yamaha",
-    "Table en bois",
-    "Ordinateur gaming",
-    "Robe de soirée",
-    "Appareil photo",
-    "Poussette bébé"
-  ][i % 15],
-  price: `${Math.floor(Math.random() * 5000) + 50}€`,
-  location: ["Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Bordeaux", "Lille", "Strasbourg"][Math.floor(Math.random() * 8)],
-  category: ["Électronique", "Immobilier", "Véhicules", "Mode", "Famille"][Math.floor(Math.random() * 5)],
-  time: `${Math.floor(Math.random() * 24)}h`,
-  image: `/api/placeholder/200/150?${i}`
+    "Vélo électrique"
+  ][i % 9],
+  price: (Math.floor(Math.random() * 500) + 9).toFixed(2),
+  category: ["Other", "Music", "Home", "Other"][Math.floor(Math.random() * 4)],
+  rating: (4.0 + Math.random()).toFixed(1),
+  reviews: Math.floor(Math.random() * 50) + 10,
+  image: `https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=400&fit=crop&q=80&id=${i}`
 }));
 
 export function LatestAdsSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const itemsPerPage = 35; // 5 columns × 7 rows
-  const totalSlides = Math.ceil(mockAds.length / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 9; // 3 columns × 3 rows
+  const totalPages = Math.ceil(mockAds.length / itemsPerPage);
 
-  const getCurrentAds = () => {
-    const startIndex = currentSlide * itemsPerPage;
-    return mockAds.slice(startIndex, startIndex + itemsPerPage);
+  const currentAds = mockAds.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const handleNext = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  const handlePrevious = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 0));
   };
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold font-poppins text-gray-900 mb-2">
-              Actuellement sur CoinD'affaires
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Category
             </h2>
-            <p className="text-gray-600">
-              Découvrez les dernières annonces publiées par nos utilisateurs
-            </p>
           </div>
-
-          {/* Slideshow controls */}
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={prevSlide}
-              className="p-2 bg-white border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-50"
-              disabled={currentSlide === 0}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePrevious}
+              disabled={currentPage === 0}
+              className="rounded-full"
             >
-              <ChevronLeft className="h-5 w-5 text-gray-600" />
-            </button>
-            <span className="text-sm text-gray-500 px-3">
-              {currentSlide + 1} / {totalSlides}
-            </span>
-            <button
-              onClick={nextSlide}
-              className="p-2 bg-white border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-50"
-              disabled={currentSlide === totalSlides - 1}
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNext}
+              disabled={currentPage >= totalPages - 1}
+              className="rounded-full"
             >
-              <ChevronRight className="h-5 w-5 text-gray-600" />
-            </button>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
-        {/* Ads Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-4">
-          {getCurrentAds().map((ad) => (
-            <div key={ad.id} className="ad-card group">
-              <div className="relative">
-                <img
-                  src={ad.image}
-                  alt={ad.title}
-                  className="w-full h-32 object-cover"
-                />
-                <div className="absolute top-2 left-2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-xs">
-                  {ad.category}
+        {/* Grid Layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+          {currentAds.map((ad) => (
+            <Card key={ad.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-gray-50">
+              <div className="p-6">
+                {/* Category Badge */}
+                <div className="flex justify-between items-start mb-4">
+                  <Badge variant="secondary" className="rounded-md">
+                    {ad.category}
+                  </Badge>
                 </div>
-                <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center">
-                  <Clock className="h-3 w-3 mr-1" />
-                  {ad.time}
+
+                {/* Product Image */}
+                <Link to={`/annonce/${ad.id}`}>
+                  <div className="aspect-square overflow-hidden bg-white rounded-lg mb-4 flex items-center justify-center">
+                    <img
+                      src={ad.image}
+                      alt={ad.title}
+                      className="w-3/4 h-3/4 object-contain hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </Link>
+
+                {/* Product Info */}
+                <Link to={`/annonce/${ad.id}`}>
+                  <h3 className="font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+                    {ad.title}
+                  </h3>
+                </Link>
+
+                <div className="flex items-center gap-1 text-yellow-500 mb-3">
+                  <Star className="h-4 w-4 fill-current" />
+                  <span className="text-sm font-medium text-gray-900">
+                    {ad.rating}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    ({ad.reviews} Reviews)
+                  </span>
+                </div>
+
+                <p className="text-2xl font-bold text-gray-900 mb-4">
+                  ${ad.price}
+                </p>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 rounded-full border-gray-300 hover:bg-gray-100"
+                  >
+                    Add to Cart
+                  </Button>
+                  <Button 
+                    className="flex-1 rounded-full bg-gray-900 hover:bg-gray-800"
+                  >
+                    Buy Now
+                  </Button>
                 </div>
               </div>
-              
-              <div className="p-3">
-                <h3 className="font-medium text-gray-900 text-sm mb-1 group-hover:text-blue-600 transition-colors line-clamp-1">
-                  {ad.title}
-                </h3>
-                
-                <div className="flex items-center text-lg font-bold text-blue-600 mb-1">
-                  <Euro className="h-4 w-4 mr-1" />
-                  {ad.price}
-                </div>
-                
-                <div className="flex items-center text-xs text-gray-500">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {ad.location}
-                </div>
-              </div>
-            </div>
+            </Card>
           ))}
         </div>
 
-        {/* Pagination dots */}
-        <div className="flex justify-center mt-8 space-x-2">
-          {Array.from({ length: totalSlides }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                currentSlide === index
-                  ? "bg-blue-600"
-                  : "bg-gray-300 hover:bg-blue-400"
-              }`}
-            />
-          ))}
+        {/* Pagination */}
+        <div className="flex justify-center items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handlePrevious}
+            disabled={currentPage === 0}
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Previous
+          </Button>
+          
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+            const pageNum = i + 1;
+            return (
+              <Button
+                key={i}
+                variant={currentPage === i ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setCurrentPage(i)}
+                className={currentPage === i ? "bg-gray-900 hover:bg-gray-800" : ""}
+              >
+                {pageNum}
+              </Button>
+            );
+          })}
+          
+          {totalPages > 5 && <span className="text-gray-400">...</span>}
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
         </div>
       </div>
     </section>
