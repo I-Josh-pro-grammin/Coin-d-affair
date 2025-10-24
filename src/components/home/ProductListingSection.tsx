@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Home, Music, Smartphone, HardDrive, ChevronDown, Star, Tag, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const products = [
   {
@@ -62,14 +61,14 @@ const products = [
 ];
 
 const categories = [
-  { name: "Électronique", emoji: "📱", count: 245 },
-  { name: "Maison & Jardin", emoji: "🏠", count: 189 },
-  { name: "Véhicules", emoji: "🚗", count: 156 },
-  { name: "Mode & Beauté", emoji: "👗", count: 312 },
-  { name: "Sports & Loisirs", emoji: "⚽", count: 178 },
-  { name: "Livres & Médias", emoji: "📚", count: 203 },
-  { name: "Jouets & Enfants", emoji: "🧸", count: 167 },
-  { name: "Services", emoji: "🛠️", count: 94 }
+  { name: "Électronique", count: 245 },
+  { name: "Maison & Jardin", count: 189 },
+  { name: "Véhicules", count: 156 },
+  { name: "Mode & Beauté", count: 312 },
+  { name: "Sports & Loisirs", count: 178 },
+  { name: "Livres & Médias", count: 203 },
+  { name: "Jouets & Enfants", count: 167 },
+  { name: "Services", count: 94 }
 ];
 
 const renderStars = (rating: number) => {
@@ -100,6 +99,7 @@ const renderStars = (rating: number) => {
 
 export function ProductListingSection() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isAllProductsOpen, setIsAllProductsOpen] = useState(true);
 
   const handleCategoryChange = (categoryName: string) => {
     setSelectedCategories(prev => 
@@ -120,33 +120,34 @@ export function ProductListingSection() {
               
               {/* All Product Filter */}
               <div className="mb-6">
-                <Button className="w-full justify-between bg-gray-100 hover:bg-gray-200 text-gray-900">
-                  Tous les produits
-                  <div className="flex items-center gap-2">
-                    <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">32</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </div>
-                </Button>
+                <button 
+                  onClick={() => setIsAllProductsOpen(!isAllProductsOpen)}
+                  className="flex items-center gap-2 w-full p-3 hover:bg-gray-50 rounded-lg bg-gray-100 text-gray-900"
+                >
+                  <span className="text-sm">{isAllProductsOpen ? '▼' : '▶'}</span>
+                  <span className="font-medium">Tous les produits</span>
+                </button>
               </div>
 
-              {/* Category Checkboxes */}
-              <div className="space-y-2 mb-8">
-                {categories.map((category) => (
-                  <label key={category.name} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="checkbox" 
-                        className="w-4 h-4" 
-                        checked={selectedCategories.includes(category.name)}
-                        onChange={() => handleCategoryChange(category.name)}
-                      />
-                      <span className="text-lg">{category.emoji}</span>
-                      <span className="text-sm font-medium">{category.name}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">({category.count})</span>
-                  </label>
-                ))}
-              </div>
+              {/* Category Buttons */}
+              {isAllProductsOpen && (
+                <div className="space-y-3 mb-8">
+                  {categories.map((category) => (
+                    <button
+                      key={category.name}
+                      onClick={() => handleCategoryChange(category.name)}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-full bg-white shadow-md hover:border-2 hover:border-[#1e293b] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ${
+                        selectedCategories.includes(category.name)
+                          ? 'border-2 border-[#1e293b] bg-blue-50'
+                          : ''
+                      }`}
+                    >
+                      <span className="font-medium text-gray-800">{category.name}</span>
+                      <span className="text-sm text-gray-500">({category.count})</span>
+                    </button>
+                  ))}
+                </div>
+              )}
 
             </div>
           </div>
