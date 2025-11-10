@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, MapPin, Star, ShoppingCart } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Star, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,66 +75,76 @@ export function LatestAdsSection() {
           </div>
         </div>
 
-        {/* Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {currentAds.map((ad) => (
-            <Card key={ad.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-gray-50">
-              <div className="p-6">
-                {/* Category Badge */}
-                <div className="flex justify-between items-start mb-4">
-                  <Badge variant="secondary" className="rounded-md">
-                    {ad.category}
-                  </Badge>
-                </div>
-
+<div key={ad.id} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#000435]">
+              
+              {/* Image Container */}
+<div className="relative aspect-square overflow-hidden rounded-t-2xl">
                 {/* Product Image */}
                 <Link to={`/annonce/${ad.id}`}>
-                  <div className="aspect-square overflow-hidden bg-white rounded-lg mb-4 flex items-center justify-center">
-                    <img
-                      src={ad.image}
-                      alt={ad.title}
-                      className="w-3/4 h-3/4 object-contain hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
+                  <img 
+                    src={ad.image} 
+                    alt={ad.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 </Link>
+                
+                {/* Overlay gradient on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                {/* Category Badge - Top Right */}
+                <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700 shadow-sm">
+                  {ad.category}
+                </span>
+                
+                {/* Wishlist Heart Icon - Top Left */}
+                <button className="absolute top-3 left-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors">
+                  <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                </button>
+              </div>
 
-                {/* Product Info */}
+              {/* Card Content */}
+              <div className="p-5">
+                
+                {/* Product Title */}
                 <Link to={`/annonce/${ad.id}`}>
-                  <h3 className="font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+<h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
                     {ad.title}
                   </h3>
                 </Link>
-
-                <div className="flex items-center gap-1 text-yellow-500 mb-3">
-                  <Star className="h-4 w-4 fill-current" />
-                  <span className="text-sm font-medium text-gray-900">
-                    {ad.rating}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    ({ad.reviews} Reviews)
-                  </span>
+                
+                {/* Rating & Reviews */}
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">{ad.rating}</span>
+                  <span className="text-sm text-gray-500">({ad.reviews})</span>
                 </div>
-
-                <p className="text-2xl font-bold text-gray-900 mb-4">
-                  ${ad.price}
-                </p>
-
-                {/* Action Buttons */}
-                <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 rounded-full border-gray-300 hover:bg-gray-100"
-                  >
-                    Add to Cart
+                
+                {/* Price */}
+                <div className="mb-4">
+<p className="text-2xl font-bold text-[#000435]">
+                </div>
+                
+                {/* Buttons */}
+                <div className="flex flex-col gap-2">
+                  {/* Add to Cart - Ghost/Outline Button */}
+<Button className="w-full py-2.5 px-4 border-2 border-[#000435] text-[#000435] font-medium rounded-full hover:bg-[#000435]/5 transition-all duration-300 bg-transparent">
+                    Ajouter au panier
                   </Button>
-                  <Button 
-                    className="flex-1 rounded-full bg-gray-900 hover:bg-gray-800"
-                  >
-                    Buy Now
+                  
+                  {/* Buy Now - Solid Button */}
+<Button className="w-full py-2.5 px-4 bg-[#000435] text-white font-medium rounded-full hover:bg-[#000435]/90 transition-all duration-300">
+                    Acheter maintenant
                   </Button>
                 </div>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
 
@@ -158,7 +168,7 @@ export function LatestAdsSection() {
                 variant={currentPage === i ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setCurrentPage(i)}
-                className={currentPage === i ? "bg-gray-900 hover:bg-gray-800" : ""}
+                className={currentPage === i ? "bg-[#000435] hover:bg-[#000435]/90" : ""}
               >
                 {pageNum}
               </Button>
