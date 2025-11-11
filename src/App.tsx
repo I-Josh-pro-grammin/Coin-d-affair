@@ -9,6 +9,7 @@ import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { RouteFallback } from "@/components/common/RouteFallback";
 import { Page } from "@/components/common/Page";
 import { AuthProvider } from "./contexts/AuthContext"; // <-- Added import
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const Index = lazy(() => import("./pages/Index"));
 const Login = lazy(() => import("./pages/Login"));
@@ -55,8 +56,8 @@ const App = () => (
                 <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
 
                 <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><Dashboard /></Page>} />
-                <Route path="/dashboard" element={<Page title="Dashboard"><Dashboard /></Page>} />
-                <Route path="/messages" element={<Page title="Messages"><Messages /></Page>} />
+                <Route path="/dashboard" element={<ProtectedRoute><Page title="Dashboard"><Dashboard /></Page></ProtectedRoute>} />
+                <Route path="/messages" element={<ProtectedRoute><Page title="Messages"><Messages /></Page></ProtectedRoute>} />
                 <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
                 <Route path="/notifications" element={<Page title="Notifications"><Notifications /></Page>} />
 
@@ -65,9 +66,9 @@ const App = () => (
                 <Route path="/categorie/:category" element={<Page title="Catégorie"><CategoryListing /></Page>} />
 
                 {/* Placeholder pages */}
-                <Route path="/deposer-annonce" element={<Page title="Déposer une annonce"><PlaceholderPage /></Page>} />
-                <Route path="/mes-annonces" element={<Page title="Mes annonces"><PlaceholderPage /></Page>} />
-                <Route path="/profil" element={<Page title="Profil"><PlaceholderPage /></Page>} />
+                <Route path="/deposer-annonce" element={<ProtectedRoute><Page title="Déposer une annonce"><PlaceholderPage /></Page></ProtectedRoute>} />
+                <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><PlaceholderPage /></Page></ProtectedRoute>} />
+                <Route path="/profil" element={<ProtectedRoute><Page title="Profil"><PlaceholderPage /></Page></ProtectedRoute>} />
                 <Route path="/aide" element={<Page title="Aide"><PlaceholderPage /></Page>} />
                 <Route path="/a-propos" element={<Page title="À propos"><PlaceholderPage /></Page>} />
                 <Route path="/contact" element={<Page title="Contact"><PlaceholderPage /></Page>} />

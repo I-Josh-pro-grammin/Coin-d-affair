@@ -5,90 +5,84 @@ interface User {
   name: string;
   email: string;
   avatar?: string;
-  isVerified: boolean;
-  memberSince: string;
+  isVerified?: boolean;
+  memberSince?: string;
+  role?: 'customer' | 'seller';
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  token: string | null;
+  loading: boolean;
+  signup: (data: { name: string; email: string; password: string; role?: string }) => Promise<void>;
+  login: (data: { email: string; password: string }) => Promise<void>;
   logout: () => void;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
-  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const savedUser = localStorage.getItem('coin_user');
-    if (savedUser) {
+    const savedToken = localStorage.getItem('auth_token');
+    const savedUser = localStorage.getItem('auth_user');
+    if (savedToken && savedUser) {
+      setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }
-    setIsLoading(false);
+    setLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setIsLoading(true);
-    
-    // Mock authentication - replace with real API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (email && password) {
-      const mockUser: User = {
-        id: '1',
-        name: email.split('@')[0],
-        email,
-        isVerified: true,
-        memberSince: '2023'
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('coin_user', JSON.stringify(mockUser));
-      setIsLoading(false);
-      return true;
-    }
-    
-    setIsLoading(false);
-    return false;
+  const persist = (tok: string, usr: User) => {
+    setToken(tok);
+    setUser(usr);
+    localStorage.setItem('auth_token', tok);
+    localStorage.setItem('auth_user', JSON.stringify(usr));
   };
 
-  const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    setIsLoading(true);
-    
-    // Mock registration - replace with real API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (name && email && password) {
-      const mockUser: User = {
-        id: Date.now().toString(),
-        name,
-        email,
-        isVerified: false,
-        memberSince: new Date().getFullYear().toString()
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('coin_user', JSON.stringify(mockUser));
-      setIsLoading(false);
-      return true;
-    }
-    
-    setIsLoading(false);
-    return false;
+  const signup = async ({ name, email, password, role }: { name: string; email: string; password: string; role?: string }) => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    const fakeToken = 'fake-signup-token';
+    const newUser: User = {
+      id: Date.now().toString(),
+      name,
+      email,
+      role: (role as any) || 'customer',
+      isVerified: true,
+      memberSince: new Date().getFullYear().toString(),
+    };
+    persist(fakeToken, newUser);
+    setLoading(false);
+  };
+
+  const login = async ({ email, password }: { email: string; password: string }) => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 700));
+    const fakeToken = 'fake-login-token';
+    const loggedUser: User = {
+      id: '1',
+      name: email.split('@')[0] || 'Utilisateur',
+      email,
+      isVerified: true,
+      memberSince: '2023',
+    };
+    persist(fakeToken, loggedUser);
+    setLoading(false);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('coin_user');
+    setToken(null);
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, isLoading }}>
+    <AuthContext.Provider value={{ user, token, loading, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
