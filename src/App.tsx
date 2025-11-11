@@ -13,6 +13,12 @@ import { AuthProvider } from "./contexts/AuthContext"; // <-- Added import
 const Index = lazy(() => import("./pages/Index"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
+const RoleSelection = lazy(() => import("./pages/RoleSelection"));
+const AuthLogin = lazy(() => import("./pages/AuthLogin"));
+const CustomerSignup = lazy(() => import("./pages/CustomerSignup"));
+const SellerSignup = lazy(() => import("./pages/SellerSignup"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
@@ -35,8 +41,19 @@ const App = () => (
             <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<Page title="Accueil"><Index /></Page>} />
+                {/* Auth (existing non-/auth routes) */}
                 <Route path="/connexion" element={<Page title="Connexion"><Login /></Page>} />
                 <Route path="/inscription" element={<Page title="Inscription"><Signup /></Page>} />
+
+                {/* New /auth routes */}
+                <Route path="/auth/role-selection" element={<Page title="Démarrer"><RoleSelection /></Page>} />
+                <Route path="/auth/get-started" element={<Page title="Démarrer"><RoleSelection /></Page>} />
+                <Route path="/auth/login" element={<Page title="Connexion"><AuthLogin /></Page>} />
+                <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><CustomerSignup /></Page>} />
+                <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
+                <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
+                <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
+
                 <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><Dashboard /></Page>} />
                 <Route path="/dashboard" element={<Page title="Dashboard"><Dashboard /></Page>} />
                 <Route path="/messages" element={<Page title="Messages"><Messages /></Page>} />
@@ -57,7 +74,6 @@ const App = () => (
                 <Route path="/mentions-legales" element={<Page title="Mentions légales"><PlaceholderPage /></Page>} />
                 <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PlaceholderPage /></Page>} />
                 <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><PlaceholderPage /></Page>} />
-                <Route path="/mot-de-passe-oublie" element={<Page title="Mot de passe oublié"><PlaceholderPage /></Page>} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
