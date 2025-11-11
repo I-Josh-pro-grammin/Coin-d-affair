@@ -5,19 +5,20 @@ const CustomerSignup = () => {
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#000435] to-[#000435]/80 transform -skew-x-12 translate-x-1/4"></div>
-        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
+    <div className="flex min-h-screen">
+      {/* Left: full-height solid gradient panel */}
+      <div className="hidden md:block w-1/2 bg-gradient-to-br from-[#000435] to-[#001050]">
+        <div className="h-full w-full flex flex-col justify-center px-12 text-white">
           <h1 className="text-5xl font-bold mb-6">Bienvenue Acheteur</h1>
           <p className="text-lg opacity-90 max-w-md leading-relaxed">
             Créez votre compte pour profiter de nos meilleures offres.
           </p>
         </div>
       </div>
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-white">
+      {/* Right: form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12 bg-white">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8 lg:hidden">
+          <div className="text-center mb-8 md:hidden">
             <h1 className="text-2xl font-bold text-gray-900">Coin D'Affaires</h1>
           </div>
           <div className="bg-gray-50 rounded-2xl shadow-xl p-8">
