@@ -67,11 +67,17 @@ const Navbar: React.FC = () => {
             <ShoppingBag size={24} />
           </Link>
           <Link 
-            to="/connexion" 
-            className="flex items-center gap-2 text-gray-700 hover:text-[#000435] transition-colors"
+            to="/auth/role-selection"
+            className="inline-block"
           >
-            <User size={24} />
-            <span className="font-medium">Connexion</span>
+            <button
+              className="flex items-center gap-2 px-6 py-2.5 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all duration-300"
+              type="button"
+              aria-label="Se connecter"
+            >
+              <User size={20} />
+              <span>Connexion</span>
+            </button>
           </Link>
         </div>
       </div>
@@ -116,14 +122,14 @@ const Navbar: React.FC = () => {
                 <ShoppingBag size={24} />
                 <span className="text-xs">Panier</span>
               </Link>
-              <Link 
-                to="/connexion" 
+              <button
+                onClick={() => { window.location.href = '/auth/role-selection'; }}
                 className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors"
-                onClick={toggleMenu}
+                aria-label="Se connecter"
               >
                 <User size={24} />
                 <span className="text-xs">Connexion</span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>

@@ -28,7 +28,7 @@ type NavbarProps = {
 export function Navbar({
   cartCount = 0,
   isLoggedIn: isLoggedInProp,
-  onLoginClick = () => {},
+  onLoginClick,
   onPostAdClick = () => {},
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,6 +78,14 @@ export function Navbar({
   const handleLogout = () => {
     if (logout) logout();
     navigate("/");
+  };
+
+  const handleLoginClick = () => {
+    if (onLoginClick) {
+      onLoginClick();
+    } else {
+      navigate("/auth/role-selection");
+    }
   };
 
   return (
@@ -237,22 +245,17 @@ export function Navbar({
                   </a>
 
                   <div>
-                    {/* Prefer props onLoginClick if provided, otherwise link to /connexion */}
-                    {onLoginClick ? (
-                      <button
-                        onClick={onLoginClick}
-                        className="flex items-center gap-2 text-gray-700 hover:text-[#000435] transition-colors"
-                        aria-label="Se connecter"
-                      >
-                        <User size={20} />
-                        <span className="font-medium">Connexion</span>
-                      </button>
-                    ) : (
-                      <Link to="/connexion" className="flex items-center gap-2 text-gray-700 hover:text-[#000435] transition-colors">
-                        <User size={20} />
-                        <span className="font-medium">Connexion</span>
-                      </Link>
-                    )}
+                    <button
+                      onClick={handleLoginClick}
+                      className="flex items-center gap-2 px-6 py-2.5 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all duration-300"
+                      aria-label="Se connecter"
+                      type="button"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span>Connexion</span>
+                    </button>
                   </div>
                 </>
               )}
@@ -341,10 +344,7 @@ export function Navbar({
                     <span className="text-xs">Panier</span>
                   </a>
                   <button
-                    onClick={() => {
-                      onLoginClick();
-                      setIsOpen(false);
-                    }}
+                    onClick={() => { handleLoginClick(); setIsOpen(false); }}
                     className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors"
                   >
                     <User size={24} />
