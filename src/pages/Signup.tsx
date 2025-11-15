@@ -4,7 +4,9 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { setCredentials } from "../redux/Features/authSlice"
+import { useSignupMutation } from "../redux/api/authentSlice"
+ 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -18,9 +20,16 @@ const Signup = () => {
     acceptTerms: false
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [signup] = useSignupMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
+    try {
+      const res = await signup().unwrap();
+      setCredentials({user: res.user, access_token: res.access_token});
+    } catch (error) {
+      
+    }
     console.log("Signup attempt:", formData);
   };
 

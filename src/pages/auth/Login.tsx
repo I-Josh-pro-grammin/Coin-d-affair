@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { setCredentials } from "../../redux/Features/authSlice"
+import { useLoginMutation } from "../../redux/api/authentSlice"
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -8,6 +10,8 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const [login] = useLoginMutation();
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -36,12 +40,17 @@ const Login = () => {
     }
     
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Login attempt:", { email, password, rememberMe });
-      setLoading(false);
-      // Handle login logic here
-    }, 1000);
+    // setTimeout(() => {
+    //   console.log("Login attempt:", { email, password, rememberMe });
+    //   setLoading(false);
+    // }, 1000);
+
+    try {
+      const res = await login().unwrap();
+      setCredentials({user: res.user, access_token: res.access_token})
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
