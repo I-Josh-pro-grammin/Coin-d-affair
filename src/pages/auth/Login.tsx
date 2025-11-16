@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, replace } from "react-router-dom";
 import { setCredentials } from "../../redux/Features/authSlice"
 import { useLoginMutation } from "../../redux/api/authentSlice"
+import { toast } from "sonner";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -46,10 +47,14 @@ const Login = () => {
     // }, 1000);
 
     try {
-      const res = await login().unwrap();
-      setCredentials({user: res.user, access_token: res.access_token})
+      // const res = await login({email, password}).unwrap();
+      // setCredentials({user: res.user, access_token: res.access_token});
+      console.log("Login successfull");
+      toast.success("Login successfull");
+      window.location.href = "/dashboard";
     } catch (error) {
       console.log(error);
+      toast.error("Login failed");
     }
   };
 

@@ -1,4 +1,4 @@
-import { apiSlice } from "./apiSlice.jsx";
+import { apiSlice } from "./apiSlice.js";
 
 const USER_URL = "/users";
 const AUTH_URL = "/auth";
@@ -33,6 +33,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetCurrentUserQuery,
-  useLoginUserMutation,
+  useLoginMutation,
   useRegisterMutation
 } = authentSlice;
