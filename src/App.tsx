@@ -36,7 +36,6 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
           <ScrollToTop />
           <ErrorBoundary>
             <Suspense fallback={<RouteFallback />}>
@@ -81,7 +80,6 @@ const App = () => (
               </Routes>
             </Suspense>
           </ErrorBoundary>
-        </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>

@@ -15,6 +15,31 @@ const baseQuery = fetchBaseQuery({
 
 export const apiSlice = createApi({
   baseQuery,
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (credentials) => ({
+        url: '/api/auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    refreshToken: builder.mutation({
+      query: () => ({
+        url: '/auth/refresh',
+        method: 'POST',
+      }),
+    }),
+    getCurrentUser: builder.query({
+      query: () => ({
+        url: '/auth/get-me',
+        method: 'GET',
+      }),
+    }),
+  }),
 });
 
-export default apiSlice;
+export const {
+  useLoginMutation,
+  useRefreshTokenMutation,
+  useGetCurrentUserQuery,
+} = apiSlice;

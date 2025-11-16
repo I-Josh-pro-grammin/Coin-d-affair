@@ -2,26 +2,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {setCredentials} from "../redux/Features/authSlice"
-import {useLoginMutation} from "../redux/api/authentSlice";
+import {useLoginMutation} from "../redux/api/apiSlice";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 const AuthLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   // const { login } = useAuth();
-  const [login] = useLoginMutation();
+  const [Login] = useLoginMutation();
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await login({ email, password }).unwrap();
+      const res = await Login({ email: email, password: password }).unwrap();
       console.log("its over with:", res);
-      setCredentials()
+      dispatch(setCredentials({id: res.userId, userType: res.accountType }));
       navigate("/");
+      toast.success("Login successfull");
     } finally {
       setSubmitting(false);
+      toast.error("Login failed!");
     }
   };
   return (
