@@ -1,20 +1,34 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCredentials, logout as logoutAction } from '@/redux/Features/authSlice';
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useLazyGetCurrentUserQuery,
+} from '@/redux/api/apiSlice';
 
 interface User {
-  id: string;
+  userId: string;
   name: string;
   email: string;
-  avatar?: string;
+  phone?: string;
+  accountType?: 'customer' | 'business' | 'admin';
   isVerified?: boolean;
-  memberSince?: string;
-  role?: 'customer' | 'seller';
+}
+
+interface SignupPayload {
+  fullName: string;
+  email: string;
+  password: string;
+  accountType: 'customer' | 'business';
+  phone?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   loading: boolean;
-  signup: (data: { name: string; email: string; password: string; role?: string }) => Promise<void>;
+  signup: (data: SignupPayload) => Promise<void>;
   login: (data: { email: string; password: string }) => Promise<void>;
   logout: () => void;
 }
@@ -22,67 +36,76 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const authState = useSelector((state: any) => state.auth);
+  const [loginMutation] = useLoginMutation();
+  const [registerMutation] = useRegisterMutation();
+  const [triggerGetMe] = useLazyGetCurrentUserQuery();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem('auth_token');
-    const savedUser = localStorage.getItem('auth_user');
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
-  }, []);
-
-  const persist = (tok: string, usr: User) => {
-    setToken(tok);
-    setUser(usr);
-    localStorage.setItem('auth_token', tok);
+  const persist = (token: string, usr: User) => {
+    dispatch(setCredentials({ user: usr, access_token: token }));
+    localStorage.setItem('auth_token', token);
     localStorage.setItem('auth_user', JSON.stringify(usr));
   };
 
-  const signup = async ({ name, email, password, role }: { name: string; email: string; password: string; role?: string }) => {
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-    const fakeToken = 'fake-signup-token';
-    const newUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      role: (role as any) || 'customer',
-      isVerified: true,
-      memberSince: new Date().getFullYear().toString(),
+  useEffect(() => {
+    const bootstrap = async () => {
+      const storedToken = localStorage.getItem('auth_token');
+      const storedUser = localStorage.getItem('auth_user');
+
+      if (!storedToken) {
+        setLoading(false);
+        return;
+      }
+
+      if (storedToken && storedUser) {
+        dispatch(setCredentials({ user: JSON.parse(storedUser), access_token: storedToken }));
+      }
+
+      try {
+        const data = await triggerGetMe().unwrap();
+        if (data?.user) {
+          persist(storedToken, data.user);
+        }
+      } catch (error) {
+        dispatch(logoutAction());
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_user');
+      } finally {
+        setLoading(false);
+      }
     };
-    persist(fakeToken, newUser);
-    setLoading(false);
+
+    bootstrap();
+  }, [dispatch, triggerGetMe]);
+
+  const signup = async (payload: SignupPayload) => {
+    await registerMutation(payload).unwrap();
   };
 
   const login = async ({ email, password }: { email: string; password: string }) => {
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 700));
-    const fakeToken = 'fake-login-token';
-    const loggedUser: User = {
-      id: '1',
-      name: email.split('@')[0] || 'Utilisateur',
-      email,
-      isVerified: true,
-      memberSince: '2023',
-    };
-    persist(fakeToken, loggedUser);
-    setLoading(false);
+    const response = await loginMutation({ email, password }).unwrap();
+    persist(response.token, response.user);
   };
 
   const logout = () => {
-    setUser(null);
-    setToken(null);
+    dispatch(logoutAction());
     localStorage.removeItem('auth_user');
     localStorage.removeItem('auth_token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, signup, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user: authState?.user ?? null,
+        token: authState?.access_token ?? null,
+        loading,
+        signup,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

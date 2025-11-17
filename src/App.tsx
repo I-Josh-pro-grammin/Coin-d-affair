@@ -1,14 +1,11 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { RouteFallback } from "@/components/common/RouteFallback";
 import { Page } from "@/components/common/Page";
-import { AuthProvider } from "./contexts/AuthContext"; // <-- Added import
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const Index = lazy(() => import("./pages/Index"));
@@ -28,61 +25,55 @@ const CategoryListing = lazy(() => import("./pages/CategoryListing"));
 const PlaceholderPage = lazy(() => import("./pages/PlaceholderPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-          <ScrollToTop />
-          <ErrorBoundary>
-            <Suspense fallback={<RouteFallback />}>
-              <Routes>
-                <Route path="/" element={<Page title="Accueil"><Index /></Page>} />
-                {/* Auth (existing non-/auth routes) */}
-                <Route path="/connexion" element={<Page title="Connexion"><Login /></Page>} />
-                <Route path="/inscription" element={<Page title="Inscription"><Signup /></Page>} />
+  <>
+    <Toaster />
+    <Sonner />
+    <ScrollToTop />
+    <ErrorBoundary>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<Page title="Accueil"><Index /></Page>} />
+          {/* Auth (existing non-/auth routes) */}
+          <Route path="/connexion" element={<Page title="Connexion"><Login /></Page>} />
+          <Route path="/inscription" element={<Page title="Inscription"><Signup /></Page>} />
 
-                {/* New /auth routes */}
-                <Route path="/auth/role-selection" element={<Page title="Démarrer"><RoleSelection /></Page>} />
-                <Route path="/auth/get-started" element={<Page title="Démarrer"><RoleSelection /></Page>} />
-                <Route path="/auth/login" element={<Page title="Connexion"><AuthLogin /></Page>} />
-                <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><CustomerSignup /></Page>} />
-                <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
-                <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
-                <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
+          {/* New /auth routes */}
+          <Route path="/auth/role-selection" element={<Page title="Démarrer"><RoleSelection /></Page>} />
+          <Route path="/auth/get-started" element={<Page title="Démarrer"><RoleSelection /></Page>} />
+          <Route path="/auth/login" element={<Page title="Connexion"><AuthLogin /></Page>} />
+          <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><CustomerSignup /></Page>} />
+          <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
+          <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
+          <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
 
-                <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><Dashboard /></Page>} />
-                <Route path="/dashboard" element={<ProtectedRoute><Page title="Dashboard"><Dashboard /></Page></ProtectedRoute>} />
-                <Route path="/messages" element={<ProtectedRoute><Page title="Messages"><Messages /></Page></ProtectedRoute>} />
-                <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
-                <Route path="/notifications" element={<Page title="Notifications"><Notifications /></Page>} />
+          <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><Dashboard /></Page>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Page title="Dashboard"><Dashboard /></Page></ProtectedRoute>} />
+          <Route path="/messages" element={<ProtectedRoute><Page title="Messages"><Messages /></Page></ProtectedRoute>} />
+          <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
+          <Route path="/notifications" element={<Page title="Notifications"><Notifications /></Page>} />
 
-                {/* Category routes */}
-                <Route path="/categorie/:category/:subcategory" element={<Page title="Catégorie"><CategoryListing /></Page>} />
-                <Route path="/categorie/:category" element={<Page title="Catégorie"><CategoryListing /></Page>} />
+          {/* Category routes */}
+          <Route path="/categorie/:category/:subcategory" element={<Page title="Catégorie"><CategoryListing /></Page>} />
+          <Route path="/categorie/:category" element={<Page title="Catégorie"><CategoryListing /></Page>} />
 
-                {/* Placeholder pages */}
-                <Route path="/deposer-annonce" element={<ProtectedRoute><Page title="Déposer une annonce"><PlaceholderPage /></Page></ProtectedRoute>} />
-                <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><PlaceholderPage /></Page></ProtectedRoute>} />
-                <Route path="/profil" element={<ProtectedRoute><Page title="Profil"><PlaceholderPage /></Page></ProtectedRoute>} />
-                <Route path="/aide" element={<Page title="Aide"><PlaceholderPage /></Page>} />
-                <Route path="/a-propos" element={<Page title="À propos"><PlaceholderPage /></Page>} />
-                <Route path="/contact" element={<Page title="Contact"><PlaceholderPage /></Page>} />
-                <Route path="/mentions-legales" element={<Page title="Mentions légales"><PlaceholderPage /></Page>} />
-                <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PlaceholderPage /></Page>} />
-                <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><PlaceholderPage /></Page>} />
+          {/* Placeholder pages */}
+          <Route path="/deposer-annonce" element={<ProtectedRoute><Page title="Déposer une annonce"><PlaceholderPage /></Page></ProtectedRoute>} />
+          <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><PlaceholderPage /></Page></ProtectedRoute>} />
+          <Route path="/profil" element={<ProtectedRoute><Page title="Profil"><PlaceholderPage /></Page></ProtectedRoute>} />
+          <Route path="/aide" element={<Page title="Aide"><PlaceholderPage /></Page>} />
+          <Route path="/a-propos" element={<Page title="À propos"><PlaceholderPage /></Page>} />
+          <Route path="/contact" element={<Page title="Contact"><PlaceholderPage /></Page>} />
+          <Route path="/mentions-legales" element={<Page title="Mentions légales"><PlaceholderPage /></Page>} />
+          <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PlaceholderPage /></Page>} />
+          <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><PlaceholderPage /></Page>} />
 
-                {/* Catch-all */}
-                <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+          {/* Catch-all */}
+          <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
+  </>
 );
 
 export default App;

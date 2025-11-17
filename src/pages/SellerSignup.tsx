@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const SellerSignup = () => {
   const [firstName, setFirstName] = useState("");
@@ -22,8 +23,18 @@ const SellerSignup = () => {
     if (password !== confirm) return;
     setSubmitting(true);
     try {
-      await signup({ name: `${firstName} ${lastName}`.trim(), email, password, role: "seller" });
-      navigate("/");
+      await signup({
+        fullName: `${firstName} ${lastName}`.trim(),
+        email,
+        phone,
+        password,
+        accountType: "business",
+      });
+      toast.success("Compte vendeur créé. Vérifiez votre email pour confirmer votre compte.");
+      navigate("/auth/login");
+    } catch (error: any) {
+      const message = error?.data?.message || "Impossible de créer le compte vendeur";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -55,31 +66,31 @@ const SellerSignup = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
-                    <input value={firstName} onChange={(e)=>setFirstName(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="Jean" required />
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="Jean" required />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-                    <input value={lastName} onChange={(e)=>setLastName(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="Dupont" required />
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="Dupont" required />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="vous@email.com" required />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="vous@email.com" required />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
-                    <input value={phone} onChange={(e)=>setPhone(e.target.value)} type="tel" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="+33 6 12 34 56 78" />
+                    <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="+33 6 12 34 56 78" />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
-                    <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="••••••••" required />
+                    <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="••••••••" required />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer</label>
-                    <input value={confirm} onChange={(e)=>setConfirm(e.target.value)} type="password" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="••••••••" required />
+                    <input value={confirm} onChange={(e) => setConfirm(e.target.value)} type="password" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="••••••••" required />
                   </div>
                 </div>
               </div>
@@ -91,11 +102,11 @@ const SellerSignup = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Nom de la boutique</label>
-                    <input value={shopName} onChange={(e)=>setShopName(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="Ma Super Boutique" />
+                    <input value={shopName} onChange={(e) => setShopName(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="Ma Super Boutique" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Type d'entreprise</label>
-                    <select value={businessType} onChange={(e)=>setBusinessType(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all">
+                    <select value={businessType} onChange={(e) => setBusinessType(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all">
                       <option value="">Sélectionnez un type</option>
                       <option value="individual">Individu</option>
                       <option value="company">Entreprise</option>
@@ -105,7 +116,7 @@ const SellerSignup = () => {
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Catégories de produits</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {["Électronique","Maison & Jardin","Véhicules","Mode & Beauté","Sports & Loisirs","Livres & Médias","Jouets & Enfants","Services"].map((label) => (
+                    {["Électronique", "Maison & Jardin", "Véhicules", "Mode & Beauté", "Sports & Loisirs", "Livres & Médias", "Jouets & Enfants", "Services"].map((label) => (
                       <label key={label} className="flex items-center gap-2 text-sm text-gray-700">
                         <input type="checkbox" className="w-4 h-4 text-[#000435] border-gray-300 rounded focus:ring-[#000435]" />{label}
                       </label>
@@ -115,13 +126,13 @@ const SellerSignup = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                    <input value={address} onChange={(e)=>setAddress(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="123 Rue Exemple" />
+                    <input value={address} onChange={(e) => setAddress(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" placeholder="123 Rue Exemple" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                    <select value={city} onChange={(e)=>setCity(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all">
+                    <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all">
                       <option value="">Sélectionnez une ville</option>
-                      {["Kigali","Butare","Gisenyi","Ruhengeri","Cyangugu"].map(v => <option key={v} value={v.toLowerCase()}>{v}</option>)}
+                      {["Kigali", "Butare", "Gisenyi", "Ruhengeri", "Cyangugu"].map(v => <option key={v} value={v.toLowerCase()}>{v}</option>)}
                     </select>
                   </div>
                 </div>

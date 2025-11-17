@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const CustomerSignup = () => {
   const [showPwd, setShowPwd] = useState(false);
@@ -20,8 +21,18 @@ const CustomerSignup = () => {
     if (pwd !== confirm) return;
     setSubmitting(true);
     try {
-      await signup({ name: `${firstName} ${lastName}`.trim(), email, password: pwd, role: "customer" });
-      navigate("/");
+      await signup({
+        fullName: `${firstName} ${lastName}`.trim(),
+        email,
+        phone,
+        password: pwd,
+        accountType: "customer",
+      });
+      toast.success("Compte créé avec succès. Vérifiez votre email pour confirmer votre compte.");
+      navigate("/auth/login");
+    } catch (error: any) {
+      const message = error?.data?.message || "Impossible de créer le compte";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -50,25 +61,25 @@ const CustomerSignup = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
-                  <input value={firstName} onChange={(e)=>setFirstName(e.target.value)} type="text" placeholder="Jean" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                  <input value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" placeholder="Jean" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-                  <input value={lastName} onChange={(e)=>setLastName(e.target.value)} type="text" placeholder="Dupont" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                  <input value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" placeholder="Dupont" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="vous@email.com" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="vous@email.com" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone (optionnel)</label>
-                <input value={phone} onChange={(e)=>setPhone(e.target.value)} type="tel" placeholder="+33 6 12 34 56 78" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="+33 6 12 34 56 78" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
                 <div className="relative">
-                  <input value={pwd} onChange={(e)=>setPwd(e.target.value)} type={showPwd ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                  <input value={pwd} onChange={(e) => setPwd(e.target.value)} type={showPwd ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
                   <button type="button" onClick={() => setShowPwd(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showPwd ? "🙈" : "👁️"}
                   </button>
@@ -77,7 +88,7 @@ const CustomerSignup = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
                 <div className="relative">
-                  <input value={confirm} onChange={(e)=>setConfirm(e.target.value)} type={showConfirm ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                  <input value={confirm} onChange={(e) => setConfirm(e.target.value)} type={showConfirm ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
                   <button type="button" onClick={() => setShowConfirm(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showConfirm ? "🙈" : "👁️"}
                   </button>

@@ -1,33 +1,34 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import {setCredentials} from "../redux/Features/authSlice"
-import {useLoginMutation} from "../redux/api/apiSlice";
-import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 const AuthLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  // const { login } = useAuth();
-  const [Login] = useLoginMutation();
+  const { login } = useAuth();
   const navigate = useNavigate();
-
-  const dispatch = useDispatch();
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setError(null);
     try {
-      const res = await Login({ email: email, password: password }).unwrap();
-      console.log("its over with:", res);
-      dispatch(setCredentials({id: res.userId, userType: res.accountType }));
+      await login({ email, password });
       navigate("/");
       toast.success("Login successfull");
+    } catch (err: any) {
+      const message =
+        err?.data?.message ||
+        err?.error ||
+        err?.message ||
+        "Une erreur est survenue lors de la connexion.";
+      setError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
-      toast.error("Login failed!");
     }
   };
   return (
@@ -40,7 +41,7 @@ const AuthLogin = () => {
             Connectez-vous pour accéder à votre compte et profiter de milliers de produits à prix imbattables.
           </p>
           <div className="mt-12 space-y-4">
-            {["Achat sécurisé","Livraison rapide","Support 24/7"].map((txt) => (
+            {["Achat sécurisé", "Livraison rapide", "Support 24/7"].map((txt) => (
               <div key={txt} className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,12 +62,15 @@ const AuthLogin = () => {
           </div>
           <div className="bg-gray-50 rounded-2xl shadow-xl p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">Connexion</h2>
+            {error && (
+              <p className="text-center text-sm text-red-500 mb-4">{error}</p>
+            )}
             <p className="text-gray-600 text-center mb-8">Accédez à votre compte</p>
             <form className="space-y-5" onSubmit={onSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                 <div className="relative">
-                  <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="votre@email.com" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                  <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="votre@email.com" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
                   <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
@@ -75,7 +79,7 @@ const AuthLogin = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
                 <div className="relative">
-                  <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
+                  <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="••••••••" className="w-full px-4 py-3 pr-10 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" required />
                   <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>

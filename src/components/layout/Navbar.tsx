@@ -29,7 +29,7 @@ export function Navbar({
   cartCount = 0,
   isLoggedIn: isLoggedInProp,
   onLoginClick,
-  onPostAdClick = () => {},
+  onPostAdClick = () => { },
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -39,9 +39,7 @@ export function Navbar({
   const navigate = useNavigate();
 
   // Auth context (optional). If you prefer props-based auth, pass isLoggedIn prop.
-  const auth = useAuth?.() as any; // keep `any` so it doesn't break if your type differs
-  const user = auth?.user ?? null;
-  const logout = auth?.logout ?? (() => {});
+  const { user, logout } = useAuth();
 
   const isLoggedIn = user ? true : !!isLoggedInProp;
 

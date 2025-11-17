@@ -1,41 +1,36 @@
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useGetCategoriesQuery } from "@/redux/api/apiSlice";
 
-const categories = [
+const fallbackCategories = [
   {
-    name: "Immobilier",
-    subcategories: ["Appartements", "Maisons", "Terrains", "Bureaux & Commerces"]
+    category_name: "Immobilier",
+    slug: "immobilier",
+    subcategories: [
+      { subcategory_name: "Appartements", slug: "appartements" },
+      { subcategory_name: "Maisons", slug: "maisons" },
+      { subcategory_name: "Terrains", slug: "terrains" },
+      { subcategory_name: "Bureaux & Commerces", slug: "bureaux-commerces" },
+    ],
   },
   {
-    name: "Véhicules",
-    subcategories: ["Voitures", "Motos", "Véhicules utilitaires", "Pièces & Accessoires"]
+    category_name: "Véhicules",
+    slug: "vehicules",
+    subcategories: [
+      { subcategory_name: "Voitures", slug: "voitures" },
+      { subcategory_name: "Motos", slug: "motos" },
+      { subcategory_name: "Véhicules utilitaires", slug: "vehicules-utilitaires" },
+      { subcategory_name: "Pièces & Accessoires", slug: "pieces-accessoires" },
+    ],
   },
-  {
-    name: "Électronique",
-    subcategories: ["Ordinateurs", "Téléphones", "Tablettes", "Télévisions & Audio"]
-  },
-  {
-    name: "Emploi",
-    subcategories: ["Offres d'emploi", "Demandes d'emploi", "Services"]
-  },
-  {
-    name: "Famille",
-    subcategories: ["Jeux & Jouets", "Puériculture", "Articles scolaires"]
-  },
-  {
-    name: "Mode",
-    subcategories: ["Vêtements", "Chaussures", "Accessoires", "Montres & Bijoux"]
-  },
-  {
-    name: "Autres",
-    subcategories: ["Divers", "Collections", "Animaux"]
-  }
 ];
 
 export function CategoryNav() {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
+  const { data, isLoading } = useGetCategoriesQuery();
+  const categories = data?.categories?.length ? data.categories : fallbackCategories;
 
   const openMenu = (name: string) => {
     if (closeTimeoutRef.current) {
@@ -60,38 +55,54 @@ export function CategoryNav() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-12">
           <div className="flex space-x-8">
-            {categories.map((category) => (
-              <div
-                key={category.name}
-                className="relative"
-                onMouseEnter={() => openMenu(category.name)}
-                onMouseLeave={scheduleClose}
-              >
-                <button className="nav-link flex items-center group">
-                  {category.name}
-                  <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
-                </button>
+            {categories.map((category) => {
+              const categoryLabel = category.category_name || (category as any).name || "Catégorie";
+              const categorySlug =
+                category.slug ||
+                categoryLabel.toLowerCase().replace(/\s+/g, "-");
+              return (
+                <div
+                  key={categorySlug}
+                  className="relative"
+                  onMouseEnter={() => openMenu(categorySlug)}
+                  onMouseLeave={scheduleClose}
+                >
+                  <button className="nav-link flex items-center group">
+                    {categoryLabel}
+                    <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+                  </button>
 
-                {/* Dropdown */}
-                {hoveredCategory === category.name && (
-                  <div
-                    className="absolute top-full left-0 w-56 dropdown-panel z-50"
-                    onMouseEnter={() => openMenu(category.name)}
-                    onMouseLeave={scheduleClose}
-                  >
-                    {category.subcategories.map((subcategory) => (
-                      <Link
-                        key={subcategory}
-                        to={`/categorie/${category.name.toLowerCase()}/${subcategory.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
-                      >
-                        {subcategory}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                  {/* Dropdown */}
+                  {hoveredCategory === categorySlug && (
+                    <div
+                      className="absolute top-full left-0 w-56 dropdown-panel z-50"
+                      onMouseEnter={() => openMenu(categorySlug)}
+                      onMouseLeave={scheduleClose}
+                    >
+                      {category.subcategories?.map((subcategory: any) => {
+                        const subLabel =
+                          typeof subcategory === "string"
+                            ? subcategory
+                            : subcategory.subcategory_name;
+                        const subSlug =
+                          typeof subcategory === "string"
+                            ? subcategory.toLowerCase().replace(/\s+/g, "-")
+                            : subcategory.slug;
+                        return (
+                          <Link
+                            key={`${categorySlug}-${subSlug}`}
+                            to={`/categorie/${categorySlug}/${subSlug}`}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                          >
+                            {subLabel}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>
