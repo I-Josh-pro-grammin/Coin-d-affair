@@ -54,8 +54,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 {/* Badge - Top Right */}
                 {product.badge && (
                     <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium shadow-sm ${product.badge === 'Nouveau'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-red-500 text-white'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-red-500 text-white'
                         }`}>
                         {product.badge}
                     </span>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
-import { CategoryNav } from "@/components/layout/CategoryNav";
 import { Footer } from "@/components/layout/Footer";
 import { Send, Search, MoreVertical, Phone, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,14 +15,12 @@ const Messages = () => {
   // Check for product and seller query params
   useEffect(() => {
     const productId = searchParams.get('product');
-    const sellerId = searchParams.get('seller');
 
     if (productId) {
       const product = getProductById(productId);
       if (product) {
         // Pre-fill message with product context
         setMessageText(`Bonjour, je suis intéressé(e) par ${product.name}. Est-il toujours disponible ?`);
-        // In a real app, you would create/select a conversation with the seller
       }
     }
   }, [searchParams]);
@@ -32,7 +29,7 @@ const Messages = () => {
     {
       id: 1,
       name: "Marie Dubois",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
       lastMessage: "Bonjour, l'iPhone est-il toujours disponible ?",
       timestamp: "14:30",
       unread: 2,
@@ -41,7 +38,7 @@ const Messages = () => {
     {
       id: 2,
       name: "Pierre Martin",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100",
       lastMessage: "Merci pour les informations !",
       timestamp: "Hier",
       unread: 0,
@@ -50,7 +47,7 @@ const Messages = () => {
     {
       id: 3,
       name: "Sophie Bernard",
-      avatar: "/api/placeholder/40/40",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
       lastMessage: "Pourriez-vous me donner plus de détails ?",
       timestamp: "Mardi",
       unread: 1,
@@ -100,7 +97,6 @@ const Messages = () => {
 
   const sendMessage = () => {
     if (messageText.trim()) {
-      // Add message logic here
       console.log("Sending message:", messageText);
       setMessageText("");
     }
@@ -109,19 +105,14 @@ const Messages = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <CategoryNav />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold font-poppins text-gray-900 mb-2">
-            Messages
-          </h1>
-          <p className="text-gray-600">
-            Communiquez avec les acheteurs et vendeurs
-          </p>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Messages</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Discutez avec les vendeurs et négociez vos achats.</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-card overflow-hidden h-[600px] flex">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden h-[600px] flex">
           {/* Conversations List */}
           <div className="w-1/3 border-r border-gray-200 flex flex-col">
             {/* Search */}
@@ -129,8 +120,8 @@ const Messages = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
-                  placeholder="Rechercher une conversation..."
-                  className="pl-10"
+                  placeholder="Rechercher..."
+                  className="pl-10 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
                 />
               </div>
             </div>
@@ -141,7 +132,7 @@ const Messages = () => {
                 <div
                   key={conv.id}
                   onClick={() => setSelectedConversation(conv.id)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${selectedConversation === conv.id ? 'bg-blue-50 border-blue-200' : ''
+                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${selectedConversation === conv.id ? 'bg-blue-50/50 border-l-4 border-l-[#000435]' : 'border-l-4 border-l-transparent'
                     }`}
                 >
                   <div className="flex items-center space-x-3">
@@ -149,22 +140,22 @@ const Messages = () => {
                       <img
                         src={conv.avatar}
                         alt={conv.name}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
                       />
                       {conv.unread > 0 && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white">
                           {conv.unread}
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-sm font-medium text-gray-900 truncate">
+                        <h3 className={`text-sm font-semibold truncate ${selectedConversation === conv.id ? 'text-[#000435]' : 'text-gray-900'}`}>
                           {conv.name}
                         </h3>
                         <span className="text-xs text-gray-500">{conv.timestamp}</span>
                       </div>
-                      <p className="text-xs text-blue-600 mb-1 truncate">{conv.adTitle}</p>
+                      <p className="text-xs text-[#000435] font-medium mb-0.5 truncate">{conv.adTitle}</p>
                       <p className="text-sm text-gray-600 truncate">{conv.lastMessage}</p>
                     </div>
                   </div>
@@ -174,34 +165,32 @@ const Messages = () => {
           </div>
 
           {/* Chat Area */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col bg-gray-50/30">
             {selectedConv ? (
               <>
                 {/* Chat Header */}
-                <div className="p-4 border-b border-gray-200 bg-white">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <img
-                        src={selectedConv.avatar}
-                        alt={selectedConv.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div>
-                        <h3 className="font-medium text-gray-900">{selectedConv.name}</h3>
-                        <p className="text-sm text-blue-600">{selectedConv.adTitle}</p>
-                      </div>
+                <div className="p-4 border-b border-gray-200 bg-white flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={selectedConv.avatar}
+                      alt={selectedConv.name}
+                      className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{selectedConv.name}</h3>
+                      <p className="text-sm text-[#000435]">{selectedConv.adTitle}</p>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
-                        <Phone className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Video className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100 text-gray-600">
+                      <Phone className="h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100 text-gray-600">
+                      <Video className="h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100 text-gray-600">
+                      <MoreVertical className="h-5 w-5" />
+                    </Button>
                   </div>
                 </div>
 
@@ -213,13 +202,13 @@ const Messages = () => {
                       className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.isOwn
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-900'
+                        className={`max-w-xs lg:max-w-md px-5 py-3 rounded-2xl shadow-sm ${message.isOwn
+                            ? 'bg-[#000435] text-white rounded-br-none'
+                            : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
                           }`}
                       >
-                        <p className="text-sm">{message.text}</p>
-                        <p className={`text-xs mt-1 ${message.isOwn ? 'text-blue-100' : 'text-gray-500'
+                        <p className="text-sm leading-relaxed">{message.text}</p>
+                        <p className={`text-[10px] mt-1 text-right ${message.isOwn ? 'text-white/70' : 'text-gray-400'
                           }`}>
                           {message.timestamp}
                         </p>
@@ -230,16 +219,19 @@ const Messages = () => {
 
                 {/* Message Input */}
                 <div className="p-4 border-t border-gray-200 bg-white">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center gap-3">
                     <Input
                       value={messageText}
                       onChange={(e) => setMessageText(e.target.value)}
                       placeholder="Tapez votre message..."
-                      className="flex-1"
+                      className="flex-1 rounded-full border-gray-300 focus:border-[#000435] focus:ring-[#000435]"
                       onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                     />
-                    <Button onClick={sendMessage} className="btn-primary">
-                      <Send className="h-4 w-4" />
+                    <Button
+                      onClick={sendMessage}
+                      className="rounded-full w-10 h-10 p-0 bg-[#000435] hover:bg-[#000435]/90"
+                    >
+                      <Send className="h-4 w-4 text-white" />
                     </Button>
                   </div>
                 </div>

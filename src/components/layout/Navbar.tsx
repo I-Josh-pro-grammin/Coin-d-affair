@@ -12,6 +12,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { Logo } from "@/components/common/Logo";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,23 +83,7 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Left: Logo */}
-            <Link
-              to="/"
-              className="flex items-center gap-3 flex-shrink-0"
-              aria-label="Accueil - Coin D'Affaires"
-            >
-              <img
-                src="/logo.png"
-                alt="Coin D'Affaires"
-                className="h-12 w-auto object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-              <span className="text-xl font-bold text-[#000435]">
-                Coin D'Affaires
-              </span>
-            </Link>
+            <Logo withText={true} to="/" className="flex-shrink-0" />
 
             {/* Hamburger (mobile) */}
             <button
@@ -292,16 +277,7 @@ export function Navbar() {
             />
             <div className="relative w-80 max-w-full bg-white shadow-xl p-6 overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
-                <Link to="/" className="flex items-center" aria-label="Accueil" onClick={closeMenu}>
-                  <img
-                    src="/logo.png"
-                    alt="Coin D'Affaires"
-                    className="h-10 w-auto object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </Link>
+                <Logo withText={false} to="/" className="" />
                 <button
                   onClick={closeMenu}
                   aria-label="Fermer le menu"
