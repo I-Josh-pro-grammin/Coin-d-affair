@@ -1,14 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { CategoryNav } from "@/components/layout/CategoryNav";
 import { Footer } from "@/components/layout/Footer";
-import { Send, Search, MoreVertical, Phone, Video, ArrowLeft } from "lucide-react";
+import { Send, Search, MoreVertical, Phone, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getProductById } from "@/data/mockProducts";
 
 const Messages = () => {
+  const [searchParams] = useSearchParams();
   const [selectedConversation, setSelectedConversation] = useState<number | null>(1);
   const [messageText, setMessageText] = useState("");
+
+  // Check for product and seller query params
+  useEffect(() => {
+    const productId = searchParams.get('product');
+    const sellerId = searchParams.get('seller');
+
+    if (productId) {
+      const product = getProductById(productId);
+      if (product) {
+        // Pre-fill message with product context
+        setMessageText(`Bonjour, je suis intéressé(e) par ${product.name}. Est-il toujours disponible ?`);
+        // In a real app, you would create/select a conversation with the seller
+      }
+    }
+  }, [searchParams]);
 
   const conversations = [
     {
@@ -92,7 +110,7 @@ const Messages = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <CategoryNav />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold font-poppins text-gray-900 mb-2">
@@ -123,9 +141,8 @@ const Messages = () => {
                 <div
                   key={conv.id}
                   onClick={() => setSelectedConversation(conv.id)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                    selectedConversation === conv.id ? 'bg-blue-50 border-blue-200' : ''
-                  }`}
+                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${selectedConversation === conv.id ? 'bg-blue-50 border-blue-200' : ''
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     <div className="relative">
@@ -196,16 +213,14 @@ const Messages = () => {
                       className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                          message.isOwn
+                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.isOwn
                             ? 'bg-blue-600 text-white'
                             : 'bg-gray-100 text-gray-900'
-                        }`}
+                          }`}
                       >
                         <p className="text-sm">{message.text}</p>
-                        <p className={`text-xs mt-1 ${
-                          message.isOwn ? 'text-blue-100' : 'text-gray-500'
-                        }`}>
+                        <p className={`text-xs mt-1 ${message.isOwn ? 'text-blue-100' : 'text-gray-500'
+                          }`}>
                           {message.timestamp}
                         </p>
                       </div>

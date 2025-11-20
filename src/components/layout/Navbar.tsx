@@ -1,4 +1,3 @@
-// src/components/Navbar.tsx
 import React, { useEffect, useRef, useState } from "react";
 import {
   Menu,
@@ -6,45 +5,30 @@ import {
   Heart,
   ShoppingBag,
   User,
-  Search,
   MessageCircle,
   Bell,
   LogOut,
-  LogIn,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
 
-type NavbarProps = {
-  cartCount?: number;
-  // If you manage auth via props instead of context, pass isLoggedIn/onLoginClick.
-  isLoggedIn?: boolean;
-  onLoginClick?: () => void;
-  onPostAdClick?: () => void;
-};
-
-export function Navbar({
-  cartCount = 0,
-  isLoggedIn: isLoggedInProp,
-  onLoginClick,
-  onPostAdClick = () => {},
-}: NavbarProps) {
+export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-
-  // Search state
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  // Auth context (optional). If you prefer props-based auth, pass isLoggedIn prop.
-  const auth = useAuth?.() as any; // keep `any` so it doesn't break if your type differs
+  // Auth context
+  const auth = useAuth?.() as any;
   const user = auth?.user ?? null;
-  const logout = auth?.logout ?? (() => {});
+  const logout = auth?.logout ?? (() => { });
 
-  const isLoggedIn = user ? true : !!isLoggedInProp;
+  // Cart context
+  const { totalItems } = useCart();
 
+  const isLoggedIn = !!user;
+
+  // Close menu on Escape key
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setIsOpen(false);
@@ -53,10 +37,12 @@ export function Navbar({
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  // Prevent body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
   }, [isOpen]);
 
+  // Focus trap
   useEffect(() => {
     if (isOpen && mobileMenuRef.current) {
       const firstFocusable = mobileMenuRef.current.querySelector(
@@ -66,27 +52,25 @@ export function Navbar({
     }
   }, [isOpen]);
 
-  const handleSearch = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (searchQuery.trim()) {
-      // Replace with real search navigation
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery("");
-    }
-  };
-
   const handleLogout = () => {
     if (logout) logout();
     navigate("/");
   };
 
   const handleLoginClick = () => {
-    if (onLoginClick) {
-      onLoginClick();
+    navigate("/auth/role-selection");
+  };
+
+  const handlePostAdClick = () => {
+    // Check if user is logged in and is a seller
+    if (user?.role === 'seller') {
+      navigate("/dashboard/products/new");
     } else {
-      navigate("/auth/role-selection");
+      navigate("/deposer");
     }
   };
+
+  const closeMenu = () => setIsOpen(false);
 
   return (
     <>
@@ -98,8 +82,8 @@ export function Navbar({
         <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Left: Logo */}
-            <a
-              href="/"
+            <Link
+              to="/"
               className="flex items-center gap-3 flex-shrink-0"
               aria-label="Accueil - Coin D'Affaires"
             >
@@ -107,16 +91,19 @@ export function Navbar({
                 src="/logo.png"
                 alt="Coin D'Affaires"
                 className="h-12 w-auto object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
               />
               <span className="text-xl font-bold text-[#000435]">
                 Coin D'Affaires
               </span>
-            </a>
+            </Link>
 
             {/* Hamburger (mobile) */}
             <button
               onClick={() => setIsOpen(true)}
-              className="lg:hidden text-[#000435] p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="lg:hidden text-[#000435] p-2 hover:bg-gray-100 rounded-lg transition-colors focus:ring-2 focus:ring-[#000435]"
               aria-label="Ouvrir le menu"
               aria-controls="mobile-menu"
               aria-expanded={isOpen}
@@ -126,21 +113,21 @@ export function Navbar({
 
             {/* Center: Links (desktop) */}
             <div className="hidden lg:flex items-center gap-8">
-              <a
-                href="/"
+              <Link
+                to="/"
                 className="text-gray-700 hover:text-[#000435] font-medium transition-colors"
               >
                 Accueil
-              </a>
-              <a
-                href="/boutique"
+              </Link>
+              <Link
+                to="/boutique"
                 className="text-gray-700 hover:text-[#000435] font-medium transition-colors"
               >
                 Boutique
-              </a>
+              </Link>
 
               <button
-                onClick={onPostAdClick}
+                onClick={handlePostAdClick}
                 className="bg-[#000435] hover:bg-[#020657] text-white font-bold px-6 py-2 rounded-full transition-colors"
                 aria-label="Déposer une annonce"
                 type="button"
@@ -151,41 +138,56 @@ export function Navbar({
 
             {/* Right: Icons & Login (desktop) */}
             <div className="hidden lg:flex items-center gap-6">
-              {/* If user is logged in via context, show richer UI */}
               {user ? (
                 <div className="flex items-center gap-4">
                   <Link
                     to="/messages"
-                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full"
+                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
                     title="Messages"
+                    aria-label="Messages"
                   >
                     <MessageCircle size={20} />
                   </Link>
                   <Link
+                    to="/notifications"
+                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
+                    title="Notifications"
+                    aria-label="Notifications"
+                  >
+                    <Bell size={20} />
+                  </Link>
+                  <Link
                     to="/favoris"
-                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full"
+                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
                     title="Favoris"
+                    aria-label="Favoris"
                   >
                     <Heart size={20} />
                   </Link>
                   <Link
-                    to="/notifications"
-                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full"
-                    title="Notifications"
+                    to="/panier"
+                    className="relative text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
+                    title="Panier"
+                    aria-label="Panier"
                   >
-                    <Bell size={20} />
+                    <ShoppingBag size={20} />
+                    {totalItems > 0 && (
+                      <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
+                        {totalItems}
+                      </span>
+                    )}
                   </Link>
 
-                  {/* User dropdown (simple) */}
+                  {/* User dropdown */}
                   <div className="relative group">
-                    <button className="flex items-center gap-2 text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full">
+                    <button className="flex items-center gap-2 text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100">
                       <User size={20} />
                       <span className="hidden sm:inline font-medium">
                         {user.name ?? "Mon compte"}
                       </span>
                     </button>
 
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-card border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="font-medium text-gray-900">{user.name}</p>
                         {user.email && (
@@ -193,7 +195,7 @@ export function Navbar({
                         )}
                       </div>
                       <Link
-                        to="/tableau-de-bord"
+                        to="/dashboard"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
                         Tableau de bord
@@ -221,39 +223,49 @@ export function Navbar({
                   </div>
                 </div>
               ) : (
-                // Not logged in
                 <>
-                  <a
-                    href="/favoris"
+                  <Link
+                    to="/notifications"
+                    className="text-gray-700 hover:text-[#000435] transition-colors"
+                    aria-label="Notifications"
+                  >
+                    <Bell size={24} />
+                  </Link>
+                  <Link
+                    to="/favoris"
                     className="text-gray-700 hover:text-[#000435] transition-colors"
                     aria-label="Favoris"
                   >
                     <Heart size={24} />
-                  </a>
-
-                  <a
-                    href="/panier"
+                  </Link>
+                  <Link
+                    to="/messages"
+                    className="text-gray-700 hover:text-[#000435] transition-colors"
+                    aria-label="Messages"
+                  >
+                    <MessageCircle size={24} />
+                  </Link>
+                  <Link
+                    to="/panier"
                     className="relative text-gray-700 hover:text-[#000435] transition-colors"
                     aria-label="Panier"
                   >
                     <ShoppingBag size={24} />
-                    {cartCount > 0 && (
+                    {totalItems > 0 && (
                       <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
-                        {cartCount}
+                        {totalItems}
                       </span>
                     )}
-                  </a>
+                  </Link>
 
                   <div>
                     <button
                       onClick={handleLoginClick}
-                      className="flex items-center gap-2 px-6 py-2.5 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all duration-300"
+                      className="flex items-center gap-2 px-6 py-2.5 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all duration-300 focus:ring-2 focus:ring-[#000435]"
                       aria-label="Se connecter"
                       type="button"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                      <User size={20} />
                       <span>Connexion</span>
                     </button>
                   </div>
@@ -276,46 +288,51 @@ export function Navbar({
             <button
               className="fixed inset-0 bg-black/40"
               aria-hidden="true"
-              onClick={() => setIsOpen(false)}
+              onClick={closeMenu}
             />
             <div className="relative w-80 max-w-full bg-white shadow-xl p-6 overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
-                <a href="/" className="flex items-center" aria-label="Accueil">
+                <Link to="/" className="flex items-center" aria-label="Accueil" onClick={closeMenu}>
                   <img
                     src="/logo.png"
                     alt="Coin D'Affaires"
                     className="h-10 w-auto object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
-                </a>
+                </Link>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeMenu}
                   aria-label="Fermer le menu"
-                  className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  className="p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#000435]"
                 >
                   <X size={24} />
                 </button>
               </div>
 
               <nav className="space-y-4" aria-label="Menu principal mobile">
-                <a
-                  href="/"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                <Link
+                  to="/"
+                  onClick={closeMenu}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#000435]"
                 >
                   Accueil
-                </a>
-                <a
-                  href="/boutique"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                </Link>
+                <Link
+                  to="/boutique"
+                  onClick={closeMenu}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#000435]"
                 >
                   Boutique
-                </a>
+                </Link>
 
                 <button
                   onClick={() => {
-                    onPostAdClick();
-                    setIsOpen(false);
+                    handlePostAdClick();
+                    closeMenu();
                   }}
-                  className="w-full inline-flex justify-center items-center px-6 py-3 rounded-full font-bold text-white bg-[#000435] hover:bg-[#020657] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  className="w-full inline-flex justify-center items-center px-6 py-3 rounded-full font-bold text-white bg-[#000435] hover:bg-[#020657] transition-colors focus:outline-none focus:ring-2 focus:ring-[#000435]"
                   aria-label="Déposer une annonce"
                 >
                   Déposer une annonce
@@ -323,34 +340,85 @@ export function Navbar({
 
                 <hr className="my-4" />
 
-                <div className="flex items-center justify-around pt-4">
-                  <a
-                    href="/favoris"
-                    className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors"
+                <div className="grid grid-cols-2 gap-4 pt-4">
+                  <Link
+                    to="/notifications"
+                    onClick={closeMenu}
+                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <Bell size={24} />
+                    <span className="text-xs">Notifications</span>
+                  </Link>
+                  <Link
+                    to="/favoris"
+                    onClick={closeMenu}
+                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     <Heart size={24} />
                     <span className="text-xs">Favoris</span>
-                  </a>
-                  <a
-                    href="/panier"
-                    className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors relative"
+                  </Link>
+                  <Link
+                    to="/messages"
+                    onClick={closeMenu}
+                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <MessageCircle size={24} />
+                    <span className="text-xs">Messages</span>
+                  </Link>
+                  <Link
+                    to="/panier"
+                    onClick={closeMenu}
+                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors relative"
                   >
                     <ShoppingBag size={24} />
-                    {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
-                        {cartCount}
+                    {totalItems > 0 && (
+                      <span className="absolute top-2 right-6 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
+                        {totalItems}
                       </span>
                     )}
                     <span className="text-xs">Panier</span>
-                  </a>
-                  <button
-                    onClick={() => { handleLoginClick(); setIsOpen(false); }}
-                    className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors"
-                  >
-                    <User size={24} />
-                    <span className="text-xs">{isLoggedIn ? "Compte" : "Connexion"}</span>
-                  </button>
+                  </Link>
                 </div>
+
+                {isLoggedIn ? (
+                  <div className="pt-4 border-t border-gray-200 space-y-2">
+                    <Link
+                      to="/dashboard"
+                      onClick={closeMenu}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100"
+                    >
+                      Tableau de bord
+                    </Link>
+                    <Link
+                      to="/profil"
+                      onClick={closeMenu}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100"
+                    >
+                      Mon profil
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        closeMenu();
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    >
+                      <LogOut size={18} />
+                      Se déconnecter
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      handleLoginClick();
+                      closeMenu();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all"
+                  >
+                    <User size={20} />
+                    Connexion
+                  </button>
+                )}
               </nav>
             </div>
           </div>

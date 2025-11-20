@@ -1,0 +1,121 @@
+import { Heart, ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
+import { currencyFmt } from '@/lib/utils';
+import { Product } from '@/data/mockProducts';
+
+interface ProductCardProps {
+    product: Product;
+    onClick?: () => void;
+}
+
+export function ProductCard({ product, onClick }: ProductCardProps) {
+    const { addItem } = useCart();
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addItem({
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            qty: 1,
+            image: product.image
+        });
+    };
+
+    const handleBuyNow = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = `/acheter/${product.id}`;
+    };
+
+    return (
+        <Link
+            to={`/produit/${product.id}`}
+            onClick={onClick}
+            className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#000435]"
+        >
+            {/* Image Container */}
+            <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
+                {/* Product Image */}
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500';
+                    }}
+                />
+
+                {/* Overlay gradient on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                {/* Badge - Top Right */}
+                {product.badge && (
+                    <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium shadow-sm ${product.badge === 'Nouveau'
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-red-500 text-white'
+                        }`}>
+                        {product.badge}
+                    </span>
+                )}
+
+                {/* Category Badge - Top Left */}
+                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700 shadow-sm">
+                    {product.subcategory || product.category}
+                </span>
+
+                {/* Wishlist Heart Icon */}
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // TODO: Add to favorites
+                    }}
+                    className="absolute bottom-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+                    aria-label="Ajouter aux favoris"
+                >
+                    <Heart className="w-5 h-5 text-gray-600 hover:text-red-500 transition-colors" />
+                </button>
+            </div>
+
+            {/* Card Content */}
+            <div className="p-5">
+                {/* Product Title */}
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
+                    {product.name}
+                </h3>
+
+                {/* Location */}
+                <p className="text-sm text-gray-500 mb-3">{product.location}</p>
+
+                {/* Price */}
+                <div className="mb-4">
+                    <p className="text-2xl font-bold text-[#000435]">{currencyFmt(product.price)}</p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex flex-col gap-2">
+                    {/* Add to Cart - Ghost/Outline Button */}
+                    <button
+                        onClick={handleAddToCart}
+                        className="w-full py-2.5 px-4 border-2 border-[#000435] text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 bg-transparent flex items-center justify-center gap-2"
+                        aria-label="Ajouter au panier"
+                    >
+                        <ShoppingCart size={18} />
+                        Ajouter au panier
+                    </button>
+
+                    {/* Buy Now - Solid Button */}
+                    <button
+                        onClick={handleBuyNow}
+                        className="w-full py-2.5 px-4 bg-[#000435] text-white font-medium rounded-full hover:bg-[#000435]/90 transition-all duration-300"
+                    >
+                        Acheter maintenant
+                    </button>
+                </div>
+            </div>
+        </Link>
+    );
+}
