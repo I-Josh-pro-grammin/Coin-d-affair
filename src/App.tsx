@@ -20,13 +20,22 @@ const CustomerSignup = lazy(() => import("./pages/CustomerSignup"));
 const SellerSignup = lazy(() => import("./pages/SellerSignup"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Messages = lazy(() => import("./pages/Messages"));
+// const Dashboard = lazy(() => import("./pages/Dashboard"));
+// const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const CategoryListing = lazy(() => import("./pages/CategoryListing"));
 const PlaceholderPage = lazy(() => import("./pages/PlaceholderPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Dashboard Components
+const DashboardHome = lazy(() => import("./pages/dashboard/DashboardHome"));
+const Products = lazy(() => import("./pages/dashboard/Products"));
+const ProductForm = lazy(() => import("./pages/dashboard/ProductForm"));
+const Orders = lazy(() => import("./pages/dashboard/Orders"));
+const OrderDetails = lazy(() => import("./pages/dashboard/OrderDetails"));
+const Messages = lazy(() => import("./pages/dashboard/Messages"));
+const Settings = lazy(() => import("./pages/dashboard/Settings"));
 
 const queryClient = new QueryClient();
 
@@ -55,9 +64,16 @@ const App = () => (
                 <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
                 <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
 
-                <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><Dashboard /></Page>} />
-                <Route path="/dashboard" element={<ProtectedRoute><Page title="Dashboard"><Dashboard /></Page></ProtectedRoute>} />
-                <Route path="/messages" element={<ProtectedRoute><Page title="Messages"><Messages /></Page></ProtectedRoute>} />
+                <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><DashboardHome /></Page>} />
+                {/* Dashboard Routes */}
+                <Route path="/dashboard" element={<Page title="Dashboard"><DashboardHome /></Page>} />
+                <Route path="/dashboard/products" element={<Page title="Produits"><Products /></Page>} />
+                <Route path="/dashboard/products/new" element={<Page title="Nouveau produit"><ProductForm /></Page>} />
+                <Route path="/dashboard/products/:id/edit" element={<Page title="Modifier produit"><ProductForm /></Page>} />
+                <Route path="/dashboard/orders" element={<Page title="Commandes"><Orders /></Page>} />
+                <Route path="/dashboard/orders/:id" element={<Page title="Détails commande"><OrderDetails /></Page>} />
+                <Route path="/dashboard/messages" element={<Page title="Messages"><Messages /></Page>} />
+                <Route path="/dashboard/settings" element={<Page title="Paramètres"><Settings /></Page>} />
                 <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
                 <Route path="/notifications" element={<Page title="Notifications"><Notifications /></Page>} />
 
