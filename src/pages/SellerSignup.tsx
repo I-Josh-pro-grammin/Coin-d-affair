@@ -145,7 +145,7 @@ const SellerSignup = () => {
                 </span>
               </label>
               <button disabled={submitting} type="submit" className="w-full bg-[#000435] text-white py-3.5 px-4 rounded-full font-medium hover:bg-[#000435]/90 transition-all duration-300 disabled:opacity-60">
-                {submitting ? "Création..." : "Créer mon compte vendeur"}
+                {submitting ? "Création" : "Créer mon compte vendeur"}
               </button>
             </form>
             <p className="text-center text-gray-600 mt-6">

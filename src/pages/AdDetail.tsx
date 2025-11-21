@@ -13,11 +13,13 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
-  Star
+  Star,
+  ShoppingCart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useGetListingQuery } from "@/redux/api/apiSlice";
+import { useGetListingQuery, useAddItemToCartMutation } from "@/redux/api/apiSlice";
+import { toast } from "sonner";
 
 const formatPrice = (value?: number, currency = "EUR") => {
   if (!value) return "Prix sur demande";
@@ -36,6 +38,8 @@ const AdDetail = () => {
   const { data, isLoading, isError } = useGetListingQuery(adId ?? "", {
     skip: !adId,
   });
+
+  const [addItemToCart, { isLoading: isAddingToCart }] = useAddItemToCartMutation();
 
   const listing = data?.listing;
   const images = useMemo(() => {
@@ -82,6 +86,19 @@ const AdDetail = () => {
     }
     return baseSpecs;
   }, [listing]);
+
+  const handleAddToCart = async () => {
+    if (!listing) return;
+    try {
+      await addItemToCart({
+        listing_id: listing.listings_id,
+        quantity: 1
+      }).unwrap();
+      toast.success("Produit ajouté au panier");
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout au panier");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -169,8 +186,8 @@ const AdDetail = () => {
                   <button
                     onClick={() => setIsFavorite(!isFavorite)}
                     className={`p-2 rounded-full transition-all ${isFavorite
-                        ? 'bg-red-500 text-white'
-                        : 'bg-white text-gray-600 hover:bg-red-50'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-white text-gray-600 hover:bg-red-50'
                       }`}
                   >
                     <Heart className="h-5 w-5" />
@@ -193,8 +210,8 @@ const AdDetail = () => {
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
                         className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${currentImageIndex === index
-                            ? 'border-blue-500'
-                            : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-blue-500'
+                          : 'border-gray-200 hover:border-gray-300'
                           }`}
                       >
                         <img
@@ -287,11 +304,15 @@ const AdDetail = () => {
 
               {/* Contact Buttons */}
               <div className="space-y-3">
-                <Button className="w-full btn-primary">
+                <Button className="w-full btn-primary" onClick={handleAddToCart} disabled={isAddingToCart}>
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  {isAddingToCart ? "Ajout..." : "Ajouter au panier"}
+                </Button>
+                <Button className="w-full" variant="outline">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Envoyer un message
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="ghost" className="w-full">
                   <Phone className="h-4 w-4 mr-2" />
                   Afficher le numéro
                 </Button>

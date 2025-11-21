@@ -72,9 +72,185 @@ export const apiSlice = createApi({
       }),
       providesTags: ['Categories'],
     }),
+
+    // Admin Endpoints
+    getAdminStats: builder.query({
+      query: () => ({
+        url: '/api/',
+        method: 'GET',
+      }),
+    }),
+    getAllUsers: builder.query({
+      query: () => ({
+        url: '/api/users',
+        method: 'GET',
+      }),
+    }),
+
+    // Auth Endpoints (Verify Email)
+    verifyEmail: builder.query({
+      query: (token) => ({
+        url: `/api/auth/verify/${token}`,
+        method: 'GET',
+      }),
+    }),
+
+    // Business Endpoints
+    createBusiness: builder.mutation({
+      query: (data) => ({
+        url: '/api/business/create-business',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    updateBusiness: builder.mutation({
+      query: (data) => ({
+        url: '/api/business',
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
+    addProduct: builder.mutation({
+      query: (data) => ({
+        url: '/api/business/add-product',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Listings'],
+    }),
+    updateProduct: builder.mutation({
+      query: ({ productId, ...data }) => ({
+        url: `/api/business/update-product/${productId}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Listings', id: arg.productId }],
+    }),
+    deleteProduct: builder.mutation({
+      query: (productId) => ({
+        url: `/api/business/delete-product/${productId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Listings'],
+    }),
+    getBusinessProfile: builder.query({
+      query: () => ({
+        url: '/api/business/business-profile',
+        method: 'GET',
+      }),
+    }),
+    getBusinessProducts: builder.query({
+      query: () => ({
+        url: '/api/business/business-products-post',
+        method: 'GET',
+      }),
+    }),
+
+    // Cart Endpoints
+    createCart: builder.mutation({
+      query: () => ({
+        url: '/api/cart/create-cart',
+        method: 'POST',
+      }),
+    }),
+    addItemToCart: builder.mutation({
+      query: (data) => ({
+        url: '/api/cart/add-item-to-cart',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    getCart: builder.query({
+      query: (cartId) => ({
+        url: `/api/cart/get-cart/${cartId}`,
+        method: 'GET',
+      }),
+    }),
+    getCartItem: builder.query({
+      query: (cartItemId) => ({
+        url: `/api/cart/get-cart-item/${cartItemId}`,
+        method: 'GET',
+      }),
+    }),
+    removeItemFromCart: builder.mutation({
+      query: (cartItem) => ({
+        url: `/api/cart/remove-item/${cartItem}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    // Category Endpoints (Expanded)
+    createCategory: builder.mutation({
+      query: (data) => ({
+        url: '/api/category/create-category',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+    createSubCategory: builder.mutation({
+      query: (data) => ({
+        url: '/api/category/create-subcategory',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+    getSubCategory: builder.query({
+      query: () => ({
+        url: '/api/category/get-subcategory',
+        method: 'GET',
+      }),
+    }),
+    getSubcategoriesByCategorySlug: builder.query({
+      query: (slug) => ({
+        url: `/api/category/slug/${slug}/subcategories`,
+        method: 'GET',
+      }),
+    }),
+
+    // Order Endpoints
+    createOrder: builder.mutation({
+      query: (data) => ({
+        url: '/api/orders/create-order',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    getOrders: builder.query({
+      query: () => ({
+        url: '/api/orders/get-orders',
+        method: 'GET',
+      }),
+    }),
+    getOrderStats: builder.query({
+      query: () => ({
+        url: '/api/orders/get-orders/stats',
+        method: 'GET',
+      }),
+    }),
+    getOrderById: builder.query({
+      query: (id) => ({
+        url: `/api/orders/get-order/${id}`,
+        method: 'GET',
+      }),
+    }),
+    updateOrder: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/api/orders/update-order/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+    }),
+    deleteOrder: builder.mutation({
+      query: (id) => ({
+        url: `/api/orders/delete-order/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
-
+    
 export const {
   useLoginMutation,
   useRegisterMutation,
@@ -83,4 +259,35 @@ export const {
   useGetListingsQuery,
   useGetListingQuery,
   useGetCategoriesQuery,
+  // Admin
+  useGetAdminStatsQuery,
+  useGetAllUsersQuery,
+  // Auth
+  useVerifyEmailQuery,
+  // Business
+  useCreateBusinessMutation,
+  useUpdateBusinessMutation,
+  useAddProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useGetBusinessProfileQuery,
+  useGetBusinessProductsQuery,
+  // Cart
+  useCreateCartMutation,
+  useAddItemToCartMutation,
+  useGetCartQuery,
+  useGetCartItemQuery,
+  useRemoveItemFromCartMutation,
+  // Category
+  useCreateCategoryMutation,
+  useCreateSubCategoryMutation,
+  useGetSubCategoryQuery,
+  useGetSubcategoriesByCategorySlugQuery,
+  // Order
+  useCreateOrderMutation,
+  useGetOrdersQuery,
+  useGetOrderStatsQuery,
+  useGetOrderByIdQuery,
+  useUpdateOrderMutation,
+  useDeleteOrderMutation,
 } = apiSlice;
