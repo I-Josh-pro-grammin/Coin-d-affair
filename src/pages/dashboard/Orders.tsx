@@ -2,56 +2,18 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Eye, MoreVertical, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { useGetOrdersQuery } from '@/redux/api/apiSlice';
+import { RouteFallback } from '@/components/common/RouteFallback';
+import { format } from 'date-fns';
 
 export default function Orders() {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const { data: ordersData, isLoading } = useGetOrdersQuery({});
 
-    // Mock orders data
-    const orders = [
-        {
-            id: '#1234',
-            customer: 'Jean Dupont',
-            product: 'iPhone 13 Pro',
-            quantity: 1,
-            amount: '850,000 RWF',
-            status: 'pending',
-            date: '2024-01-15',
-            paymentStatus: 'paid'
-        },
-        {
-            id: '#1233',
-            customer: 'Marie Claire',
-            product: 'MacBook Pro 14"',
-            quantity: 1,
-            amount: '1,500,000 RWF',
-            status: 'shipped',
-            date: '2024-01-14',
-            paymentStatus: 'paid'
-        },
-        {
-            id: '#1232',
-            customer: 'Pierre Kalisa',
-            product: 'Samsung Galaxy S21',
-            quantity: 2,
-            amount: '1,300,000 RWF',
-            status: 'delivered',
-            date: '2024-01-13',
-            paymentStatus: 'paid'
-        },
-        {
-            id: '#1231',
-            customer: 'Alice Mukamana',
-            product: 'AirPods Pro',
-            quantity: 1,
-            amount: '250,000 RWF',
-            status: 'cancelled',
-            date: '2024-01-12',
-            paymentStatus: 'refunded'
-        },
-    ];
+    const orders = ordersData || [];
 
-    const statusConfig = {
+    const statusConfig: any = {
         pending: { label: 'En attente', color: 'bg-yellow-100 text-yellow-800', icon: Package },
         processing: { label: 'En préparation', color: 'bg-blue-100 text-blue-800', icon: Package },
         shipped: { label: 'Expédiée', color: 'bg-purple-100 text-purple-800', icon: Truck },
@@ -61,12 +23,22 @@ export default function Orders() {
 
     const statusCounts = {
         all: orders.length,
-        pending: orders.filter(o => o.status === 'pending').length,
-        processing: orders.filter(o => o.status === 'processing').length,
-        shipped: orders.filter(o => o.status === 'shipped').length,
-        delivered: orders.filter(o => o.status === 'delivered').length,
-        cancelled: orders.filter(o => o.status === 'cancelled').length,
+        pending: orders.filter((o: any) => o.status === 'pending').length,
+        processing: orders.filter((o: any) => o.status === 'processing').length,
+        shipped: orders.filter((o: any) => o.status === 'shipped').length,
+        delivered: orders.filter((o: any) => o.status === 'delivered').length,
+        cancelled: orders.filter((o: any) => o.status === 'cancelled').length,
     };
+
+    if (isLoading) return <RouteFallback />;
+
+    const filteredOrders = orders.filter((order: any) => {
+        const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+        const matchesSearch =
+            order.order_id.toString().includes(searchQuery) ||
+            (order.buyer && order.buyer.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchesStatus && matchesSearch;
+    });
 
     return (
         <DashboardLayout>
@@ -93,15 +65,15 @@ export default function Orders() {
                                 key={tab.key}
                                 onClick={() => setStatusFilter(tab.key)}
                                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${statusFilter === tab.key
-                                        ? 'bg-[#000435] text-white'
-                                        : 'text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-[#000435] text-white'
+                                    : 'text-gray-600 hover:bg-gray-100'
                                     }`}
                             >
                                 <Icon size={18} />
                                 {tab.label}
                                 <span className={`px-2 py-0.5 rounded-full text-xs ${statusFilter === tab.key
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-gray-200 text-gray-700'
+                                    ? 'bg-white/20 text-white'
+                                    : 'bg-gray-200 text-gray-700'
                                     }`}>
                                     {statusCounts[tab.key as keyof typeof statusCounts]}
                                 </span>
@@ -154,41 +126,50 @@ export default function Orders() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {orders.map((order) => {
-                                const StatusIcon = statusConfig[order.status as keyof typeof statusConfig].icon;
+                            {filteredOrders.map((order: any) => {
+                                const statusInfo = statusConfig[order.status] || statusConfig.pending;
+                                const StatusIcon = statusInfo.icon;
+                                const firstItem = order.items?.[0];
+                                const otherItemsCount = (order.items?.length || 0) - 1;
+                                const productName = firstItem ? firstItem.listing_title : 'Produit inconnu';
+                                const displayProduct = otherItemsCount > 0 ? `${productName} +${otherItemsCount}` : productName;
+                                const quantity = order.items?.reduce((acc: number, item: any) => acc + item.quantity, 0) || 0;
+
                                 return (
-                                    <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={order.order_id} className="hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-6">
-                                            <span className="font-semibold text-gray-900">{order.id}</span>
+                                            <span className="font-semibold text-gray-900">#{order.order_id}</span>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div>
-                                                <p className="font-medium text-gray-900">{order.customer}</p>
+                                                <p className="font-medium text-gray-900">{order.buyer || 'Client'}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <p className="text-gray-700">{order.product}</p>
+                                            <p className="text-gray-700">{displayProduct}</p>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="text-gray-700">{order.quantity}</span>
+                                            <span className="text-gray-700">{quantity}</span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="font-semibold text-gray-900">{order.amount}</span>
+                                            <span className="font-semibold text-gray-900">{order.total_amount} {order.currency}</span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="text-gray-600 text-sm">{order.date}</span>
+                                            <span className="text-gray-600 text-sm">
+                                                {order.created_at ? format(new Date(order.created_at), 'dd/MM/yyyy') : '-'}
+                                            </span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${statusConfig[order.status as keyof typeof statusConfig].color
+                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${statusInfo.color
                                                 }`}>
                                                 <StatusIcon size={14} />
-                                                {statusConfig[order.status as keyof typeof statusConfig].label}
+                                                {statusInfo.label}
                                             </span>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-2">
                                                 <Link
-                                                    to={`/dashboard/orders/${order.id.replace('#', '')}`}
+                                                    to={`/dashboard/orders/${order.order_id}`}
                                                     className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
                                                 >
                                                     <Eye size={18} />
@@ -208,7 +189,7 @@ export default function Orders() {
                 {/* Pagination */}
                 <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between">
                     <p className="text-sm text-gray-600">
-                        Affichage de 1 à {orders.length} sur {orders.length} commandes
+                        Affichage de 1 à {filteredOrders.length} sur {orders.length} commandes
                     </p>
                     <div className="flex gap-2">
                         <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50" disabled>

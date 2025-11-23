@@ -6,27 +6,54 @@ import { useCart } from '@/contexts/CartContext';
 import { currencyFmt } from '@/lib/utils';
 import { Check, CreditCard, Truck, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCreateOrderMutation } from '@/redux/api/apiSlice';
 
 export default function Checkout() {
     const navigate = useNavigate();
     const { cart, cartTotal, clearCart } = useCart();
     const [step, setStep] = useState(1);
-    const [loading, setLoading] = useState(false);
+    const [createOrder, { isLoading }] = useCreateOrderMutation();
+    const [shippingAddress, setShippingAddress] = useState({
+        firstName: '',
+        lastName: '',
+        address: '',
+        city: '',
+        phone: ''
+    });
 
     const deliveryFee = 10000;
     const total = cartTotal + deliveryFee;
 
+    const handleAddressSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setStep(2);
+    };
+
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
 
-        // Simulate payment processing
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+            const orderData = {
+                items: cart.map(item => ({
+                    listing_id: item.id,
+                    quantity: item.quantity,
+                    price: item.price
+                })),
+                total_amount: total,
+                currency: 'RWF', // Assuming default currency
+                shipping_address: `${shippingAddress.address}, ${shippingAddress.city}`,
+                payment_method: 'mobile_money', // Default for now
+                buyer_phone: shippingAddress.phone
+            };
 
-        setLoading(false);
-        clearCart();
-        toast.success('Commande confirmée !');
-        navigate('/dashboard/orders');
+            await createOrder(orderData).unwrap();
+
+            clearCart();
+            toast.success('Commande confirmée !');
+            navigate('/dashboard/orders'); // Redirect to orders page
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Erreur lors de la création de la commande');
+        }
     };
 
     if (cart.length === 0) {
@@ -63,27 +90,57 @@ export default function Checkout() {
                             </div>
 
                             {step === 1 && (
-                                <form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
+                                <form onSubmit={handleAddressSubmit}>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
-                                            <input required type="text" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                            <input
+                                                required
+                                                type="text"
+                                                value={shippingAddress.firstName}
+                                                onChange={(e) => setShippingAddress({ ...shippingAddress, firstName: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-                                            <input required type="text" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                            <input
+                                                required
+                                                type="text"
+                                                value={shippingAddress.lastName}
+                                                onChange={(e) => setShippingAddress({ ...shippingAddress, lastName: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
                                         </div>
                                         <div className="md:col-span-2">
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-                                            <input required type="text" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                            <input
+                                                required
+                                                type="text"
+                                                value={shippingAddress.address}
+                                                onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Ville</label>
-                                            <input required type="text" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                            <input
+                                                required
+                                                type="text"
+                                                value={shippingAddress.city}
+                                                onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
-                                            <input required type="tel" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                            <input
+                                                required
+                                                type="tel"
+                                                value={shippingAddress.phone}
+                                                onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
                                         </div>
                                     </div>
                                     <button type="submit" className="w-full bg-[#000435] text-white py-3 rounded-xl font-bold hover:bg-[#000435]/90 transition-all">
@@ -126,10 +183,10 @@ export default function Checkout() {
 
                                     <button
                                         type="submit"
-                                        disabled={loading}
+                                        disabled={isLoading}
                                         className="w-full bg-[#000435] text-white py-4 rounded-xl font-bold hover:bg-[#000435]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
-                                        {loading ? 'Traitement...' : `Payer ${currencyFmt(total)}`}
+                                        {isLoading ? 'Traitement...' : `Payer ${currencyFmt(total)}`}
                                     </button>
                                 </form>
                             )}

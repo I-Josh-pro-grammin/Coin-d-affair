@@ -2,7 +2,25 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { currencyFmt } from '@/lib/utils';
-import { Product } from '@/data/mockProducts';
+
+export interface Product {
+    listings_id?: string;
+    id?: string;
+    title?: string;
+    name?: string;
+    price: number;
+    image_url?: string;
+    image?: string;
+    cover_image?: string;
+    category?: string;
+    category_name?: string;
+    subcategory?: string;
+    badge?: string;
+    location?: string;
+    description?: string;
+    rating?: number;
+    reviews_count?: number;
+}
 
 interface ProductCardProps {
     product: Product;
@@ -10,29 +28,38 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
-    const { addItem } = useCart();
+    const { addToCart } = useCart();
+
+    // Normalize data
+    const id = product.listings_id || product.id;
+    const title = product.title || product.name;
+    const image = product.image_url || product.cover_image || product.image || '/placeholder.svg';
+    const category = product.category_name || product.category;
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        addItem({
-            productId: product.id,
-            name: product.name,
-            price: product.price,
-            qty: 1,
-            image: product.image
-        });
+        if (id && title) {
+            addToCart({
+                id: id,
+                name: title,
+                price: product.price,
+                quantity: 1,
+                image: image,
+                seller: 'Coin d\'affaire' // Default or fetch from product if available
+            });
+        }
     };
 
     const handleBuyNow = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        window.location.href = `/acheter/${product.id}`;
+        window.location.href = `/acheter/${id}`;
     };
 
     return (
         <Link
-            to={`/produit/${product.id}`}
+            to={`/produit/${id}`}
             onClick={onClick}
             className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#000435]"
         >
@@ -40,8 +67,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
                 {/* Product Image */}
                 <img
-                    src={product.image}
-                    alt={product.name}
+                    src={image}
+                    alt={title}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                         e.currentTarget.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500';
@@ -63,7 +90,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
 
                 {/* Category Badge - Top Left */}
                 <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700 shadow-sm">
-                    {product.subcategory || product.category}
+                    {product.subcategory || category}
                 </span>
 
                 {/* Wishlist Heart Icon */}
@@ -84,11 +111,13 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             <div className="p-5">
                 {/* Product Title */}
                 <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
-                    {product.name}
+                    {title}
                 </h3>
 
                 {/* Location */}
-                <p className="text-sm text-gray-500 mb-3">{product.location}</p>
+                {product.location && (
+                    <p className="text-sm text-gray-500 mb-3">{product.location}</p>
+                )}
 
                 {/* Price */}
                 <div className="mb-4">

@@ -4,8 +4,9 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/common/ProductCard';
 import { useCart } from '@/contexts/CartContext';
-import { getProductById, getSimilarProducts } from '@/data/mockProducts';
+import { useGetListingQuery, useGetListingsQuery } from '@/redux/api/apiSlice';
 import { currencyFmt } from '@/lib/utils';
+import { RouteFallback } from '@/components/common/RouteFallback';
 import {
     ShoppingCart,
     Heart,
@@ -17,7 +18,8 @@ import {
     Shield,
     Truck,
     RotateCcw,
-    Phone
+    Phone,
+    Package
 } from 'lucide-react';
 
 export default function ProductDetail() {
@@ -27,10 +29,21 @@ export default function ProductDetail() {
     const [selectedImage, setSelectedImage] = useState(0);
     const [activeTab, setActiveTab] = useState<'details' | 'specs' | 'reviews'>('details');
 
-    const product = id ? getProductById(id) : undefined;
-    const similarProducts = id ? getSimilarProducts(parseInt(id)) : [];
+    const { data, isLoading } = useGetListingQuery(id || '', { skip: !id });
+    const productData = data?.listing;
 
-    if (!product) {
+    const { data: similarData } = useGetListingsQuery(
+        { categoryId: productData?.category_id, limit: 5 },
+        { skip: !productData?.category_id }
+    );
+
+    const similarProducts = similarData?.listings?.filter((p: any) => p.listings_id !== id) || [];
+
+    if (isLoading) {
+        return <RouteFallback />;
+    }
+
+    if (!productData) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
@@ -43,8 +56,30 @@ export default function ProductDetail() {
         );
     }
 
+    // Map API data to component structure
+    const product = {
+        id: productData.listings_id,
+        name: productData.title,
+        price: Number(productData.price),
+        currency: productData.currency,
+        image: productData.image_url, // Assuming image_url exists
+        category: productData.category_name,
+        condition: productData.condition,
+        location: productData.location || 'Non spécifié',
+        seller: {
+            name: productData.business_name || 'Vendeur',
+            rating: 4.5, // Mock rating
+            totalSales: 0, // Mock sales count
+            phone: productData.phone // Assuming phone exists or fetch from business
+        },
+        description: productData.description,
+        stock: productData.stock,
+        reviews: 0, // Mock reviews count
+        badge: '' // Mock badge
+    };
+
     // Mock images (in real app, product would have multiple images)
-    const images = [product.image, product.image, product.image];
+    const images = product.image ? [product.image] : [];
 
     const handleAddToCart = () => {
         addToCart({
@@ -52,17 +87,13 @@ export default function ProductDetail() {
             name: product.name,
             price: product.price,
             quantity: 1,
-            image: product.image,
+            image: product.image || '',
             seller: product.seller.name
         });
     };
 
     const handleBuyNow = () => {
         navigate(`/acheter/${product.id}`);
-    };
-
-    const handleContactSeller = () => {
-        navigate(`/messages?product=${product.id}&seller=${product.seller.id}`);
     };
 
     return (
@@ -84,30 +115,38 @@ export default function ProductDetail() {
                     <div>
                         {/* Main Image */}
                         <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-gray-100 mb-4">
-                            <img
-                                src={images[selectedImage]}
-                                alt={product.name}
-                                className="absolute inset-0 w-full h-full object-cover"
-                            />
+                            {images.length > 0 ? (
+                                <img
+                                    src={images[selectedImage]}
+                                    alt={product.name}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                    <Package size={64} />
+                                </div>
+                            )}
                         </div>
 
                         {/* Thumbnails */}
-                        <div className="grid grid-cols-3 gap-4">
-                            {images.map((img, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => setSelectedImage(idx)}
-                                    className={`relative aspect-square overflow-hidden rounded-xl bg-gray-100 border-2 transition-all ${selectedImage === idx ? 'border-[#000435]' : 'border-transparent hover:border-gray-300'
-                                        }`}
-                                >
-                                    <img
-                                        src={img}
-                                        alt={`${product.name} ${idx + 1}`}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                </button>
-                            ))}
-                        </div>
+                        {images.length > 1 && (
+                            <div className="grid grid-cols-3 gap-4">
+                                {images.map((img, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setSelectedImage(idx)}
+                                        className={`relative aspect-square overflow-hidden rounded-xl bg-gray-100 border-2 transition-all ${selectedImage === idx ? 'border-[#000435]' : 'border-transparent hover:border-gray-300'
+                                            }`}
+                                    >
+                                        <img
+                                            src={img}
+                                            alt={`${product.name} ${idx + 1}`}
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Product Info */}
@@ -115,7 +154,7 @@ export default function ProductDetail() {
                         {/* Title & Price */}
                         <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
                         <div className="flex items-baseline gap-4 mb-6">
-                            <p className="text-4xl font-bold text-[#000435]">{currencyFmt(product.price)}</p>
+                            <p className="text-4xl font-bold text-[#000435]">{product.price} {product.currency}</p>
                             {product.badge === 'Promo' && (
                                 <span className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium">
                                     En promotion
@@ -157,14 +196,14 @@ export default function ProductDetail() {
                                 </p>
                                 <div className="flex flex-col gap-3">
                                     <a
-                                        href={`tel:${(product as any).sellerPhone || '+250788123456'}`}
+                                        href={`tel:${product.seller.phone || '+250788123456'}`}
                                         className="flex items-center justify-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all"
                                     >
                                         <Phone size={20} />
-                                        {(product as any).sellerPhone || '+250 788 123 456'}
+                                        {product.seller.phone || '+250 788 123 456'}
                                     </a>
                                     <a
-                                        href={`https://wa.me/${((product as any).sellerPhone || '+250788123456').replace(/\D/g, '')}`}
+                                        href={`https://wa.me/${(product.seller.phone || '+250788123456').replace(/\D/g, '')}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-3 rounded-full font-medium hover:bg-green-600 transition-all"

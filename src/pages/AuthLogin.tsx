@@ -16,8 +16,12 @@ const AuthLogin = () => {
     setSubmitting(true);
     setError(null);
     try {
-      await login({ email, password });
-      navigate("/");
+      const user = await login({ email, password });
+      if (user?.accountType === 'business') {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
       toast.success("Login successfull");
     } catch (err: any) {
       const message =

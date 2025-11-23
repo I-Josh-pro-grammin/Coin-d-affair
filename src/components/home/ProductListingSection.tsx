@@ -103,6 +103,12 @@ export function ProductListingSection() {
     setIsAllProductsOpen(!isAllProductsOpen);
   };
 
+  const { data: trendingData } = useGetListingsQuery({ sortBy: 'popularity', order: 'desc', limit: 6 });
+  const { data: latestData } = useGetListingsQuery({ sortBy: 'date', order: 'desc', limit: 6 });
+
+  const trendingProducts = trendingData?.listings || [];
+  const latestProducts = latestData?.listings || [];
+
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -181,8 +187,8 @@ export function ProductListingSection() {
 
                   {trendingProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                      {trendingProducts.slice(0, 6).map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                      {trendingProducts.map((product: any) => (
+                        <ProductCard key={product.listings_id} product={product} />
                       ))}
                     </div>
                   ) : (
@@ -207,34 +213,8 @@ export function ProductListingSection() {
 
                   {latestProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                      {latestProducts.slice(0, 6).map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-2xl">
-                      <p className="text-gray-500 text-lg">Aucun produit pour le moment</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Recherches récentes Section */}
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-3xl font-bold text-gray-900">Recherches récentes</h2>
-                    <Link
-                      to="/boutique?section=recherches"
-                      className="flex items-center gap-2 text-[#000435] font-medium hover:gap-3 transition-all"
-                    >
-                      Voir tout
-                      <ChevronRight size={20} />
-                    </Link>
-                  </div>
-
-                  {recentSearchProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                      {recentSearchProducts.slice(0, 6).map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                      {latestProducts.map((product: any) => (
+                        <ProductCard key={product.listings_id} product={product} />
                       ))}
                     </div>
                   ) : (
@@ -263,61 +243,9 @@ export function ProductListingSection() {
               )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {listings.map((listing: any) => {
-                const priceLabel = formatPrice(listing.price, listing.currency || "EUR");
-                const ratingValue = listing.rating || 4.5;
-                return (
-                  <div key={listing.listings_id || listing.listing_id} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#000435]">
-                    <div className="relative aspect-square overflow-hidden rounded-t-2xl">
-                      <img
-                        src={listing.cover_image || "/placeholder.svg"}
-                        alt={listing.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700 shadow-sm">
-                        {listing.category_name || "Annonces"}
-                      </span>
-                      <button className="absolute top-3 left-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors">
-                        <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
-                      </button>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
-                        {listing.title}
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-2 line-clamp-2">
-                        {listing.description}
-                      </p>
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="flex items-center">
-                          {renderStars(Number(ratingValue))}
-                        </div>
-                        <span className="text-sm font-medium text-gray-700">
-                          {ratingValue.toFixed(1)}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          ({listing.reviews_count || "Nouveau"})
-                        </span>
-                      </div>
-                      <div className="mb-4">
-                        <p className="text-2xl font-bold text-[#000435]">{priceLabel}</p>
-                        {listing.location && (
-                          <p className="text-sm text-gray-500">{listing.location}</p>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <Button className="w-full py-2.5 px-4 border-2 border-[#000435] text-[#000435] font-medium rounded-full hover:bg-[#000435]/5 transition-all duration-300 bg-transparent">
-                          Ajouter au panier
-                        </Button>
-                        <Button className="w-full py-2.5 px-4 bg-[#000435] text-white font-medium rounded-full hover:bg-[#000435]/90 transition-all duration-300">
-                          Acheter maintenant
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {listings.map((listing: any) => (
+                <ProductCard key={listing.listings_id || listing.listing_id} product={listing} />
+              ))}
 
               {!listings.length && !listingsLoading && !isError && (
                 <div className="col-span-full text-center py-12">

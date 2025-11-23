@@ -216,12 +216,14 @@ export const apiSlice = createApi({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Orders'],
     }),
     getOrders: builder.query({
       query: () => ({
         url: '/api/orders/get-orders',
         method: 'GET',
       }),
+      providesTags: ['Orders'],
     }),
     getOrderStats: builder.query({
       query: () => ({
@@ -234,23 +236,26 @@ export const apiSlice = createApi({
         url: `/api/orders/get-order/${id}`,
         method: 'GET',
       }),
+      providesTags: (result, error, id) => [{ type: 'Orders', id }],
     }),
     updateOrder: builder.mutation({
-      query: ({ id, ...data }) => ({
+      query: ({ id, status }) => ({
         url: `/api/orders/update-order/${id}`,
         method: 'PUT',
-        body: data,
+        body: { status },
       }),
+      invalidatesTags: ['Orders'],
     }),
     deleteOrder: builder.mutation({
       query: (id) => ({
         url: `/api/orders/delete-order/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Orders'],
     }),
   }),
 });
-    
+
 export const {
   useLoginMutation,
   useRegisterMutation,

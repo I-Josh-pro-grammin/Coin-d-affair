@@ -4,56 +4,78 @@ import {
     Package,
     ShoppingCart,
     Users,
-    TrendingUp,
-    Eye,
-    Plus,
     ArrowUp,
-    ArrowDown
+    ArrowDown,
+    Plus,
+    Eye
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {
+    useGetBusinessProfileQuery,
+    useGetBusinessProductsQuery,
+    useGetOrdersQuery
+} from '@/redux/api/apiSlice';
+import { RouteFallback } from '@/components/common/RouteFallback';
 
 export default function DashboardHome() {
-    // Mock data - replace with real data from API
+    const { data: businessProfile, isLoading: profileLoading } = useGetBusinessProfileQuery({});
+    const { data: products, isLoading: productsLoading } = useGetBusinessProductsQuery({});
+    const { data: orders, isLoading: ordersLoading } = useGetOrdersQuery({});
+
+    if (profileLoading || productsLoading || ordersLoading) {
+        return <RouteFallback />;
+    }
+
+    // Calculate stats
+    const totalRevenue = businessProfile?.total_sales || 0;
+    const activeProducts = products?.length || 0;
+    const totalOrders = businessProfile?.total_orders || 0;
+
+    // Calculate unique customers from orders
+    const uniqueCustomers = new Set(orders?.map((order: any) => order.user_id)).size;
+
     const stats = [
         {
             title: 'Revenus totaux',
-            value: '45,890 RWF',
-            change: '+12.5%',
+            value: `${totalRevenue} RWF`,
+            change: '+0%', // Placeholder as we don't have historical data yet
             trend: 'up',
             icon: DollarSign,
             color: 'bg-green-100 text-green-600'
         },
         {
             title: 'Produits actifs',
-            value: '48',
-            change: '+3',
+            value: activeProducts.toString(),
+            change: '+0',
             trend: 'up',
             icon: Package,
             color: 'bg-blue-100 text-blue-600'
         },
         {
             title: 'Commandes',
-            value: '127',
-            change: '+8.2%',
+            value: totalOrders.toString(),
+            change: '+0%',
             trend: 'up',
             icon: ShoppingCart,
             color: 'bg-purple-100 text-purple-600'
         },
         {
             title: 'Clients',
-            value: '89',
-            change: '-2.1%',
-            trend: 'down',
+            value: uniqueCustomers.toString(),
+            change: '+0%',
+            trend: 'up',
             icon: Users,
             color: 'bg-orange-100 text-orange-600'
         }
     ];
 
-    const recentOrders = [
-        { id: '#1234', customer: 'Jean Dupont', product: 'iPhone 13', amount: '5,000 RWF', status: 'En attente' },
-        { id: '#1233', customer: 'Marie Claire', product: 'Laptop HP', amount: '12,500 RWF', status: 'Expédiée' },
-        { id: '#1232', customer: 'Pierre Kalisa', product: 'Headphones', amount: '800 RWF', status: 'Livrée' },
-    ];
+    const recentOrders = orders?.slice(0, 5).map((order: any) => ({
+        id: order.order_id,
+        customer: order.buyer || 'Client',
+        product: order.items?.[0]?.listing_title || 'Produit', // Assuming items are joined or we need to fetch them
+        amount: `${order.total_amount} ${order.currency}`,
+        status: order.status
+    })) || [];
 
     return (
         <DashboardLayout>
@@ -137,16 +159,16 @@ export default function DashboardHome() {
                             </tr>
                         </thead>
                         <tbody>
-                            {recentOrders.map((order) => (
+                            {recentOrders.map((order: any) => (
                                 <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{order.id}</td>
+                                    <td className="py-4 px-4 text-sm font-medium text-gray-900">#{order.id}</td>
                                     <td className="py-4 px-4 text-sm text-gray-700">{order.customer}</td>
                                     <td className="py-4 px-4 text-sm text-gray-700">{order.product}</td>
                                     <td className="py-4 px-4 text-sm font-medium text-gray-900">{order.amount}</td>
                                     <td className="py-4 px-4">
-                                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${order.status === 'En attente' ? 'bg-yellow-100 text-yellow-800' :
-                                                order.status === 'Expédiée' ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-green-100 text-green-800'
+                                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                                                'bg-green-100 text-green-800'
                                             }`}>
                                             {order.status}
                                         </span>
