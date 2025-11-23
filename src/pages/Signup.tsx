@@ -4,6 +4,8 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,12 +17,32 @@ const Signup = () => {
     phone: "",
     password: "",
     confirmPassword: "",
-    acceptTerms: false
+    accountType: "customer",
+    acceptTerms: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { signup } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Les mots de passe ne correspondent pas");
+      return;
+    }
+
+    try {
+      await signup({
+        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        accountType: formData.accountType === "business" ? "business" : "customer",
+      });
+      toast.success("Compte créé avec succès. Vérifiez votre email pour confirmer votre compte.");
+    } catch (error: any) {
+      const message = error?.data?.message || "Impossible de créer le compte";
+      toast.error(message);
+    }
     console.log("Signup attempt:", formData);
   };
 
@@ -32,8 +54,8 @@ const Signup = () => {
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
         {/* Back to home link */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -190,8 +212,8 @@ const Signup = () => {
               </label>
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full btn-primary"
               disabled={!formData.acceptTerms}
             >
@@ -203,8 +225,8 @@ const Signup = () => {
           <div className="text-center mt-6">
             <p className="text-gray-600">
               Déjà un compte ?{" "}
-              <Link 
-                to="/connexion" 
+              <Link
+                to="/connexion"
                 className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
               >
                 Se connecter

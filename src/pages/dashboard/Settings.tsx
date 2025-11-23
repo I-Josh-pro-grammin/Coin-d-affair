@@ -45,8 +45,8 @@ export default function Settings() {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left ${activeTab === tab.id
-                                            ? 'bg-[#000435] text-white'
-                                            : 'text-gray-700 hover:bg-gray-100'
+                                        ? 'bg-[#000435] text-white'
+                                        : 'text-gray-700 hover:bg-gray-100'
                                         }`}
                                 >
                                     <Icon size={20} />
@@ -122,13 +122,18 @@ export default function Settings() {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Téléphone
+                                            Numéro de téléphone (contact clients) *
                                         </label>
                                         <input
                                             type="tel"
+                                            required
+                                            placeholder="+250 XXX XXX XXX"
                                             defaultValue="+250 788 123 456"
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Ce numéro sera visible par les acheteurs pour vous contacter
+                                        </p>
                                     </div>
                                 </div>
 

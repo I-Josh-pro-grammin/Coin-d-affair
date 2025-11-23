@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,39 +11,51 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
-    
+
     if (!email) {
       newErrors.email = "L'adresse email est requise";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "L'adresse email n'est pas valide";
     }
-    
+
     if (!password) {
       newErrors.password = "Le mot de passe est requis";
     } else if (password.length < 8) {
       newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Login attempt:", { email, password, rememberMe });
+    // setTimeout(() => {
+    //   console.log("Login attempt:", { email, password, rememberMe });
+    //   setLoading(false);
+    // }, 1000);
+
+    try {
+      await login({ email, password });
+      toast.success("Login réussi");
+      navigate("/dashboard");
+    } catch (error: any) {
+      const message = error?.data?.message || "Connexion impossible";
+      toast.error(message);
+    } finally {
       setLoading(false);
-      // Handle login logic here
-    }, 1000);
+    }
   };
 
   return (
@@ -71,11 +85,10 @@ const Login = () => {
                   if (errors.email) setErrors({ ...errors, email: undefined });
                 }}
                 placeholder="votre@email.com"
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent transition-all ${
-                  errors.email
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent transition-all ${errors.email
                     ? "border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:ring-[#000435]"
-                }`}
+                  }`}
                 required
               />
               {errors.email && (
@@ -106,11 +119,10 @@ const Login = () => {
                     if (errors.password) setErrors({ ...errors, password: undefined });
                   }}
                   placeholder="••••••••"
-                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:border-transparent transition-all ${
-                    errors.password
+                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:border-transparent transition-all ${errors.password
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:ring-[#000435]"
-                  }`}
+                    }`}
                   required
                 />
                 <button

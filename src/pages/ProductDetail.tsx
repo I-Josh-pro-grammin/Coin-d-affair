@@ -16,13 +16,14 @@ import {
     ChevronRight,
     Shield,
     Truck,
-    RotateCcw
+    RotateCcw,
+    Phone
 } from 'lucide-react';
 
 export default function ProductDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { addItem } = useCart();
+    const { addToCart } = useCart();
     const [selectedImage, setSelectedImage] = useState(0);
     const [activeTab, setActiveTab] = useState<'details' | 'specs' | 'reviews'>('details');
 
@@ -46,12 +47,13 @@ export default function ProductDetail() {
     const images = [product.image, product.image, product.image];
 
     const handleAddToCart = () => {
-        addItem({
-            productId: product.id,
+        addToCart({
+            id: product.id.toString(),
             name: product.name,
             price: product.price,
-            qty: 1,
-            image: product.image
+            quantity: 1,
+            image: product.image,
+            seller: product.seller.name
         });
     };
 
@@ -146,13 +148,32 @@ export default function ProductDetail() {
                                     <span className="text-sm text-gray-600">({product.seller.totalSales} ventes)</span>
                                 </div>
                             </div>
-                            <button
-                                onClick={handleContactSeller}
-                                className="w-full flex items-center justify-center gap-2 px-4 py-2 border-2 border-[#000435] text-[#000435] rounded-full hover:bg-[#000435] hover:text-white transition-all font-medium"
-                            >
-                                <MessageCircle size={18} />
-                                Contacter le vendeur
-                            </button>
+
+                            {/* Contact Section */}
+                            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+                                <h3 className="font-semibold text-gray-900 mb-2">Contacter le vendeur</h3>
+                                <p className="text-gray-600 text-sm mb-4">
+                                    Appelez ou envoyez un message WhatsApp au vendeur
+                                </p>
+                                <div className="flex flex-col gap-3">
+                                    <a
+                                        href={`tel:${(product as any).sellerPhone || '+250788123456'}`}
+                                        className="flex items-center justify-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all"
+                                    >
+                                        <Phone size={20} />
+                                        {(product as any).sellerPhone || '+250 788 123 456'}
+                                    </a>
+                                    <a
+                                        href={`https://wa.me/${((product as any).sellerPhone || '+250788123456').replace(/\D/g, '')}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-3 rounded-full font-medium hover:bg-green-600 transition-all"
+                                    >
+                                        <MessageCircle size={20} />
+                                        WhatsApp
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Action Buttons */}

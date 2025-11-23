@@ -1,0 +1,136 @@
+import { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
+import { Search as SearchIcon, Filter, SlidersHorizontal } from 'lucide-react';
+import { currencyFmt } from '@/lib/utils';
+
+// Mock data for search results
+const MOCK_PRODUCTS = [
+    { id: 1, name: 'iPhone 13 Pro', price: 850000, image: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&q=80&w=400', category: 'Électronique' },
+    { id: 2, name: 'MacBook Air M1', price: 1200000, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca4?auto=format&fit=crop&q=80&w=400', category: 'Électronique' },
+    { id: 3, name: 'Nike Air Max', price: 120000, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=400', category: 'Mode' },
+    { id: 4, name: 'Canapé Moderne', price: 450000, image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400', category: 'Maison' },
+    { id: 5, name: 'Samsung S21', price: 750000, image: 'https://images.unsplash.com/photo-1610945265078-38584e10a487?auto=format&fit=crop&q=80&w=400', category: 'Électronique' },
+];
+
+export default function Search() {
+    const [searchParams] = useSearchParams();
+    const query = searchParams.get('q') || '';
+    const [results, setResults] = useState(MOCK_PRODUCTS);
+    const [priceRange, setPriceRange] = useState([0, 2000000]);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+
+    useEffect(() => {
+        // Filter results based on query
+        const filtered = MOCK_PRODUCTS.filter(p =>
+            p.name.toLowerCase().includes(query.toLowerCase()) &&
+            (selectedCategory === 'All' || p.category === selectedCategory) &&
+            p.price >= priceRange[0] && p.price <= priceRange[1]
+        );
+        setResults(filtered);
+    }, [query, selectedCategory, priceRange]);
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            <Navbar />
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="flex flex-col md:flex-row gap-8">
+                    {/* Filters Sidebar */}
+                    <div className="w-full md:w-64 flex-shrink-0">
+                        <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
+                            <div className="flex items-center gap-2 mb-6">
+                                <Filter size={20} className="text-[#000435]" />
+                                <h2 className="font-bold text-gray-900">Filtres</h2>
+                            </div>
+
+                            {/* Categories */}
+                            <div className="mb-8">
+                                <h3 className="font-medium text-gray-900 mb-3">Catégories</h3>
+                                <div className="space-y-2">
+                                    {['All', 'Électronique', 'Mode', 'Maison', 'Beauté'].map(cat => (
+                                        <label key={cat} className="flex items-center gap-2 cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                name="category"
+                                                checked={selectedCategory === cat}
+                                                onChange={() => setSelectedCategory(cat)}
+                                                className="text-[#000435] focus:ring-[#000435]"
+                                            />
+                                            <span className="text-sm text-gray-600">{cat === 'All' ? 'Toutes' : cat}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Price Range */}
+                            <div>
+                                <h3 className="font-medium text-gray-900 mb-3">Prix</h3>
+                                <div className="space-y-4">
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="2000000"
+                                        step="10000"
+                                        value={priceRange[1]}
+                                        onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                                        className="w-full accent-[#000435]"
+                                    />
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                        <span>{currencyFmt(priceRange[0])}</span>
+                                        <span>{currencyFmt(priceRange[1])}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Results */}
+                    <div className="flex-1">
+                        <div className="flex items-center justify-between mb-6">
+                            <h1 className="text-xl font-bold text-gray-900">
+                                {results.length} résultat{results.length > 1 ? 's' : ''} pour "{query}"
+                            </h1>
+                            <button className="flex items-center gap-2 text-gray-600 hover:text-[#000435] md:hidden">
+                                <SlidersHorizontal size={20} />
+                                Filtres
+                            </button>
+                        </div>
+
+                        {results.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {results.map((product) => (
+                                    <Link key={product.id} to={`/produit/${product.id}`} className="group">
+                                        <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all">
+                                            <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                                                <img
+                                                    src={product.image}
+                                                    alt={product.name}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                            </div>
+                                            <div className="p-4">
+                                                <p className="text-xs text-gray-500 mb-1">{product.category}</p>
+                                                <h3 className="font-semibold text-gray-900 mb-2 truncate">{product.name}</h3>
+                                                <p className="text-lg font-bold text-[#000435]">{currencyFmt(product.price)}</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
+                                <SearchIcon size={48} className="mx-auto text-gray-300 mb-4" />
+                                <h2 className="text-xl font-bold text-gray-900 mb-2">Aucun résultat trouvé</h2>
+                                <p className="text-gray-600">Essayez de modifier vos termes de recherche ou vos filtres</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </main>
+
+            <Footer />
+        </div>
+    );
+}

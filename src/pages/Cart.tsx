@@ -6,13 +6,12 @@ import { currencyFmt } from '@/lib/utils';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function Cart() {
-    const { items, removeItem, updateQty, clearCart } = useCart();
+    const { cart, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
 
-    const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
-    const deliveryFee = items.length > 0 ? 10000 : 0;
-    const total = subtotal + deliveryFee;
+    const deliveryFee = cart.length > 0 ? 10000 : 0;
+    const total = cartTotal + deliveryFee;
 
-    if (items.length === 0) {
+    if (cart.length === 0) {
         return (
             <div className="min-h-screen bg-gray-50">
                 <Navbar />
@@ -40,17 +39,17 @@ export default function Cart() {
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-8">Mon panier ({items.length})</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-8">Mon panier ({cart.length})</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Cart Items */}
                     <div className="lg:col-span-2 space-y-4">
-                        {items.map((item) => (
-                            <div key={item.productId} className="bg-white rounded-2xl shadow-sm p-6">
+                        {cart.map((item) => (
+                            <div key={item.id} className="bg-white rounded-2xl shadow-sm p-6">
                                 <div className="flex gap-4">
                                     {/* Product Image */}
                                     <Link
-                                        to={`/produit/${item.productId}`}
+                                        to={`/produit/${item.id}`}
                                         className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0"
                                     >
                                         <img
@@ -63,11 +62,12 @@ export default function Cart() {
                                     {/* Product Info */}
                                     <div className="flex-1">
                                         <Link
-                                            to={`/produit/${item.productId}`}
+                                            to={`/produit/${item.id}`}
                                             className="font-semibold text-gray-900 hover:text-[#000435] mb-2 block"
                                         >
                                             {item.name}
                                         </Link>
+                                        <p className="text-sm text-gray-500 mb-2">Vendeur: {item.seller}</p>
                                         <p className="text-lg font-bold text-[#000435] mb-4">
                                             {currencyFmt(item.price)}
                                         </p>
@@ -76,17 +76,17 @@ export default function Cart() {
                                             {/* Quantity Controls */}
                                             <div className="flex items-center gap-3">
                                                 <button
-                                                    onClick={() => updateQty(item.productId, item.qty - 1)}
+                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                     className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-[#000435] transition-colors"
                                                     aria-label="Diminuer la quantité"
                                                 >
                                                     <Minus size={16} />
                                                 </button>
                                                 <span className="font-semibold text-gray-900 w-8 text-center">
-                                                    {item.qty}
+                                                    {item.quantity}
                                                 </span>
                                                 <button
-                                                    onClick={() => updateQty(item.productId, item.qty + 1)}
+                                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                     className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-[#000435] transition-colors"
                                                     aria-label="Augmenter la quantité"
                                                 >
@@ -96,7 +96,7 @@ export default function Cart() {
 
                                             {/* Remove Button */}
                                             <button
-                                                onClick={() => removeItem(item.productId)}
+                                                onClick={() => removeFromCart(item.id)}
                                                 className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium transition-colors"
                                                 aria-label="Retirer du panier"
                                             >
@@ -109,7 +109,7 @@ export default function Cart() {
                                     {/* Item Total */}
                                     <div className="text-right">
                                         <p className="text-xl font-bold text-gray-900">
-                                            {currencyFmt(item.price * item.qty)}
+                                            {currencyFmt(item.price * item.quantity)}
                                         </p>
                                     </div>
                                 </div>
@@ -132,8 +132,8 @@ export default function Cart() {
 
                             <div className="space-y-4 mb-6">
                                 <div className="flex justify-between text-gray-700">
-                                    <span>Sous-total ({items.length} article{items.length > 1 ? 's' : ''})</span>
-                                    <span className="font-medium">{currencyFmt(subtotal)}</span>
+                                    <span>Sous-total ({cart.length} article{cart.length > 1 ? 's' : ''})</span>
+                                    <span className="font-medium">{currencyFmt(cartTotal)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-700">
                                     <span>Livraison estimée</span>
@@ -149,7 +149,7 @@ export default function Cart() {
 
                             {/* Checkout Button */}
                             <Link
-                                to={items.length === 1 ? `/acheter/${items[0].productId}` : '/checkout'}
+                                to="/checkout"
                                 className="block w-full py-4 px-6 bg-[#000435] text-white font-bold rounded-full hover:bg-[#000435]/90 transition-all text-center mb-3"
                             >
                                 Passer la commande

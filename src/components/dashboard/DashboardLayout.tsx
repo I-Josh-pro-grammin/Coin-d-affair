@@ -29,7 +29,6 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         { icon: LayoutDashboard, label: 'Tableau de Bord', path: '/dashboard' },
         { icon: Package, label: 'Produits', path: '/dashboard/products' },
         { icon: ShoppingCart, label: 'Commandes', path: '/dashboard/orders' },
-        { icon: MessageSquare, label: 'Messages', path: '/dashboard/messages' },
         { icon: Settings, label: 'Paramètres', path: '/dashboard/settings' },
     ];
 
@@ -127,8 +126,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                 to={item.path}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${active
-                                        ? 'bg-[#000435] text-white shadow-md'
-                                        : 'text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-[#000435] text-white shadow-md'
+                                    : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
                                 <Icon size={20} />

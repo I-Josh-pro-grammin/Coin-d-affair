@@ -1,47 +1,33 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { CategoryNav } from "@/components/layout/CategoryNav";
 import { Footer } from "@/components/layout/Footer";
-import { Plus, Eye, MessageCircle, Heart, TrendingUp, Calendar, MapPin, Tag } from "lucide-react";
+import { Plus, Eye, MessageCircle, Heart, TrendingUp, MapPin, Tag, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useGetCurrentUserQuery, useGetListingsQuery, useGetOrderStatsQuery } from "@/redux/api/apiSlice";
 
 const Dashboard = () => {
-  // Mock user data
+  const { data: userData } = useGetCurrentUserQuery({});
+  const { data: listingsData, isLoading: isLoadingListings } = useGetListingsQuery({});
+  const { data: orderStats } = useGetOrderStatsQuery({});
+
+  const user = userData?.user;
+
+  // Derived stats
   const userStats = {
-    activeAds: 5,
-    totalViews: 1247,
-    messages: 12,
-    favorites: 8
+    activeAds: listingsData?.listings?.filter((l: any) => l.seller_id === user?.id).length || 0,
+    totalViews: listingsData?.listings?.filter((l: any) => l.seller_id === user?.id).reduce((acc: number, curr: any) => acc + (curr.views || 0), 0) || 0,
+    messages: 0, // Placeholder as message stats might need a specific endpoint
+    favorites: 0 // Placeholder
   };
 
-  const recentAds = [
-    {
-      id: 1,
-      title: "iPhone 14 Pro Max 256Go",
-      price: "899€",
-      views: 156,
-      messages: 8,
-      status: "Actif",
-      publishedDate: "Il y a 3 jours",
-      image: "/api/placeholder/80/80"
-    },
-    {
-      id: 2,
-      title: "MacBook Pro M2 13 pouces",
-      price: "1890€",
-      views: 89,
-      messages: 3,
-      status: "Actif",
-      publishedDate: "Il y a 1 semaine",
-      image: "/api/placeholder/80/80"
-    }
-  ];
+  const recentAds = listingsData?.listings?.filter((l: any) => l.seller_id === user?.id).slice(0, 2) || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <CategoryNav />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -49,7 +35,7 @@ const Dashboard = () => {
             Tableau de bord
           </h1>
           <p className="text-gray-600">
-            Bienvenue sur votre espace personnel, gérez vos annonces et suivez votre activité
+            Bienvenue sur votre espace personnel, {user?.username || 'Utilisateur'}. Gérez vos annonces et suivez votre activité.
           </p>
         </div>
 
@@ -103,40 +89,46 @@ const Dashboard = () => {
                 </Link>
               </div>
 
-              <div className="space-y-4">
-                {recentAds.map((ad) => (
-                  <div key={ad.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <img
-                      src={ad.image}
-                      alt={ad.title}
-                      className="w-16 h-16 object-cover rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 mb-1">{ad.title}</h3>
-                      <p className="text-lg font-bold text-blue-600 mb-2">{ad.price}</p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <Eye className="h-4 w-4 mr-1" />
-                          {ad.views} vues
-                        </div>
-                        <div className="flex items-center">
-                          <MessageCircle className="h-4 w-4 mr-1" />
-                          {ad.messages} messages
-                        </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {ad.publishedDate}
+              {isLoadingListings ? (
+                <p>Chargement...</p>
+              ) : recentAds.length > 0 ? (
+                <div className="space-y-4">
+                  {recentAds.map((ad: any) => (
+                    <div key={ad.listings_id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <img
+                        src={ad.images?.[0] || "/api/placeholder/80/80"}
+                        alt={ad.title}
+                        className="w-16 h-16 object-cover rounded-lg"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 mb-1">{ad.title}</h3>
+                        <p className="text-lg font-bold text-blue-600 mb-2">{ad.price} {ad.currency}</p>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                          <div className="flex items-center">
+                            <Eye className="h-4 w-4 mr-1" />
+                            {ad.views || 0} vues
+                          </div>
+                          <div className="flex items-center">
+                            <MessageCircle className="h-4 w-4 mr-1" />
+                            0 messages
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            {new Date(ad.created_at).toLocaleDateString()}
+                          </div>
                         </div>
                       </div>
+                      <div className="text-right">
+                        <span className="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
+                          {ad.status || 'Actif'}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <span className="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
-                        {ad.status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">Aucune annonce récente.</p>
+              )}
             </div>
           </div>
 

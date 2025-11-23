@@ -60,6 +60,24 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment variables
+
+Create a `.env` file in the `Frontend` folder (values can be adjusted per environment):
+
+```
+VITE_API_URL=http://localhost:5000
+```
+
+The backend expects the following variables (in `Backend/.env`):
+
+```
+FRONTEND_URL=http://localhost:5173
+BACKEND_URL=http://localhost:5000
+JWT_SECRET=replace-with-strong-secret
+```
+
+These values allow the frontend to call the Express API and keep authentication cookies in sync.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/69b656c5-b440-4798-930c-e92f3104c4c8) and click on Share -> Publish.

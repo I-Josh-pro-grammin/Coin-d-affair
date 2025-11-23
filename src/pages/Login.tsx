@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,18 +12,27 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await login({ email, password });
+      toast.success("Connexion réussie");
+      navigate("/dashboard");
+    } catch (err: any) {
+      const message =
+        err?.data?.message ||
+        err?.error ||
+        "Une erreur est survenue lors de la connexion.";
+      setError(message);
+      toast.error(message);
+    } finally {
       setLoading(false);
-      // Handle login logic here
-      console.log("Login attempt:", { email, password, rememberMe });
-    }, 1000);
+    }
   };
 
   return (
@@ -58,9 +70,8 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="votre@email.com"
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all ${
-                  error ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"
+                  }`}
                 required
               />
             </div>
@@ -76,9 +87,8 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all ${
-                    error ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"
+                    }`}
                   required
                 />
                 <button
