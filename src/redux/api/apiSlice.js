@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_BASE_URL = 'https://coin-d-affaires-backend.vercel.app/' || 'http://localhost:5000';
+const API_BASE_URL = 
+// 'https://coin-d-affaires-backend.vercel.app/' || 
+'http://localhost:5000';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -92,6 +94,21 @@ export const apiSlice = createApi({
       query: (token) => ({
         url: `/api/auth/verify/${token}`,
         method: 'GET',
+      }),
+    }),
+    updateProfile: builder.mutation({
+      query: (data) => ({
+        url: '/api/auth/profile',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+    createCheckoutSession: builder.mutation({
+      query: (data) => ({
+        url: '/api/payment/create-checkout-session',
+        method: 'POST',
+        body: data,
       }),
     }),
 
@@ -269,6 +286,8 @@ export const {
   useGetAllUsersQuery,
   // Auth
   useVerifyEmailQuery,
+  useUpdateProfileMutation,
+  useCreateCheckoutSessionMutation,
   // Business
   useCreateBusinessMutation,
   useUpdateBusinessMutation,

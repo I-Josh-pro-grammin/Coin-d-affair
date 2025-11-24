@@ -50,8 +50,9 @@ const Login = () => {
       await login({ email, password });
       toast.success("Login réussi");
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       const message = error?.data?.message || "Connexion impossible";
+      console.log(error);
       toast.error(message);
     } finally {
       setLoading(false);

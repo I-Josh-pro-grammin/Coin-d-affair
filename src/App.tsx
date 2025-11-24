@@ -21,6 +21,7 @@ const SellerSignup = lazy(() => import("./pages/SellerSignup"));
 const SellerSetup = lazy(() => import("./pages/SellerSetup"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"));
 // const Dashboard = lazy(() => import("./pages/Dashboard"));
 // const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
@@ -73,6 +74,7 @@ const App = () => (
           <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
           <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
           <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
+          <Route path="/auth/verify/:token" element={<Page title="Vérification Email"><VerifyEmail /></Page>} />
           <Route path="/seller/setup" element={<Page title="Configuration boutique"><SellerSetup /></Page>} />
 
           <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><DashboardHome /></Page>} />

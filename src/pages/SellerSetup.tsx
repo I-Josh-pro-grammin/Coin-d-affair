@@ -8,6 +8,7 @@ export default function SellerSetup() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
         // Save business info and redirect to dashboard
         navigate('/dashboard');
     };

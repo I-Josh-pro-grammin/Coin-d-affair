@@ -6,6 +6,12 @@ import { toast } from "sonner";
 const SellerSignup = () => {
   const navigate = useNavigate();
   const { signup } = useAuth();
+  const [ firstname, setFirstname ] = useState('');
+  const [ lastname, setLastname ] = useState('');
+  const [ email, setEmail ] = useState('');
+  const [ phone, setPhone ] = useState('');
+  const [ password, setPassword ] = useState('');
+  const [ comfirmPassword, setComfirmPassword ] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -15,7 +21,27 @@ const SellerSignup = () => {
     // The user would typically be authenticated after this step.
 
     // For now, we'll just redirect to the setup page as requested.
-    navigate('/seller/setup');
+    setSubmitting(true);
+    if(password != comfirmPassword){
+      toast.error("Passwords do not match");
+      return;
+    }
+    try {
+      await signup({
+        fullName: `${firstname} ${lastname}`,
+        email,
+        password,
+        accountType: "business",
+        phone: phone
+      });
+      
+      toast.success("User created successfully")
+      navigate('/seller/setup');
+    } catch (error) {
+      toast.error('Failed to signup');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -43,36 +69,36 @@ const SellerSignup = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
-                  <input type="text" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                  <input value={firstname} onChange={(e) => setFirstname(e.target.value)} type="text" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-                  <input type="text" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                  <input value={lastname} onChange={(e) => setLastname(e.target.value)} type="text" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
                 </div>
               </div>
 
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input type="email" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                <input value={email} onChange={e=>setEmail(e.target.value)} type="email" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
               </div>
 
               {/* Phone */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
-                <input type="tel" required placeholder="+250 XXX XXX XXX" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                <input value={phone} onChange={e=>setPhone(e.target.value)} type="tel" required placeholder="+250 XXX XXX XXX" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
               </div>
 
               {/* Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
-                <input type="password" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                <input value={password} onChange={e=>setPassword(e.target.value)} type="password" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
               </div>
 
               {/* Confirm Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
-                <input type="password" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+                <input value={comfirmPassword} onChange={e=>setComfirmPassword(e.target.value)} type="password" required className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
               </div>
 
               {/* Terms */}

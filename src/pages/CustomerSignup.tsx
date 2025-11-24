@@ -24,10 +24,11 @@ const CustomerSignup = () => {
       await signup({
         fullName: `${firstName} ${lastName}`.trim(),
         email,
-        phone,
+        number: phone,
         password: pwd,
         accountType: "customer",
       });
+
       toast.success("Compte créé avec succès. Vérifiez votre email pour confirmer votre compte.");
       navigate("/auth/login");
     } catch (error: any) {

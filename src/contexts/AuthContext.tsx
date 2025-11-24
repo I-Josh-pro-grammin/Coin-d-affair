@@ -21,7 +21,7 @@ interface SignupPayload {
   email: string;
   password: string;
   accountType: 'customer' | 'business';
-  phone?: string;
+  number?: string;
 }
 
 interface AuthContextType {

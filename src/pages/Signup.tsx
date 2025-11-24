@@ -17,7 +17,7 @@ const Signup = () => {
     phone: "",
     password: "",
     confirmPassword: "",
-    accountType: "customer",
+    accountType: "user",
     acceptTerms: false,
   });
 
@@ -34,10 +34,11 @@ const Signup = () => {
       await signup({
         fullName: `${formData.firstName} ${formData.lastName}`.trim(),
         email: formData.email,
-        phone: formData.phone,
+        number: formData.phone,
         password: formData.password,
-        accountType: formData.accountType === "business" ? "business" : "customer",
+        accountType: "user",
       });
+
       toast.success("Compte créé avec succès. Vérifiez votre email pour confirmer votre compte.");
     } catch (error: any) {
       const message = error?.data?.message || "Impossible de créer le compte";

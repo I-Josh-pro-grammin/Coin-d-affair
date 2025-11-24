@@ -6,7 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { currencyFmt } from '@/lib/utils';
 import { Check, CreditCard, Truck, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
-import { useCreateOrderMutation } from '@/redux/api/apiSlice';
+import { useCreateOrderMutation, useCreateCheckoutSessionMutation } from '@/redux/api/apiSlice';
 
 export default function Checkout() {
     const navigate = useNavigate();
@@ -29,30 +29,23 @@ export default function Checkout() {
         setStep(2);
     };
 
+    const [createCheckoutSession, { isLoading: isPaymentLoading }] = useCreateCheckoutSessionMutation();
+
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            const orderData = {
-                items: cart.map(item => ({
-                    listing_id: item.id,
-                    quantity: item.quantity,
-                    price: item.price
-                })),
-                total_amount: total,
-                currency: 'RWF', // Assuming default currency
-                shipping_address: `${shippingAddress.address}, ${shippingAddress.city}`,
-                payment_method: 'mobile_money', // Default for now
-                buyer_phone: shippingAddress.phone
+            const checkoutData = {
+                cartItems: cart.map(item => ({
+                    listingId: item.id,
+                    quantity: item.quantity
+                }))
             };
 
-            await createOrder(orderData).unwrap();
-
-            clearCart();
-            toast.success('Commande confirmée !');
-            navigate('/dashboard/orders'); // Redirect to orders page
+            const response = await createCheckoutSession(checkoutData).unwrap();
+            window.location.href = response.url;
         } catch (error: any) {
-            toast.error(error?.data?.message || 'Erreur lors de la création de la commande');
+            toast.error(error?.data?.message || 'Erreur lors de l\'initialisation du paiement');
         }
     };
 
@@ -183,10 +176,10 @@ export default function Checkout() {
 
                                     <button
                                         type="submit"
-                                        disabled={isLoading}
+                                        disabled={isPaymentLoading}
                                         className="w-full bg-[#000435] text-white py-4 rounded-xl font-bold hover:bg-[#000435]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                                     >
-                                        {isLoading ? 'Traitement...' : `Payer ${currencyFmt(total)}`}
+                                        {isPaymentLoading ? 'Redirection...' : `Payer ${currencyFmt(total)}`}
                                     </button>
                                 </form>
                             )}
