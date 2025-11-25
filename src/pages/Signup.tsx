@@ -36,7 +36,7 @@ const Signup = () => {
         email: formData.email,
         number: formData.phone,
         password: formData.password,
-        accountType: "user",
+        accountType: "customer",
       });
 
       toast.success("Compte créé avec succès. Vérifiez votre email pour confirmer votre compte.");

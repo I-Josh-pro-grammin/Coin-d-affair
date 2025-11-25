@@ -32,7 +32,7 @@ const SellerSignup = () => {
         email,
         password,
         accountType: "business",
-        phone: phone
+        number: phone
       });
       
       toast.success("User created successfully")

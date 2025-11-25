@@ -20,6 +20,7 @@ interface HeroCard {
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
+  // const {cusotomerNumber}=useGetUsers();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
