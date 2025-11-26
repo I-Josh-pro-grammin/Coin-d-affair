@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_BASE_URL = 
-// 'https://coin-d-affaires-backend.vercel.app/' || 
-'http://localhost:5000';
+const API_BASE_URL =
+  // 'https://coin-d-affaires-backend.vercel.app/' || 
+  'http://localhost:5000';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -78,13 +78,31 @@ export const apiSlice = createApi({
     // Admin Endpoints
     getAdminStats: builder.query({
       query: () => ({
-        url: '/api/',
+        url: '/api/admin/stats',
         method: 'GET',
       }),
     }),
     getAllUsers: builder.query({
       query: () => ({
-        url: '/api/users',
+        url: '/api/admin/users',
+        method: 'GET',
+      }),
+    }),
+    getAdminBusinesses: builder.query({
+      query: () => ({
+        url: '/api/admin/businesses',
+        method: 'GET',
+      }),
+    }),
+    getAdminListings: builder.query({
+      query: () => ({
+        url: '/api/admin/listings',
+        method: 'GET',
+      }),
+    }),
+    getAdminOrders: builder.query({
+      query: () => ({
+        url: '/api/admin/orders',
         method: 'GET',
       }),
     }),
@@ -122,19 +140,25 @@ export const apiSlice = createApi({
     }),
     updateBusiness: builder.mutation({
       query: (data) => ({
-        url: '/api/business',
+        url: '/api/business/update-profile',
         method: 'PATCH',
         body: data,
       }),
     }),
     addProduct: builder.mutation({
-      query: (data) => ({
+      query: (formData) => ({
         url: '/api/business/add-product',
         method: 'POST',
-        body: data,
+        body: formData,
+        // Important: Let browser set Content-Type to multipart/form-data with boundary
+        headers: {
+          // Do NOT set Content-Type manually when using FormData!
+          // 'Content-Type': 'multipart/form-data' → WRONG when using FormData
+        },
       }),
       invalidatesTags: ['Listings'],
     }),
+    
     updateProduct: builder.mutation({
       query: ({ productId, ...data }) => ({
         url: `/api/business/update-product/${productId}`,
@@ -159,6 +183,18 @@ export const apiSlice = createApi({
     getBusinessProducts: builder.query({
       query: () => ({
         url: '/api/business/business-products-post',
+        method: 'GET',
+      }),
+    }),
+    getBusinessTransactions: builder.query({
+      query: () => ({
+        url: '/api/business/transactions',
+        method: 'GET',
+      }),
+    }),
+    getBusinessOrders: builder.query({
+      query: () => ({
+        url: '/api/business/business-orders',
         method: 'GET',
       }),
     }),
@@ -314,4 +350,9 @@ export const {
   useGetOrderByIdQuery,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
+  useGetBusinessTransactionsQuery,
+  useGetBusinessOrdersQuery,
+  useGetAdminBusinessesQuery,
+  useGetAdminListingsQuery,
+  useGetAdminOrdersQuery,
 } = apiSlice;

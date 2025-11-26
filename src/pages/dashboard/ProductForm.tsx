@@ -2,7 +2,7 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Upload, X, Save, ArrowLeft, Loader2 } from 'lucide-react';
-import { useAddProductMutation, useUpdateProductMutation, useGetListingQuery } from '@/redux/api/apiSlice';
+import { useAddProductMutation, useGetListingQuery } from '@/redux/api/apiSlice';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -13,7 +13,6 @@ export default function ProductForm() {
 
     const { data: productData, isLoading: isFetching } = useGetListingQuery(id, { skip: !isEditing });
     const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
-    const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -63,39 +62,43 @@ export default function ProductForm() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+  e.preventDefault();
 
-        const data = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-            data.append(key, String(value));
-        });
+  const formDt = new FormData();
 
-        images.forEach((image) => {
-            data.append('images', image);
-        });
+  // Append all text fields (must match exact names expected by backend!)
+  formDt.append('title', formData.title);
+  formDt.append('categoryId', formData.categoryId);
+  formDt.append('subcategoryId', formData.subcategoryId || '');
+  formDt.append('price', formData.price);
+  formDt.append('stock', formData.stock);
+  formDt.append('condition', formData.condition);
+  formDt.append('description', formData.description);
+  formDt.append('locationId', formData.locationId);
+  formDt.append('currency', formData.currency);
+  formDt.append('isNegotiable', formData.isNegotiable ? 'true' : 'false');
+  formDt.append('canDeliver', formData.canDeliver ? 'true' : 'false');
 
-        try {
-            if (isEditing) {
-                await updateProduct({ productId: id, ...formData }).unwrap(); // Note: File upload for update might need adjustment in backend or here
-                // For now, assuming updateProduct handles JSON or FormData correctly. 
-                // Wait, backend updateProductPost expects req.files for images.
-                // But RTK Query needs special handling for FormData if not using fetchBaseQuery with correct headers?
-                // Actually fetchBaseQuery handles FormData automatically by letting browser set Content-Type.
-                // However, my updateProduct mutation body is `data`.
-                // Let's fix the update call to pass FormData.
-                // But wait, I need to append productId to FormData or URL?
-                // The mutation URL uses productId from arg.
-                // So I should pass { productId, body: data }.
-                // Let's adjust the mutation call below.
-            } else {
-                await addProduct(data).unwrap();
-            }
-            toast.success(isEditing ? 'Produit mis à jour' : 'Produit créé avec succès');
-            navigate('/dashboard/products');
-        } catch (error: any) {
-            toast.error(error?.data?.message || 'Une erreur est survenue');
-        }
-    };
+  // Optional: attributes (if you add later)
+  // formData.append('attributes', JSON.stringify({ color: 'red', size: 'M' }));
+
+  // Append images with the field name "images" → matches req.files in backend
+  images.forEach((image) => {
+    formDt.append('images', image); // This becomes req.files
+  });
+
+  try {
+    await addProduct(formDt).unwrap();
+
+    toast.success('Produit créé avec succès !');
+    
+    navigate('/dashboard/products');
+  } catch (error: any) {
+    console.error('Add product error:', error);
+    toast.error(error?.data?.message || 'Une erreur est survenue');
+  }
+};
+    
 
     return (
         <DashboardLayout>
@@ -129,10 +132,11 @@ export default function ProductForm() {
                     {images.length > 0 && (
                         <div className="grid grid-cols-4 gap-4 mt-4">
                             {images.map((img, index) => (
-                                <div key={index} className="relative aspect-square bg-gray-100 rounded-lg">
+                                <div key={index} className="relative aspect-square bg-gray-100">
                                     <button type="button" onClick={() => removeImage(index)} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
                                         <X size={16} />
                                     </button>
+                                    <img src={URL.createObjectURL(img)} alt={`Preview ${index}`} className="w-full h-full rounded-lg object-cover" />
                                 </div>
                             ))}
                         </div>

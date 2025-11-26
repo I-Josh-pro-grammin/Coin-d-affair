@@ -13,14 +13,14 @@ import { Link } from 'react-router-dom';
 import {
     useGetBusinessProfileQuery,
     useGetBusinessProductsQuery,
-    useGetOrdersQuery
+    useGetBusinessOrdersQuery
 } from '@/redux/api/apiSlice';
 import { RouteFallback } from '@/components/common/RouteFallback';
 
 export default function DashboardHome() {
     const { data: businessProfile, isLoading: profileLoading } = useGetBusinessProfileQuery({});
     const { data: products, isLoading: productsLoading } = useGetBusinessProductsQuery({});
-    const { data: orders, isLoading: ordersLoading } = useGetOrdersQuery({});
+    const { data: orders, isLoading: ordersLoading } = useGetBusinessOrdersQuery({});
 
     if (profileLoading || productsLoading || ordersLoading) {
         return <RouteFallback />;

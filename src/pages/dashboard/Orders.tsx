@@ -2,14 +2,14 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Eye, MoreVertical, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
-import { useGetOrdersQuery } from '@/redux/api/apiSlice';
+import { useGetBusinessOrdersQuery } from '@/redux/api/apiSlice';
 import { RouteFallback } from '@/components/common/RouteFallback';
 import { format } from 'date-fns';
 
 export default function Orders() {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const { data: ordersData, isLoading } = useGetOrdersQuery({});
+    const { data: ordersData, isLoading } = useGetBusinessOrdersQuery({});
 
     const orders = ordersData || [];
 
