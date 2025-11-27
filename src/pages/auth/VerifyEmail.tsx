@@ -3,9 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useVerifyEmailQuery } from '@/redux/api/apiSlice';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 export default function VerifyEmail() {
   const { token } = useParams();
+  const { user } = useSelector((state: any) => state.auth);
   const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useVerifyEmailQuery(token);
 
@@ -13,13 +15,17 @@ export default function VerifyEmail() {
     if (isSuccess) {
       toast.success('Email vérifié avec succès !');
       setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+        if (user?.accountType === 'business') {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 2000);
     }
     if (error) {
       toast.error('Lien de vérification invalide ou expiré.');
     }
-  }, [isSuccess, error, navigate]);
+  }, [isSuccess, error, navigate, user]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -38,13 +44,7 @@ export default function VerifyEmail() {
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
             <h2 className="text-xl font-bold text-gray-900">Email Vérifié !</h2>
-            <p className="text-gray-600">Votre compte a été activé avec succès. Vous allez être redirigé vers la page de connexion.</p>
-            <button
-              onClick={() => navigate('/login')}
-              className="mt-4 px-6 py-2 bg-[#000435] text-white rounded-full font-medium hover:bg-[#000435]/90 transition-all"
-            >
-              Se connecter maintenant
-            </button>
+            <p className="text-gray-600">Votre compte a été activé avec succès. Vous allez être redirigé vers la page d'accueil.</p>
           </div>
         )}
 
@@ -56,7 +56,7 @@ export default function VerifyEmail() {
             <h2 className="text-xl font-bold text-gray-900">Échec de la vérification</h2>
             <p className="text-gray-600">Le lien de vérification est invalide ou a expiré.</p>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/auth/login')}
               className="mt-4 px-6 py-2 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-gray-50 transition-all"
             >
               Retour à la connexion

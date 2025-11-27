@@ -20,10 +20,25 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      await login({ email, password });
+      const user = await login({ email, password });
       toast.success("Connexion réussie");
-      navigate("/dashboard");
+
+      // Route based on account type
+      if (user.accountType === 'business') {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
+      // Check if error is due to unverified email
+      if (err?.status === 403 || err?.data?.isVerified === false) {
+        const message = err?.data?.message || "Veuillez vérifier votre email avant de vous connecter.";
+        toast.error(message);
+        // Redirect to email verification required page
+        navigate(`/auth/verify-required?email=${encodeURIComponent(email)}`);
+        return;
+      }
+
       const message =
         err?.data?.message ||
         err?.error ||

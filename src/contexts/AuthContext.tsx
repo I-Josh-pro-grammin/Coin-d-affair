@@ -12,7 +12,7 @@ interface User {
   name: string;
   email: string;
   phone?: string;
-  accountType?: 'customer' | 'business' | 'admin';
+  accountType?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
 }
 
@@ -20,7 +20,7 @@ interface SignupPayload {
   fullName: string;
   email: string;
   password: string;
-  accountType: 'customer' | 'business';
+  accountType: 'user' | 'business';
   number?: string;
 }
 

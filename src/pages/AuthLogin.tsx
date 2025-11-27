@@ -11,17 +11,51 @@ const AuthLogin = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
+  const validateForm = () => {
+    const newErrors: { email?: string; password?: string } = {};
+
+    if (!email) {
+      newErrors.email = "L'adresse email est requise";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "L'adresse email n'est pas valide";
+    }
+
+    if (!password) {
+      newErrors.password = "Le mot de passe est requis";
+    } else if (password.length < 8) {
+      newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
+    }
+
+    // setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+    
+    if (!validateForm()) return;
+
     try {
       const user = await login({ email, password });
-      if (user?.accountType === 'business') {
+      console.log(user);
+      
+      if (user.accountType === 'business') {
+      toast.success('Email vérifié avec succès !');
+      setTimeout(() => {
         navigate("/dashboard");
-      } else {
+      }, 2000);
+    }else{
+      toast.success('Email vérifié avec succès !');
+      setTimeout(() => {
         navigate("/");
-      }
+      }, 2000); 
+    }
+    if (error) {
+      toast.error('Lien de vérification invalide ou expiré.');
+    }
       toast.success("Login successfull");
     } catch (err: any) {
       const message =
@@ -35,6 +69,7 @@ const AuthLogin = () => {
       setSubmitting(false);
     }
   };
+
   return (
     <div className="flex min-h-screen">
       {/* Left: full-height solid gradient panel */}
