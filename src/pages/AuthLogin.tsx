@@ -30,28 +30,26 @@ const AuthLogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    
+
     if (!validateForm()) return;
 
     try {
       const user = await login({ email, password });
-      console.log(user);
       
       if (user.accountType === 'business') {
       toast.success('Email vérifié avec succès !');
       setTimeout(() => {
         navigate("/dashboard");
-      }, 2000);
-    }else{
+      }, 500);
+    }else if(user.accountType === 'user'){
       toast.success('Email vérifié avec succès !');
       setTimeout(() => {
         navigate("/");
-      }, 2000); 
+      }, 500); 
     }
     if (error) {
       toast.error('Lien de vérification invalide ou expiré.');
@@ -126,10 +124,10 @@ const AuthLogin = () => {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center">
-                  <input type="checkbox" className="w-4 h-4 text-[#000435] border-gray-300 rounded focus:ring-[#000435]" />
-                  <span className="ml-2 text-gray-600">Se souvenir de moi</span>
+                  <input type="checkbox" className="w-4 h-4 text-[#000435] cursor-pointer border-gray-300 rounded focus:ring-[#000435]" />
+                  <span className="ml-2 text-gray-600 cursor-pointer">Se souvenir de moi</span>
                 </label>
-                <Link to="/auth/forgot-password" className="text-[#000435] hover:underline font-medium">Mot de passe oublié?</Link>
+                <Link to="/auth/forgot-password" className="text-[#000435] hover:underline font-medium cursor-pointer">Mot de passe oublié?</Link>
               </div>
               <button disabled={submitting} type="submit" className="w-full bg-[#000435] text-white py-3.5 px-4 rounded-full font-medium hover:bg-[#000435]/90 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-60">
                 {submitting ? "Connexion..." : "Se connecter"}
