@@ -9,14 +9,13 @@ import { Page } from "@/components/common/Page";
 
 import { CartProvider } from "./contexts/CartContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { RequireAdmin } from "./components/admin/RequireAdmin";
 
 
 const Index = lazy(() => import("./pages/Index"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const RoleSelection = lazy(() => import("./pages/RoleSelection"));
-const AuthLogin = lazy(() => import("./pages/AuthLogin"));
-const CustomerSignup = lazy(() => import("./pages/CustomerSignup"));
 const SellerSignup = lazy(() => import("./pages/SellerSignup"));
 const SellerSetup = lazy(() => import("./pages/SellerSetup"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -50,6 +49,15 @@ const Search = lazy(() => import("./pages/Search"));
 const About = lazy(() => import("./pages/About"));
 const Help = lazy(() => import("./pages/Help"));
 
+// Admin Pages
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminCategories = lazy(() => import('./pages/admin/Categories'));
+const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
+const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+
 
 
 const App = () => (
@@ -61,16 +69,17 @@ const App = () => (
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<Page title="Accueil"><Index /></Page>} />
-          {/* Auth (existing non-/auth routes) */}
+          {/* Auth Routes */}
           <Route path="/connexion" element={<Page title="Connexion"><Login /></Page>} />
           <Route path="/inscription" element={<Page title="Inscription"><Signup /></Page>} />
 
-          {/* New /auth routes */}
+          {/* Legacy/Alternative Auth Routes mapped to unified pages */}
           <Route path="/auth/role-selection" element={<Page title="Démarrer"><RoleSelection /></Page>} />
           <Route path="/auth/get-started" element={<Page title="Démarrer"><RoleSelection /></Page>} />
-          <Route path="/auth/login" element={<Page title="Connexion"><AuthLogin /></Page>} />
-          <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><CustomerSignup /></Page>} />
+          <Route path="/auth/login" element={<Page title="Connexion"><Login /></Page>} />
+          <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><Signup /></Page>} />
           <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
+
           <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
           <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
           <Route path="/seller/setup" element={<Page title="Configuration boutique"><SellerSetup /></Page>} />
@@ -112,6 +121,15 @@ const App = () => (
           <Route path="/mentions-legales" element={<Page title="Mentions légales"><PlaceholderPage /></Page>} />
           <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PlaceholderPage /></Page>} />
           <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><PlaceholderPage /></Page>} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<RequireAdmin><Page title="Admin Dashboard"><AdminDashboard /></Page></RequireAdmin>} />
+          <Route path="/admin/categories" element={<RequireAdmin><Page title="Gestion Catégories"><AdminCategories /></Page></RequireAdmin>} />
+          <Route path="/admin/users" element={<RequireAdmin><Page title="Gestion Utilisateurs"><AdminUsers /></Page></RequireAdmin>} />
+          <Route path="/admin/products" element={<RequireAdmin><Page title="Modération Produits"><AdminProducts /></Page></RequireAdmin>} />
+          <Route path="/admin/orders" element={<RequireAdmin><Page title="Toutes les Commandes"><AdminOrders /></Page></RequireAdmin>} />
+          <Route path="/admin/analytics" element={<RequireAdmin><Page title="Analyses"><AdminAnalytics /></Page></RequireAdmin>} />
+          <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
 
           {/* Catch-all */}
           <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
