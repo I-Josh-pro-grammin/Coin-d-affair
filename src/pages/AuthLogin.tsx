@@ -45,7 +45,12 @@ const AuthLogin = () => {
       setTimeout(() => {
         navigate("/dashboard");
       }, 500);
-    }else if(user.accountType === 'user'){
+    }else if(user.accountType === 'admin'){
+      toast.success('Email vérifié avec succès !');
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 500); 
+    }else{
       toast.success('Email vérifié avec succès !');
       setTimeout(() => {
         navigate("/");
