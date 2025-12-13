@@ -1,32 +1,104 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Upload, X, Save, ArrowLeft } from 'lucide-react';
+import { Upload, X, Save, ArrowLeft, Loader2 } from 'lucide-react';
+import { useAddProductMutation, useGetListingQuery } from '@/redux/api/apiSlice';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 export default function ProductForm() {
     const { id } = useParams();
     const navigate = useNavigate();
     const isEditing = !!id;
 
+    const { data: productData, isLoading: isFetching } = useGetListingQuery(id, { skip: !isEditing });
+    const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
+
     const [formData, setFormData] = useState({
         title: '',
-        category: '',
+        categoryId: '',
+        subcategoryId: '', // Added subcategory
         price: '',
         stock: '',
         condition: 'new',
         description: '',
-        location: '',
-        status: 'active'
+        locationId: '1', // Default location ID for now, should be dynamic
+        currency: 'RWF',
+        isNegotiable: false,
+        canDeliver: false
     });
 
     const [images, setImages] = useState<File[]>([]);
+    const [existingImages, setExistingImages] = useState<any[]>([]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Form submitted:', formData, images);
-        // Add API call here
-        navigate('/dashboard/products');
+    useEffect(() => {
+        if (productData?.listing) {
+            const p = productData.listing;
+            setFormData({
+                title: p.title,
+                categoryId: p.category_id,
+                subcategoryId: p.subcategory_id || '',
+                price: p.price,
+                stock: p.stock,
+                condition: p.condition,
+                description: p.description,
+                locationId: p.location_id,
+                currency: p.currency,
+                isNegotiable: p.is_negotiable,
+                canDeliver: p.can_deliver
+            });
+            setExistingImages(p.media || []);
+        }
+    }, [productData]);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImages([...images, ...Array.from(e.target.files)]);
+        }
     };
+
+    const removeImage = (index: number) => {
+        setImages(images.filter((_, i) => i !== index));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const formDt = new FormData();
+
+  // Append all text fields (must match exact names expected by backend!)
+  formDt.append('title', formData.title);
+  formDt.append('categoryId', formData.categoryId);
+  formDt.append('subcategoryId', formData.subcategoryId || '');
+  formDt.append('price', formData.price);
+  formDt.append('stock', formData.stock);
+  formDt.append('condition', formData.condition);
+  formDt.append('description', formData.description);
+  formDt.append('locationId', formData.locationId);
+  formDt.append('currency', formData.currency);
+  formDt.append('isNegotiable', formData.isNegotiable ? 'true' : 'false');
+  formDt.append('canDeliver', formData.canDeliver ? 'true' : 'false');
+
+  // Optional: attributes (if you add later)
+  // formData.append('attributes', JSON.stringify({ color: 'red', size: 'M' }));
+
+  // Append images with the field name "images" → matches req.files in backend
+  images.forEach((image) => {
+    formDt.append('images', image); // This becomes req.files
+  });
+
+  try {
+    await addProduct(formDt).unwrap();
+
+    toast.success('Produit créé avec succès !');
+    
+    navigate('/dashboard/products');
+  } catch (error: any) {
+    console.error('Add product error:', error);
+    toast.error(error?.data?.message || 'Une erreur est survenue');
+  }
+};
+    
 
     return (
         <DashboardLayout>
@@ -52,17 +124,19 @@ export default function ProductForm() {
                         <Upload size={48} className="mx-auto text-gray-400 mb-4" />
                         <p className="text-gray-600 mb-2">Cliquez pour télécharger ou glissez-déposez</p>
                         <p className="text-sm text-gray-500">PNG, JPG jusqu'à 10MB</p>
-                        <input type="file" multiple accept="image/*" className="hidden" />
+                        <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" id="image-upload" />
+                        <label htmlFor="image-upload" className="absolute inset-0 cursor-pointer"></label>
                     </div>
 
                     {/* Image Preview Grid */}
                     {images.length > 0 && (
                         <div className="grid grid-cols-4 gap-4 mt-4">
                             {images.map((img, index) => (
-                                <div key={index} className="relative aspect-square bg-gray-100 rounded-lg">
-                                    <button className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                <div key={index} className="relative aspect-square bg-gray-100">
+                                    <button type="button" onClick={() => removeImage(index)} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
                                         <X size={16} />
                                     </button>
+                                    <img src={URL.createObjectURL(img)} alt={`Preview ${index}`} className="w-full h-full rounded-lg object-cover" />
                                 </div>
                             ))}
                         </div>
@@ -97,8 +171,8 @@ export default function ProductForm() {
                                 </label>
                                 <select
                                     required
-                                    value={formData.category}
-                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                    value={formData.categoryId}
+                                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                 >
                                     <option value="">Sélectionner une catégorie</option>
@@ -169,8 +243,8 @@ export default function ProductForm() {
                             </label>
                             <select
                                 required
-                                value={formData.location}
-                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                value={formData.locationId}
+                                onChange={(e) => setFormData({ ...formData, locationId: e.target.value })}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                             >
                                 <option value="">Sélectionner une ville</option>
@@ -198,36 +272,7 @@ export default function ProductForm() {
                             <p className="text-sm text-gray-500 mt-2">Minimum 50 caractères</p>
                         </div>
 
-                        {/* Status */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Statut
-                            </label>
-                            <div className="flex gap-4">
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="status"
-                                        value="active"
-                                        checked={formData.status === 'active'}
-                                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                        className="w-4 h-4 text-[#000435] focus:ring-[#000435]"
-                                    />
-                                    <span className="text-gray-700">Actif</span>
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="status"
-                                        value="inactive"
-                                        checked={formData.status === 'inactive'}
-                                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                        className="w-4 h-4 text-[#000435] focus:ring-[#000435]"
-                                    />
-                                    <span className="text-gray-700">Inactif</span>
-                                </label>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 

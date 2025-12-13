@@ -20,6 +20,8 @@ const SellerSignup = lazy(() => import("./pages/SellerSignup"));
 const SellerSetup = lazy(() => import("./pages/SellerSetup"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"));
+const EmailVerificationRequired = lazy(() => import("./pages/auth/EmailVerificationRequired"));
 // const Dashboard = lazy(() => import("./pages/Dashboard"));
 // const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
@@ -82,18 +84,20 @@ const App = () => (
 
           <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
           <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
+          <Route path="/auth/verify/:token" element={<Page title="Vérification Email"><VerifyEmail /></Page>} />
+          <Route path="/auth/verify-required" element={<Page title="Vérification requise"><EmailVerificationRequired /></Page>} />
           <Route path="/seller/setup" element={<Page title="Configuration boutique"><SellerSetup /></Page>} />
 
-          <Route path="/tableau-de-bord" element={<Page title="Tableau de bord"><DashboardHome /></Page>} />
+          <Route path="/tableau-de-bord" element={<ProtectedRoute><Page title="Tableau de bord"><DashboardHome /></Page></ProtectedRoute>} />
           {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<Page title="Dashboard"><DashboardHome /></Page>} />
-          <Route path="/dashboard/products" element={<Page title="Produits"><Products /></Page>} />
-          <Route path="/dashboard/products/new" element={<Page title="Nouveau produit"><ProductForm /></Page>} />
-          <Route path="/dashboard/products/:id/edit" element={<Page title="Modifier produit"><ProductForm /></Page>} />
-          <Route path="/dashboard/orders" element={<Page title="Commandes"><Orders /></Page>} />
-          <Route path="/dashboard/orders/:id" element={<Page title="Détails commande"><OrderDetails /></Page>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Page title="Dashboard"><DashboardHome /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/products" element={<ProtectedRoute><Page title="Produits"><Products /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/products/new" element={<ProtectedRoute><Page title="Nouveau produit"><ProductForm /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/products/:id/edit" element={<ProtectedRoute><Page title="Modifier produit"><ProductForm /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/orders" element={<ProtectedRoute><Page title="Commandes"><Orders /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/orders/:id" element={<ProtectedRoute><Page title="Détails commande"><OrderDetails /></Page></ProtectedRoute>} />
 
-          <Route path="/dashboard/settings" element={<Page title="Paramètres"><Settings /></Page>} />
+          <Route path="/dashboard/settings" element={<ProtectedRoute><Page title="Paramètres"><Settings /></Page></ProtectedRoute>} />
 
           {/* Product & Shopping Routes */}
           <Route path="/produit/:id" element={<Page title="Détails du produit"><ProductDetail /></Page>} />

@@ -12,10 +12,50 @@ import {
     Eye,
     EyeOff
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { useUpdateProfileMutation, useUpdateBusinessMutation } from '@/redux/api/apiSlice';
+import { toast } from 'sonner';
 
 export default function Settings() {
     const [activeTab, setActiveTab] = useState('shop');
     const [showPassword, setShowPassword] = useState(false);
+    const { user } = useSelector((state: any) => state.auth);
+    const [updateProfile, { isLoading: isProfileLoading }] = useUpdateProfileMutation();
+    const [updateBusiness, { isLoading: isBusinessLoading }] = useUpdateBusinessMutation();
+
+    const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            fullName: formData.get('fullName'),
+            phone: formData.get('phone'),
+        };
+
+        try {
+            await updateProfile(data).unwrap();
+            toast.success('Profil mis à jour avec succès');
+        } catch (error) {
+            toast.error('Erreur lors de la mise à jour du profil');
+        }
+    };
+
+    const handleBusinessUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            user_id: user.userId,
+            business_name: formData.get('businessName'),
+            vat_number: formData.get('vatNumber'), // Assuming VAT number field exists or will be added
+            subscription_plan: 'basic', // Default or from form
+        };
+
+        try {
+            await updateBusiness(data).unwrap();
+            toast.success('Informations de la boutique mises à jour');
+        } catch (error) {
+            toast.error('Erreur lors de la mise à jour de la boutique');
+        }
+    };
 
     const tabs = [
         { id: 'shop', label: 'Ma Boutique', icon: Store },
@@ -91,7 +131,8 @@ export default function Settings() {
                                     </label>
                                     <input
                                         type="text"
-                                        defaultValue="Ma Boutique"
+                                        name="businessName"
+                                        defaultValue={user?.shop?.name}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                     />
                                 </div>
@@ -103,7 +144,7 @@ export default function Settings() {
                                     </label>
                                     <textarea
                                         rows={4}
-                                        defaultValue="Bienvenue dans ma boutique! Nous proposons des produits de qualité..."
+                                        defaultValue={user?.shop?.description}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all resize-none"
                                     />
                                 </div>
@@ -190,21 +231,12 @@ export default function Settings() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Prénom
+                                            Nom complet
                                         </label>
                                         <input
                                             type="text"
-                                            defaultValue="Jean"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Nom
-                                        </label>
-                                        <input
-                                            type="text"
-                                            defaultValue="Vendeur"
+                                            name="fullName"
+                                            defaultValue={user?.name}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
@@ -218,8 +250,9 @@ export default function Settings() {
                                         </label>
                                         <input
                                             type="email"
-                                            defaultValue="jean.vendeur@email.com"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
+                                            disabled
+                                            defaultValue={user?.email}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
                                     <div>
@@ -228,7 +261,8 @@ export default function Settings() {
                                         </label>
                                         <input
                                             type="tel"
-                                            defaultValue="+250 788 123 456"
+                                            name="phone"
+                                            defaultValue={user?.phone}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>

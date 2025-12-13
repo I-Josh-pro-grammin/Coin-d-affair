@@ -12,7 +12,7 @@ interface User {
   name: string;
   email: string;
   phone?: string;
-  accountType?: 'customer' | 'business' | 'admin';
+  accountType?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
 }
 
@@ -20,8 +20,8 @@ interface SignupPayload {
   fullName: string;
   email: string;
   password: string;
-  accountType: 'customer' | 'business';
-  phone?: string;
+  accountType: 'user' | 'business';
+  number?: string;
 }
 
 interface AuthContextType {
@@ -29,7 +29,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   signup: (data: SignupPayload) => Promise<void>;
-  login: (data: { email: string; password: string }) => Promise<void>;
+  login: (data: { email: string; password: string }) => Promise<User>;
   logout: () => void;
 }
 
@@ -87,6 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async ({ email, password }: { email: string; password: string }) => {
     const response = await loginMutation({ email, password }).unwrap();
     persist(response.token, response.user);
+    return response.user;
   };
 
   const logout = () => {
@@ -94,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('auth_user');
     localStorage.removeItem('auth_token');
   };
+
 
   return (
     <AuthContext.Provider

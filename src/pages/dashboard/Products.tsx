@@ -9,51 +9,37 @@ import {
     Edit,
     Trash2,
     Eye,
-    Copy,
     Package,
     ShoppingCart
 } from 'lucide-react';
+import { useGetBusinessProductsQuery, useDeleteProductMutation } from '@/redux/api/apiSlice';
+import { RouteFallback } from '@/components/common/RouteFallback';
+import { toast } from 'sonner';
 
 export default function Products() {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterOpen, setFilterOpen] = useState(false);
+    const { data, isLoading } = useGetBusinessProductsQuery({});
+    const [deleteProduct] = useDeleteProductMutation();
 
-    // Mock products data
-    const products = [
-        {
-            id: 1,
-            name: 'iPhone 13 Pro',
-            image: '/placeholder.jpg',
-            category: 'Électronique',
-            price: '850,000 RWF',
-            stock: 15,
-            status: 'Actif',
-            views: 234,
-            sales: 12
-        },
-        {
-            id: 2,
-            name: 'Samsung Galaxy S21',
-            image: '/placeholder.jpg',
-            category: 'Électronique',
-            price: '650,000 RWF',
-            stock: 0,
-            status: 'Rupture',
-            views: 189,
-            sales: 8
-        },
-        {
-            id: 3,
-            name: 'MacBook Pro 14"',
-            image: '/placeholder.jpg',
-            category: 'Électronique',
-            price: '1,500,000 RWF',
-            stock: 5,
-            status: 'Actif',
-            views: 456,
-            sales: 3
-        },
-    ];
+    const products = data?.allProducts || [];
+
+    const handleDelete = async (id: string) => {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+            try {
+                await deleteProduct(id).unwrap();
+                toast.success('Produit supprimé avec succès');
+            } catch (error) {
+                toast.error('Erreur lors de la suppression du produit');
+            }
+        }
+    };
+
+    if (isLoading) return <RouteFallback />;
+
+    const filteredProducts = products.filter((product: any) =>
+        product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <DashboardLayout>
@@ -126,22 +112,24 @@ export default function Products() {
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                    <div key={product.id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
+                {filteredProducts.map((product: any) => (
+                    <div key={product.listings_id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
                         {/* Product Image */}
                         <div className="relative aspect-square bg-gray-200">
                             {/* Placeholder image - replace with actual image */}
-                            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                                <Package size={48} />
-                            </div>
+                            {product.image_url ? (
+                                <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                    <Package size={48} />
+                                </div>
+                            )}
 
                             {/* Status Badge */}
                             <div className="absolute top-3 left-3">
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${product.status === 'Actif' ? 'bg-green-100 text-green-800' :
-                                    product.status === 'Rupture' ? 'bg-red-100 text-red-800' :
-                                        'bg-gray-100 text-gray-800'
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                     }`}>
-                                    {product.status}
+                                    {product.stock > 0 ? 'Actif' : 'Rupture'}
                                 </span>
                             </div>
 
@@ -158,11 +146,11 @@ export default function Products() {
                         {/* Product Info */}
                         <div className="p-4">
                             <div className="mb-2">
-                                <span className="text-xs text-gray-500">{product.category}</span>
+                                <span className="text-xs text-gray-500">Catégorie {product.category_id}</span>
                             </div>
-                            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1">{product.name}</h3>
+                            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1">{product.title}</h3>
                             <div className="flex items-center justify-between mb-3">
-                                <p className="text-lg font-bold text-[#000435]">{product.price}</p>
+                                <p className="text-lg font-bold text-[#000435]">{product.price} {product.currency}</p>
                                 <span className="text-sm text-gray-600">Stock: {product.stock}</span>
                             </div>
 
@@ -170,24 +158,27 @@ export default function Products() {
                             <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                                 <div className="flex items-center gap-1">
                                     <Eye size={14} />
-                                    {product.views}
+                                    {product.views || 0}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <ShoppingCart size={14} />
-                                    {product.sales} ventes
+                                    {product.sales || 0} ventes
                                 </div>
                             </div>
 
                             {/* Actions */}
                             <div className="flex gap-2">
                                 <Link
-                                    to={`/dashboard/products/${product.id}/edit`}
+                                    to={`/dashboard/products/${product.listings_id}/edit`}
                                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border-2 border-[#000435] text-[#000435] rounded-full hover:bg-[#000435] hover:text-white transition-all font-medium text-sm"
                                 >
                                     <Edit size={16} />
                                     Modifier
                                 </Link>
-                                <button className="p-2 border-2 border-red-200 text-red-600 rounded-full hover:bg-red-50 transition-all">
+                                <button
+                                    onClick={() => handleDelete(product.listings_id)}
+                                    className="p-2 border-2 border-red-200 text-red-600 rounded-full hover:bg-red-50 transition-all"
+                                >
                                     <Trash2 size={16} />
                                 </button>
                             </div>
