@@ -10,6 +10,7 @@ import {
     X,
     Search
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Categories() {
     const [showModal, setShowModal] = useState(false);
@@ -91,9 +92,18 @@ export default function Categories() {
         setShowModal(true);
     };
 
-    const handleDeleteCategory = (id: number) => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie?')) {
-            setCategories(prev => prev.filter(cat => cat.id !== id));
+
+
+    // ... (existing state)
+
+    const handleDeleteCategory = (category: any) => {
+        const message = category.productCount > 0
+            ? `Cette catégorie contient ${category.productCount} produits. Êtes-vous sûr de vouloir la supprimer ?`
+            : 'Êtes-vous sûr de vouloir supprimer cette catégorie ?';
+
+        if (confirm(message)) {
+            setCategories(prev => prev.filter(cat => cat.id !== category.id));
+            toast.success("Catégorie supprimée avec succès");
         }
     };
 
@@ -104,6 +114,7 @@ export default function Categories() {
             setCategories(prev =>
                 prev.map(cat => cat.id === editingCategory.id ? { ...cat, ...formData } : cat)
             );
+            toast.success("Catégorie mise à jour avec succès");
         } else {
             // Create new category
             const newCategory = {
@@ -113,6 +124,7 @@ export default function Categories() {
                 subcategories: []
             };
             setCategories(prev => [...prev, newCategory]);
+            toast.success("Catégorie créée avec succès");
         }
         setShowModal(false);
     };
@@ -196,7 +208,7 @@ export default function Categories() {
                                             <Edit size={18} />
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteCategory(category.id)}
+                                            onClick={() => handleDeleteCategory(category)}
                                             className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={18} />
