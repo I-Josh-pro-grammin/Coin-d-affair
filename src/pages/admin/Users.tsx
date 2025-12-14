@@ -1,87 +1,68 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useState } from 'react';
 import { Search, Filter, MoreVertical, Shield, UserX, UserCheck, UserPlus, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+    useGetAllUsersQuery,
+    useBanUserMutation,
+    useUnbanUserMutation
+} from '@/redux/api/apiSlice';
+import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 type UserRole = 'buyer' | 'seller' | 'admin';
 type UserStatus = 'active' | 'banned';
 
 interface AdminUser {
-    id: number;
-    name: string;
+    user_id: string;
+    full_name: string;
     email: string;
-    role: UserRole;
-    status: UserStatus;
-    createdAt: string;
-    lastActive: string;
+    account_type: UserRole;
+    is_active: boolean;
+    created_at: string;
 }
 
 export default function Users() {
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState<'all' | UserRole>('all');
 
-    const [users, setUsers] = useState<AdminUser[]>([
-        {
-            id: 1,
-            name: 'Jean Dupont',
-            email: 'jean.dupont@example.com',
-            role: 'seller',
-            status: 'active',
-            createdAt: '2024-01-10',
-            lastActive: 'Il y a 5 min',
-        },
-        {
-            id: 2,
-            name: 'Marie Claire',
-            email: 'marie.claire@example.com',
-            role: 'buyer',
-            status: 'active',
-            createdAt: '2024-01-02',
-            lastActive: 'Il y a 2 h',
-        },
-        {
-            id: 3,
-            name: 'Admin Principal',
-            email: 'admin@coindaffaires.com',
-            role: 'admin',
-            status: 'active',
-            createdAt: '2023-12-01',
-            lastActive: 'En ligne',
-        },
-        {
-            id: 4,
-            name: 'Boutique Tech',
-            email: 'techshop@example.com',
-            role: 'seller',
-            status: 'banned',
-            createdAt: '2023-11-20',
-            lastActive: 'Il y a 3 jours',
-        },
-    ]);
-
-    const filteredUsers = users.filter((user) => {
-        const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-        const term = search.toLowerCase();
-        const matchesSearch =
-            !term ||
-            user.name.toLowerCase().includes(term) ||
-            user.email.toLowerCase().includes(term);
-        return matchesRole && matchesSearch;
+    // Debounce search could be added here, for now passing directly
+    const { data: usersData, isLoading, refetch } = useGetAllUsersQuery({
+        q: search,
+        // Backend doesn't support role filter in getAllUsers yet, so we filter client side or need to update backend
+        // For now, client side filtering for role if not supported by backend params
     });
 
-    const toggleBan = (id: number) => {
-        setUsers((prev) =>
-            prev.map((u) =>
-                u.id === id ? { ...u, status: u.status === 'active' ? 'banned' : 'active' } : u
-            )
-        );
+    const [banUser] = useBanUserMutation();
+    const [unbanUser] = useUnbanUserMutation();
+
+    const handleToggleBan = async (user: AdminUser) => {
+        try {
+            if (user.is_active) {
+                await banUser(user.user_id).unwrap();
+                toast.success('Utilisateur banni avec succès');
+            } else {
+                await unbanUser(user.user_id).unwrap();
+                toast.success('Utilisateur débanni avec succès');
+            }
+            refetch();
+        } catch (error) {
+            toast.error("Erreur lors de la mise à jour du statut de l'utilisateur");
+        }
     };
+
+    const filteredUsers = usersData?.users?.filter((user: AdminUser) => {
+        if (roleFilter === 'all') return true;
+        return user.account_type === roleFilter;
+    }) || [];
 
     return (
         <AdminLayout>
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Utilisateurs</h1>
-                <p className="text-gray-600">{users.length} comptes enregistrés</p>
+                <p className="text-gray-600">{filteredUsers.length} comptes trouvés</p>
             </div>
 
             {/* Filters */}
@@ -111,8 +92,8 @@ export default function Users() {
                                 key={tab.key}
                                 onClick={() => setRoleFilter(tab.key as any)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${roleFilter === tab.key
-                                        ? 'bg-[#000435] text-white border-[#000435]'
-                                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-[#000435] text-white border-[#000435]'
+                                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
                                 {tab.label}
@@ -137,12 +118,12 @@ export default function Users() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {filteredUsers.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                            {filteredUsers.map((user: AdminUser) => (
+                                <tr key={user.user_id} className="hover:bg-gray-50 transition-colors">
                                     <td className="py-4 px-6">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-[#000435]/10 flex items-center justify-center text-sm font-bold text-[#000435]">
-                                                {user.name
+                                                {user.full_name
                                                     .split(' ')
                                                     .map((n) => n[0])
                                                     .join('')
@@ -150,16 +131,16 @@ export default function Users() {
                                                     .toUpperCase()}
                                             </div>
                                             <div>
-                                                <p className="font-semibold text-gray-900">{user.name}</p>
+                                                <p className="font-semibold text-gray-900">{user.full_name}</p>
                                                 <p className="text-sm text-gray-600">{user.email}</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="py-4 px-6">
                                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                            {user.role === 'buyer' && 'Acheteur'}
-                                            {user.role === 'seller' && 'Vendeur'}
-                                            {user.role === 'admin' && (
+                                            {user.account_type === 'buyer' && 'Acheteur'}
+                                            {user.account_type === 'seller' && 'Vendeur'}
+                                            {user.account_type === 'admin' && (
                                                 <>
                                                     <Shield size={12} />
                                                     Admin
@@ -169,32 +150,37 @@ export default function Users() {
                                     </td>
                                     <td className="py-4 px-6">
                                         <span
-                                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${user.status === 'active'
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-red-100 text-red-800'
+                                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${user.is_active
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
                                                 }`}
                                         >
-                                            {user.status === 'active' ? 'Actif' : 'Banni'}
+                                            {user.is_active ? 'Actif' : 'Banni'}
                                         </span>
                                     </td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{user.createdAt}</td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{user.lastActive}</td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">
+                                        {new Date(user.created_at).toLocaleDateString()}
+                                    </td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">
+                                        {/* Last active not available in this endpoint, using created_at as placeholder or removing */}
+                                        -
+                                    </td>
                                     <td className="py-4 px-6">
                                         <div className="flex items-center gap-2">
                                             <button className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors" title="Voir le profil">
                                                 <Eye size={18} />
                                             </button>
                                             <button
-                                                onClick={() => toggleBan(user.id)}
-                                                className={`p-2 rounded-lg transition-colors ${user.status === 'active'
-                                                        ? 'text-red-600 hover:bg-red-50'
-                                                        : 'text-green-600 hover:bg-green-50'
+                                                onClick={() => handleToggleBan(user)}
+                                                className={`p-2 rounded-lg transition-colors ${user.is_active
+                                                    ? 'text-red-600 hover:bg-red-50'
+                                                    : 'text-green-600 hover:bg-green-50'
                                                     }`}
-                                                title={user.status === 'active' ? 'Bannir' : 'Réactiver'}
+                                                title={user.is_active ? 'Bannir' : 'Réactiver'}
                                             >
-                                                {user.status === 'active' ? <UserX size={18} /> : <UserCheck size={18} />}
+                                                {user.is_active ? <UserX size={18} /> : <UserCheck size={18} />}
                                             </button>
-                                            {user.role !== 'admin' && (
+                                            {user.account_type !== 'admin' && (
                                                 <button
                                                     className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
                                                     title="Promouvoir en admin (mock)"

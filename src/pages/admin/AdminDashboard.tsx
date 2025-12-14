@@ -11,56 +11,75 @@ import {
     Eye
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {
+    useGetAdminStatsQuery,
+    useGetAdminLogsQuery,
+    useGetAdminBusinessesQuery
+} from '@/redux/api/apiSlice';
+import { RouteFallback } from '@/components/common/RouteFallback';
+import { formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 export default function AdminDashboard() {
-    // Mock data
+    const { data: statsData, isLoading: statsLoading } = useGetAdminStatsQuery({});
+    const { data: logsData, isLoading: logsLoading } = useGetAdminLogsQuery({ limit: 5 });
+    const { data: businessesData, isLoading: businessesLoading } = useGetAdminBusinessesQuery({ limit: 5, sort: 'total_orders' });
+
+    if (statsLoading || logsLoading || businessesLoading) {
+        return <RouteFallback />;
+    }
+
     const stats = [
         {
             title: 'Total Utilisateurs',
-            value: '2,543',
-            change: '+12.5%',
+            value: statsData?.stats?.totalUsers?.toString() || '0',
+            change: `+${statsData?.stats?.todaySignups || 0} aujourd'hui`,
             trend: 'up',
             icon: Users,
             color: 'bg-blue-100 text-blue-600'
         },
         {
             title: 'Total Produits',
-            value: '8,234',
-            change: '+8.2%',
+            value: statsData?.stats?.totalListings?.toString() || '0',
+            change: '+0%', // Need historical data for change
             trend: 'up',
             icon: Package,
             color: 'bg-purple-100 text-purple-600'
         },
         {
-            title: 'Commandes (mois)',
-            value: '1,456',
-            change: '+23.1%',
+            title: 'Commandes',
+            value: statsData?.stats?.totalOrders?.toString() || '0',
+            change: `+${statsData?.stats?.todayOrders || 0} aujourd'hui`,
             trend: 'up',
             icon: ShoppingCart,
             color: 'bg-green-100 text-green-600'
         },
         {
-            title: 'Revenus (mois)',
-            value: '45.6M RWF',
-            change: '-2.4%',
-            trend: 'down',
+            title: 'Revenus',
+            value: `${statsData?.stats?.totalRevenue || 0} RWF`,
+            change: '+0%',
+            trend: 'up', // Assuming up for now
             icon: DollarSign,
             color: 'bg-orange-100 text-orange-600'
         }
     ];
 
-    const recentActivities = [
-        { type: 'user', message: 'Nouveau vendeur inscrit: Jean Dupont', time: 'Il y a 5 min' },
-        { type: 'product', message: 'Nouveau produit publié: iPhone 13 Pro', time: 'Il y a 15 min' },
-        { type: 'order', message: 'Nouvelle commande #1234 - 850,000 RWF', time: 'Il y a 30 min' },
-        { type: 'category', message: 'Catégorie "Gaming" créée', time: 'Il y a 1h' },
-    ];
+    const recentActivities = logsData?.logs?.map((log: any) => ({
+        type: 'system',
+        message: `${log.action} - ${log.details?.resourceType || 'System'}`,
+        time: formatDistanceToNow(new Date(log.created_at), { addSuffix: true, locale: fr })
+    })) || [];
 
-    const topSellers = [
-        { name: 'Boutique Tech', sales: '156', revenue: '12.5M RWF' },
-        { name: 'Fashion Store', sales: '143', revenue: '10.2M RWF' },
-        { name: 'Home Décor', sales: '128', revenue: '8.9M RWF' },
-    ];
+    // Sort businesses by total_orders to get top sellers if backend doesn't sort
+    const topSellers = businessesData?.businesses
+        ?.slice()
+        .sort((a: any, b: any) => (b.total_orders || 0) - (a.total_orders || 0))
+        .slice(0, 5)
+        .map((business: any) => ({
+            name: business.business_name,
+            sales: business.total_orders?.toString() || '0',
+            revenue: 'N/A' // Revenue per business not in list endpoint
+        })) || [];
 
     return (
         <AdminLayout>

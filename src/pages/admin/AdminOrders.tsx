@@ -3,57 +3,19 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Eye, MoreVertical, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
 
+import {
+    useGetAdminOrdersQuery
+} from '@/redux/api/apiSlice';
+
 export default function AdminOrders() {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
 
-    // Mock orders data
-    const orders = [
-        {
-            id: '#1234',
-            customer: 'Jean Dupont',
-            seller: 'Boutique Tech',
-            product: 'iPhone 13 Pro',
-            quantity: 1,
-            amount: '850,000 RWF',
-            status: 'pending',
-            date: '2024-01-15',
-            paymentStatus: 'paid'
-        },
-        {
-            id: '#1233',
-            customer: 'Marie Claire',
-            seller: 'Maison Confort',
-            product: 'MacBook Pro 14"',
-            quantity: 1,
-            amount: '1,500,000 RWF',
-            status: 'shipped',
-            date: '2024-01-14',
-            paymentStatus: 'paid'
-        },
-        {
-            id: '#1232',
-            customer: 'Pierre Kalisa',
-            seller: 'Auto Kigali',
-            product: 'Samsung Galaxy S21',
-            quantity: 2,
-            amount: '1,300,000 RWF',
-            status: 'delivered',
-            date: '2024-01-13',
-            paymentStatus: 'paid'
-        },
-        {
-            id: '#1231',
-            customer: 'Alice Mukamana',
-            seller: 'Fashion Store',
-            product: 'AirPods Pro',
-            quantity: 1,
-            amount: '250,000 RWF',
-            status: 'cancelled',
-            date: '2024-01-12',
-            paymentStatus: 'refunded'
-        },
-    ];
+    const { data: ordersData, isLoading } = useGetAdminOrdersQuery({
+        status: statusFilter === 'all' ? undefined : statusFilter
+    });
+
+    const orders = ordersData?.orders || [];
 
     const statusConfig = {
         pending: { label: 'En attente', color: 'bg-yellow-100 text-yellow-800', icon: Package },
@@ -72,14 +34,14 @@ export default function AdminOrders() {
         cancelled: orders.filter(o => o.status === 'cancelled').length,
     };
 
-    const filteredOrders = orders.filter(order => {
-        const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    const filteredOrders = orders.filter((order: any) => {
+        // Status is already filtered by backend if we pass it, but if we want client side search:
         const term = searchQuery.toLowerCase();
         const matchesSearch = !term ||
-            order.id.toLowerCase().includes(term) ||
-            order.customer.toLowerCase().includes(term) ||
-            order.seller.toLowerCase().includes(term);
-        return matchesStatus && matchesSearch;
+            order.order_id.toLowerCase().includes(term) ||
+            (order.buyer_name || '').toLowerCase().includes(term) ||
+            (order.seller_name || '').toLowerCase().includes(term);
+        return matchesSearch;
     });
 
     return (
@@ -169,46 +131,48 @@ export default function AdminOrders() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {filteredOrders.map((order) => {
-                                const StatusIcon = statusConfig[order.status as keyof typeof statusConfig].icon;
+                            {filteredOrders.map((order: any) => {
+                                const statusKey = order.status as keyof typeof statusConfig;
+                                const config = statusConfig[statusKey] || statusConfig.pending;
+                                const StatusIcon = config.icon;
                                 return (
-                                    <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={order.order_id} className="hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-6">
-                                            <span className="font-semibold text-gray-900">{order.id}</span>
+                                            <span className="font-semibold text-gray-900">#{order.order_id.substring(0, 8)}</span>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div>
-                                                <p className="font-medium text-gray-900">{order.customer}</p>
+                                                <p className="font-medium text-gray-900">{order.buyer_name || 'N/A'}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div>
-                                                <p className="font-medium text-gray-900">{order.seller}</p>
+                                                <p className="font-medium text-gray-900">{order.seller_name || 'N/A'}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <p className="text-gray-700">{order.product}</p>
+                                            <p className="text-gray-700">{order.items?.[0]?.product_title || 'Produit'}</p>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="text-gray-700">{order.quantity}</span>
+                                            <span className="text-gray-700">{order.items?.length || 1}</span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="font-semibold text-gray-900">{order.amount}</span>
+                                            <span className="font-semibold text-gray-900">{order.total_amount} {order.currency}</span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="text-gray-600 text-sm">{order.date}</span>
+                                            <span className="text-gray-600 text-sm">{new Date(order.created_at).toLocaleDateString()}</span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${statusConfig[order.status as keyof typeof statusConfig].color
+                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${config.color
                                                 }`}>
                                                 <StatusIcon size={14} />
-                                                {statusConfig[order.status as keyof typeof statusConfig].label}
+                                                {config.label}
                                             </span>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-2">
                                                 <Link
-                                                    to={`/admin/orders/${order.id.replace('#', '')}`}
+                                                    to={`/admin/orders/${order.order_id}`}
                                                     className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
                                                 >
                                                     <Eye size={18} />

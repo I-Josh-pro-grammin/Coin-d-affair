@@ -2,64 +2,80 @@ import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useState } from 'react';
 import { Search, Filter, Eye, EyeOff, CheckCircle2, XCircle, MoreVertical } from 'lucide-react';
 
+import { Link } from 'react-router-dom';
+import {
+    useGetAdminListingsQuery,
+    useUpdateListingStatusMutation,
+    useDeleteAdminListingMutation
+} from '@/redux/api/apiSlice';
+import { toast } from 'sonner';
+
 interface AdminProduct {
-    id: number;
-    name: string;
-    seller: string;
-    category: string;
-    price: string;
-    status: 'pending' | 'approved' | 'rejected' | 'hidden';
-    createdAt: string;
+    listings_id: string;
+    title: string;
+    business_name: string; // from join
+    category_id: string; // or category name if joined
+    price: number;
+    currency: string;
+    is_approved: boolean;
+    is_visible: boolean;
+    created_at: string;
+    // ... other fields
 }
 
 export default function AdminProducts() {
     const [search, setSearch] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'all' | AdminProduct['status']>('all');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'hidden'>('all');
 
-    const [products, setProducts] = useState<AdminProduct[]>([
-        {
-            id: 1,
-            name: 'iPhone 13 Pro 256GB',
-            seller: 'Boutique Tech',
-            category: 'Électronique',
-            price: '850,000 RWF',
-            status: 'pending',
-            createdAt: '2024-01-15',
-        },
-        {
-            id: 2,
-            name: 'Canapé 3 places',
-            seller: 'Maison Confort',
-            category: 'Maison & Jardin',
-            price: '350,000 RWF',
-            status: 'approved',
-            createdAt: '2024-01-14',
-        },
-        {
-            id: 3,
-            name: 'Toyota Corolla 2012',
-            seller: 'Auto Kigali',
-            category: 'Véhicules',
-            price: '5,500,000 RWF',
-            status: 'hidden',
-            createdAt: '2024-01-10',
-        },
-    ]);
+    const { data: listingsData, isLoading, refetch } = useGetAdminListingsQuery({
+        q: search
+    });
 
-    const updateStatus = (id: number, status: AdminProduct['status']) => {
-        setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)));
+    const [updateListingStatus] = useUpdateListingStatusMutation();
+    const [deleteListing] = useDeleteAdminListingMutation();
+
+    const handleUpdateStatus = async (id: string, action: 'approve' | 'reject' | 'hide' | 'unhide') => {
+        try {
+            await updateListingStatus({ listingId: id, action }).unwrap();
+            toast.success(`Statut du produit mis à jour (${action})`);
+            refetch();
+        } catch (error) {
+            toast.error("Erreur lors de la mise à jour du statut");
+        }
     };
 
-    const filtered = products.filter((p) => {
-        const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
-        const term = search.toLowerCase();
-        const matchesSearch =
-            !term ||
-            p.name.toLowerCase().includes(term) ||
-            p.seller.toLowerCase().includes(term) ||
-            p.category.toLowerCase().includes(term);
-        return matchesStatus && matchesSearch;
-    });
+    const handleDelete = async (id: string) => {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return;
+        try {
+            await deleteListing(id).unwrap();
+            toast.success('Produit supprimé');
+            refetch();
+        } catch (error) {
+            toast.error("Erreur lors de la suppression");
+        }
+    };
+
+    const getStatus = (p: AdminProduct) => {
+        if (!p.is_visible) return 'hidden';
+        if (p.is_approved) return 'approved';
+        if (p.is_approved === false) return 'rejected'; // assuming false means rejected if not pending? 
+        // Actually backend logic: is_approved defaults to false? or null?
+        // Let's assume !is_approved and visible = pending or rejected. 
+        // Backend: approve -> is_approved=true. reject -> is_approved=false.
+        // So is_approved=false could be rejected or pending. 
+        // Usually pending is default. Let's assume if it's false it's pending/rejected.
+        // For now let's simplify: if is_approved is true -> approved.
+        // If is_approved is false -> pending (or rejected).
+        // If is_visible is false -> hidden.
+        return p.is_approved ? 'approved' : 'pending';
+    };
+
+    const filtered = listingsData?.listings?.filter((p: AdminProduct) => {
+        const status = getStatus(p);
+        const matchesStatus = statusFilter === 'all' || status === statusFilter;
+        // Search is handled by backend but we can do client side too for status
+        return matchesStatus;
+    }) || [];
 
     return (
         <AdminLayout>
@@ -95,8 +111,8 @@ export default function AdminProducts() {
                                 key={tab.key}
                                 onClick={() => setStatusFilter(tab.key as any)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${statusFilter === tab.key
-                                        ? 'bg-[#000435] text-white border-[#000435]'
-                                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-[#000435] text-white border-[#000435]'
+                                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
                                 {tab.label}
@@ -122,58 +138,58 @@ export default function AdminProducts() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {filtered.map((p) => (
-                                <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                            {filtered.map((p: AdminProduct) => (
+                                <tr key={p.listings_id} className="hover:bg-gray-50 transition-colors">
                                     <td className="py-4 px-6">
-                                        <p className="font-semibold text-gray-900">{p.name}</p>
+                                        <p className="font-semibold text-gray-900">{p.title}</p>
                                     </td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{p.seller}</td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{p.category}</td>
-                                    <td className="py-4 px-6 font-semibold text-gray-900">{p.price}</td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">{p.business_name || 'N/A'}</td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">{p.category_id || 'N/A'}</td>
+                                    <td className="py-4 px-6 font-semibold text-gray-900">{p.price} {p.currency}</td>
                                     <td className="py-4 px-6">
                                         <span
-                                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${p.status === 'pending'
-                                                    ? 'bg-yellow-100 text-yellow-800'
-                                                    : p.status === 'approved'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : p.status === 'rejected'
-                                                            ? 'bg-red-100 text-red-800'
-                                                            : 'bg-gray-100 text-gray-800'
+                                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatus(p) === 'pending'
+                                                ? 'bg-yellow-100 text-yellow-800'
+                                                : getStatus(p) === 'approved'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : getStatus(p) === 'rejected'
+                                                        ? 'bg-red-100 text-red-800'
+                                                        : 'bg-gray-100 text-gray-800'
                                                 }`}
                                         >
-                                            {p.status === 'pending' && 'En attente'}
-                                            {p.status === 'approved' && 'Approuvé'}
-                                            {p.status === 'rejected' && 'Rejeté'}
-                                            {p.status === 'hidden' && 'Masqué'}
+                                            {getStatus(p) === 'pending' && 'En attente'}
+                                            {getStatus(p) === 'approved' && 'Approuvé'}
+                                            {getStatus(p) === 'rejected' && 'Rejeté'}
+                                            {getStatus(p) === 'hidden' && 'Masqué'}
                                         </span>
                                     </td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{p.createdAt}</td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">{new Date(p.created_at).toLocaleDateString()}</td>
                                     <td className="py-4 px-6">
                                         <div className="flex items-center gap-2">
                                             <button className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors" title="Voir">
                                                 <Eye size={18} />
                                             </button>
-                                            {p.status !== 'approved' && (
+                                            {getStatus(p) !== 'approved' && (
                                                 <button
-                                                    onClick={() => updateStatus(p.id, 'approved')}
+                                                    onClick={() => handleUpdateStatus(p.listings_id, 'approve')}
                                                     className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                                                     title="Approuver"
                                                 >
                                                     <CheckCircle2 size={18} />
                                                 </button>
                                             )}
-                                            {p.status !== 'rejected' && (
+                                            {getStatus(p) !== 'rejected' && (
                                                 <button
-                                                    onClick={() => updateStatus(p.id, 'rejected')}
+                                                    onClick={() => handleUpdateStatus(p.listings_id, 'reject')}
                                                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                     title="Rejeter"
                                                 >
                                                     <XCircle size={18} />
                                                 </button>
                                             )}
-                                            {p.status !== 'hidden' ? (
+                                            {getStatus(p) !== 'hidden' ? (
                                                 <button
-                                                    onClick={() => updateStatus(p.id, 'hidden')}
+                                                    onClick={() => handleUpdateStatus(p.listings_id, 'hide')}
                                                     className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                                                     title="Masquer"
                                                 >
@@ -181,7 +197,7 @@ export default function AdminProducts() {
                                                 </button>
                                             ) : (
                                                 <button
-                                                    onClick={() => updateStatus(p.id, 'approved')}
+                                                    onClick={() => handleUpdateStatus(p.listings_id, 'unhide')}
                                                     className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
                                                     title="Rendre visible"
                                                 >

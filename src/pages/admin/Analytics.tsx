@@ -1,33 +1,46 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { DollarSign, ShoppingCart, Users, Package } from 'lucide-react';
 
+import {
+    useGetAdminStatsQuery,
+    useGetSubscriptionStatsQuery
+} from '@/redux/api/apiSlice';
+import { RouteFallback } from '@/components/common/RouteFallback';
+
 export default function Analytics() {
+    const { data: statsData, isLoading: statsLoading } = useGetAdminStatsQuery({});
+    const { data: subStats, isLoading: subLoading } = useGetSubscriptionStatsQuery({});
+
+    if (statsLoading || subLoading) {
+        return <RouteFallback />;
+    }
+
     const kpis = [
         {
             title: 'Revenus Totaux',
-            value: '125.4M RWF',
-            change: '+12.5%',
+            value: `${statsData?.stats?.totalRevenue || 0} RWF`,
+            change: '+0%', // Need historical data
             icon: DollarSign,
             color: 'bg-green-100 text-green-600'
         },
         {
             title: 'Commandes',
-            value: '3,456',
-            change: '+8.2%',
+            value: statsData?.stats?.totalOrders?.toString() || '0',
+            change: `+${statsData?.stats?.todayOrders || 0} aujourd'hui`,
             icon: ShoppingCart,
             color: 'bg-blue-100 text-blue-600'
         },
         {
             title: 'Utilisateurs Actifs',
-            value: '1,234',
-            change: '+23.1%',
+            value: statsData?.stats?.totalUsers?.toString() || '0',
+            change: `+${statsData?.stats?.todaySignups || 0} aujourd'hui`,
             icon: Users,
             color: 'bg-purple-100 text-purple-600'
         },
         {
             title: 'Produits Publiés',
-            value: '8,234',
-            change: '+5.4%',
+            value: statsData?.stats?.totalListings?.toString() || '0',
+            change: '+0%',
             icon: Package,
             color: 'bg-orange-100 text-orange-600'
         }
