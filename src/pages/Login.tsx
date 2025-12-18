@@ -6,6 +6,7 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Logo } from "@/components/common/Logo";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -55,39 +56,69 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full">
-        {/* Back to home link */}
-        <Link
-          to="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour à l'accueil
-        </Link>
+    <div className="min-h-screen bg-white md:grid md:grid-cols-2">
+      {/* Left Column - Branding (Hidden on mobile) */}
+      <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden">
+        <div className="relative z-10">
+          <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+            <h1 className="text-3xl font-bold font-poppins text-white">CoinD'affaires</h1>
+            {/* <Logo withText={true} className="text-white brightness-0 invert" /> */}
+          </Link>
+        </div>
 
-        <div className="bg-white rounded-2xl shadow-card p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <Link to="/" className="inline-block mb-4">
-              <h1 className="logo-text text-3xl">CoinD'affaires</h1>
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-4xl font-bold mb-6 font-poppins leading-tight">
+            La référence des bonnes affaires en France
+          </h2>
+          <p className="text-blue-100 text-lg leading-relaxed">
+            Rejoignez notre communauté grandissante d'acheteurs et de vendeurs.
+            Trouvez tout ce dont vous avez besoin au meilleur prix, ou vendez ce que vous n'utilisez plus.
+          </p>
+        </div>
+
+        <div className="relative z-10 text-sm text-blue-200">
+          &copy; {new Date().getFullYear()} Coin D'Affaires. Tous droits réservés.
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[40rem] h-[40rem] bg-blue-600 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[30rem] h-[30rem] bg-indigo-600 rounded-full opacity-10 blur-3xl"></div>
+      </div>
+
+      {/* Right Column - Login Form */}
+      <div className="flex flex-col justify-center px-4 py-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50">
+        <div className="w-full max-w-sm mx-auto">
+          {/* Mobile Back Link & Logo */}
+          <div className="mb-8 md:mb-12">
+            <Link
+              to="/"
+              className="inline-flex items-center text-gray-500 hover:text-[#000435] transition-colors mb-6 md:absolute md:top-8 md:right-8"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour
             </Link>
-            <h2 className="text-2xl font-bold font-poppins text-gray-900 mb-2">
-              Connexion
+
+            <div className="md:hidden text-center mb-8">
+              <Link to="/" className="inline-block">
+                <h1 className="logo-text text-3xl">CoinD'affaires</h1>
+              </Link>
+            </div>
+
+            <h2 className="text-3xl font-bold font-poppins text-gray-900 mb-2">
+              Bon retour !
             </h2>
             <p className="text-gray-600">
-              Accédez à votre compte
+              Heureux de vous revoir. Veuillez saisir vos coordonnées.
             </p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 animate-in fade-in slide-in-from-top-2">
               <p className="text-center text-sm text-red-600 font-medium">{error}</p>
             </div>
           )}
 
-          {/* Login Form */}
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Adresse e-mail
@@ -99,7 +130,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="votre@email.com"
-                  className="pl-10 search-input"
+                  className="pl-10 search-input bg-white"
                   required
                 />
               </div>
@@ -116,13 +147,13 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mot de passe"
-                  className="pl-10 pr-10 search-input"
+                  className="pl-10 pr-10 search-input bg-white"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -136,14 +167,14 @@ const Login = () => {
                   Se souvenir de moi
                 </label>
               </div>
-              <Link to="/auth/forgot-password" className="text-blue-600 hover:underline font-medium">
+              <Link to="/auth/forgot-password" className="text-[#000435] hover:underline font-medium">
                 Mot de passe oublié?
               </Link>
             </div>
 
             <Button
               type="submit"
-              className="w-full btn-primary"
+              className="w-full bg-[#000435] hover:bg-[#000435]/90 text-white h-11 text-base shadow-lg hover:shadow-xl transition-all duration-300"
               disabled={submitting}
             >
               {submitting ? (
@@ -160,24 +191,16 @@ const Login = () => {
             </Button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Ou</span>
-            </div>
-          </div>
+          {/* Social Login / Divider could go here */}
 
-          {/* Signup link */}
-          <div className="text-center">
+          <div className="mt-8 text-center text-sm md:text-base">
             <p className="text-gray-600">
               Pas encore de compte?{" "}
               <Link
                 to="/auth/role-selection"
-                className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                className="text-[#000435] hover:text-[#000435]/80 font-bold transition-colors"
               >
-                S'inscrire
+                Commencer ici
               </Link>
             </p>
           </div>

@@ -24,11 +24,11 @@ export function Footer() {
           <p className="text-xl md:text-2xl text-secondary-foreground/80 mb-8 leading-relaxed">
             Votre prochaine grande trouvaille n'est qu'à un clic
           </p>
-          
+
           {/* Newsletter signup */}
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-12">
-            <Input 
-              placeholder="Votre email" 
+            <Input
+              placeholder="Votre email"
               className="bg-white/10 border-white/20 text-secondary-foreground placeholder:text-secondary-foreground/60 backdrop-blur-sm"
             />
             <Button className="bg-secondary-foreground hover:bg-secondary-foreground/90 text-secondary border-0 font-medium">
@@ -58,10 +58,10 @@ export function Footer() {
               </div>
             </div>
             <p className="text-secondary-foreground/80 text-lg leading-relaxed mb-8">
-              La marketplace française où découvrir, acheter et vendre devient un plaisir. 
+              La marketplace française où découvrir, acheter et vendre devient un plaisir.
               Des milliers d'articles uniques vous attendent.
             </p>
-            
+
             {/* Contact info */}
             <div className="space-y-3">
               <div className="flex items-center text-secondary-foreground/80">
@@ -83,12 +83,12 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-bold mb-6 text-secondary-foreground">Catégories</h4>
             <ul className="space-y-3">
-              <li><Link to="/electronics" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Électronique <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/fashion" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Mode & Style <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/home" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Maison & Jardin <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/vehicles" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Véhicules <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/sports" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Sports & Loisirs <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/all" className="text-secondary-foreground hover:text-secondary-foreground/80 transition-colors duration-200 font-medium">Voir tout →</Link></li>
+              <li><Link to="/categorie/electronique" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Électronique <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/mode" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Mode & Style <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/maison" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Maison & Jardin <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/vehicules" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Véhicules <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/loisirs" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Sports & Loisirs <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/recherche" className="text-secondary-foreground hover:text-secondary-foreground/80 transition-colors duration-200 font-medium">Voir tout →</Link></li>
             </ul>
           </div>
 
@@ -99,16 +99,16 @@ export function Footer() {
               <div>
                 <h5 className="text-sm font-semibold text-secondary-foreground/60 mb-3 uppercase tracking-wider">Aide</h5>
                 <ul className="space-y-2">
-                  <li><Link to="/help" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Centre d'aide</Link></li>
+                  <li><Link to="/aide" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Centre d'aide</Link></li>
                   <li><Link to="/contact" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Nous contacter</Link></li>
-                  <li><Link to="/faq" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">FAQ</Link></li>
+                  <li><Link to="/aide" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">FAQ</Link></li>
                 </ul>
               </div>
-              
+
               <div>
                 <h5 className="text-sm font-semibold text-secondary-foreground/60 mb-3 uppercase tracking-wider">Entreprise</h5>
                 <ul className="space-y-2">
-                  <li><Link to="/about" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">À propos</Link></li>
+                  <li><Link to="/a-propos" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">À propos</Link></li>
                   <li><Link to="/careers" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Carrières</Link></li>
                   <li><Link to="/press" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Presse</Link></li>
                   <li><Link to="/blog" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Blog</Link></li>
@@ -137,12 +137,12 @@ export function Footer() {
               </a>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm text-secondary-foreground/60">
             <p>© {currentYear} Coin D'Affaires. Tous droits réservés.</p>
             <div className="flex space-x-6">
-              <Link to="/terms" className="hover:text-secondary-foreground transition-colors">Conditions</Link>
-              <Link to="/privacy" className="hover:text-secondary-foreground transition-colors">Confidentialité</Link>
+              <Link to="/cgu" className="hover:text-secondary-foreground transition-colors">Conditions</Link>
+              <Link to="/politique-confidentialite" className="hover:text-secondary-foreground transition-colors">Confidentialité</Link>
               <Link to="/cookies" className="hover:text-secondary-foreground transition-colors">Cookies</Link>
             </div>
           </div>

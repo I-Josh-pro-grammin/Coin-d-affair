@@ -50,6 +50,10 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Search = lazy(() => import("./pages/Search"));
 const About = lazy(() => import("./pages/About"));
 const Help = lazy(() => import("./pages/Help"));
+const Contact = lazy(() => import("./pages/Contact"));
+const CGU = lazy(() => import("./pages/CGU"));
+const LegalMentions = lazy(() => import("./pages/LegalMentions"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 
 // Admin Pages
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -105,6 +109,9 @@ const App = () => (
           <Route path="/panier" element={<Page title="Mon panier"><Cart /></Page>} />
           <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
 
+          <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
+
+          <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
           <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
 
           <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
@@ -116,15 +123,25 @@ const App = () => (
 
           {/* Placeholder pages */}
           <Route path="/deposer-annonce" element={<ProtectedRoute><Page title="Déposer une annonce"><PlaceholderPage /></Page></ProtectedRoute>} />
-          <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><PlaceholderPage /></Page></ProtectedRoute>} />
+          <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><Products /></Page></ProtectedRoute>} />
           <Route path="/profil" element={<ProtectedRoute><Page title="Profil"><Profile /></Page></ProtectedRoute>} />
           <Route path="/recherche" element={<Page title="Recherche"><Search /></Page>} />
           <Route path="/aide" element={<Page title="Aide"><Help /></Page>} />
           <Route path="/a-propos" element={<Page title="À propos"><About /></Page>} />
-          <Route path="/contact" element={<Page title="Contact"><PlaceholderPage /></Page>} />
-          <Route path="/mentions-legales" element={<Page title="Mentions légales"><PlaceholderPage /></Page>} />
-          <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PlaceholderPage /></Page>} />
-          <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><PlaceholderPage /></Page>} />
+          <Route path="/contact" element={<Page title="Contact"><Contact /></Page>} />
+          <Route path="/mentions-legales" element={<Page title="Mentions légales"><LegalMentions /></Page>} />
+          <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
+
+          {/* Redirects & Legacy */}
+          <Route path="/faq" element={<Page title="FAQ"><Help /></Page>} />
+          <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
+          <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
+          <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />
+          <Route path="/careers" element={<Page title="Carrières"><PlaceholderPage /></Page>} />
+          <Route path="/blog" element={<Page title="Blog"><PlaceholderPage /></Page>} />
+
+          <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><CGU /></Page>} />
+          <Route path="/cgu" element={<Page title="Conditions Générales d'Utilisation"><CGU /></Page>} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<RequireAdmin><Page title="Admin Dashboard"><AdminDashboard /></Page></RequireAdmin>} />
