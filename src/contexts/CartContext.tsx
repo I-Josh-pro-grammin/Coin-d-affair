@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
+import { Media } from '@/components/common/ProductCard';
 
 export interface CartItem {
     id: string;
     name: string;
     price: number;
     quantity: number;
-    image: string;
+    image: Media | string;
     seller: string;
 }
 

@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { ProductCard } from '@/components/common/ProductCard';
-import { trendingProducts, latestProducts, recentSearchProducts, allProducts } from '@/data/mockProducts';
 
 
 
@@ -142,13 +141,13 @@ export function ProductListingSection() {
               {/* Category Buttons */}
               {isAllProductsOpen && (
                 <div className="space-y-3 mb-8">
-                  {categories.map((category: any) => {
+                  {categories.map((category: any, idx:number) => {
                     const label = category?.name || category?.category_name;
                     const slug =
                       category?.slug || label?.toLowerCase().replace(/\s+/g, "-");
                     return (
                       <button
-                        key={category?.id}
+                        key={idx}
                         onClick={() => handleCategoryClick(slug)}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-full bg-white shadow-md transition-all duration-300 ${selectedCategory === slug
                           ? 'border-2 border-[#000435] bg-blue-50'
@@ -190,8 +189,8 @@ export function ProductListingSection() {
 
                   {trendingProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                      {trendingProducts.map((product: any) => (
-                        <ProductCard key={product.listings_id} product={product} />
+                      {trendingProducts.map((product: any, idx:number) => (
+                        <ProductCard key={idx} product={product} />
                       ))}
                     </div>
                   ) : (
