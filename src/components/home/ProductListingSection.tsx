@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Star, ChevronLeft, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useGetCategoriesQuery, useGetListingsQuery } from "@/redux/api/apiSlice";
+import { useGetCategoriesQuery, useGetListingsQuery, useGetBusinessProductsQuery } from "@/redux/api/apiSlice";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, ChevronDown } from 'lucide-react';
@@ -58,12 +58,13 @@ export function ProductListingSection() {
   const [isAllProductsOpen, setIsAllProductsOpen] = useState(true);
 
   const { data: categoryData, isLoading: categoriesLoading } = useGetCategoriesQuery();
-  const categories = categoryData?.categories?.length ? categoryData.categories : fallbackCategories;
+  const categories = categoryData?.categories || fallbackCategories;
 
   const activeCategory = useMemo(
     () => categories.find((category: any) => category.slug === selectedCategory),
     [categories, selectedCategory]
   );
+
   const activeSubcategory = useMemo(
     () =>
       activeCategory?.subcategories?.find(
@@ -103,11 +104,13 @@ export function ProductListingSection() {
     setIsAllProductsOpen(!isAllProductsOpen);
   };
 
-  const { data: trendingData } = useGetListingsQuery({ sortBy: 'popularity', order: 'desc', limit: 6 });
-  const { data: latestData } = useGetListingsQuery({ sortBy: 'date', order: 'desc', limit: 6 });
+  const { data: trendingData } = useGetBusinessProductsQuery({ sortBy: 'popularity', order: 'desc', limit: 6 });
+  const { data: latestData } = useGetBusinessProductsQuery({ sortBy: 'date', order: 'desc', limit: 6 });
+  
 
-  const trendingProducts = trendingData?.listings || [];
-  const latestProducts = latestData?.listings || [];
+  // console.log(latestData?.allProducts?.rows);
+  const trendingProducts = trendingData?.allProducts?.rows || [];
+  const latestProducts = latestData?.allProducts?.rows || [];
 
   return (
     <section className="py-12 bg-white">
@@ -140,12 +143,12 @@ export function ProductListingSection() {
               {isAllProductsOpen && (
                 <div className="space-y-3 mb-8">
                   {categories.map((category: any) => {
-                    const label = category.category_name || category.name;
+                    const label = category?.name || category?.category_name;
                     const slug =
-                      category.slug || label?.toLowerCase().replace(/\s+/g, "-");
+                      category?.slug || label?.toLowerCase().replace(/\s+/g, "-");
                     return (
                       <button
-                        key={slug}
+                        key={category?.id}
                         onClick={() => handleCategoryClick(slug)}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-full bg-white shadow-md transition-all duration-300 ${selectedCategory === slug
                           ? 'border-2 border-[#000435] bg-blue-50'
@@ -153,7 +156,7 @@ export function ProductListingSection() {
                           }`}
                       >
                         <span className="font-medium text-gray-800">{label}</span>
-                        {category.subcategories?.length > 0 && (
+                        {category.subcategories?.length && (
                           <span className="text-sm text-gray-500">
                             ({category.subcategories.length})
                           </span>

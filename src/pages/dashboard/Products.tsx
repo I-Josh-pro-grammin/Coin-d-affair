@@ -21,8 +21,9 @@ export default function Products() {
     const [filterOpen, setFilterOpen] = useState(false);
     const { data, isLoading } = useGetBusinessProductsQuery({});
     const [deleteProduct] = useDeleteProductMutation();
+    console.log(data?.allProducts?.rows);
 
-    const products = data?.allProducts || [];
+    const products = data?.allProducts?.rows || [];
 
     const handleDelete = async (id: string) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
@@ -37,7 +38,7 @@ export default function Products() {
 
     if (isLoading) return <RouteFallback />;
 
-    const filteredProducts = products.filter((product: any) =>
+    const filteredProducts = products?.filter((product: any) =>
         product.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -112,13 +113,13 @@ export default function Products() {
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product: any) => (
+                {filteredProducts?.map((product: any) => (
                     <div key={product.listings_id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
                         {/* Product Image */}
                         <div className="relative aspect-square bg-gray-200">
                             {/* Placeholder image - replace with actual image */}
-                            {product.image_url ? (
-                                <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                            {product?.media ? (
+                                <img src={product?.media[0]?.url} alt={product.title} className="w-full h-full object-cover" />
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                                     <Package size={48} />
