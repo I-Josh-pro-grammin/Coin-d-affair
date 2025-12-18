@@ -52,6 +52,8 @@ const About = lazy(() => import("./pages/About"));
 const Help = lazy(() => import("./pages/Help"));
 const Contact = lazy(() => import("./pages/Contact"));
 const CGU = lazy(() => import("./pages/CGU"));
+const LegalMentions = lazy(() => import("./pages/LegalMentions"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 
 // Admin Pages
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -124,8 +126,16 @@ const App = () => (
           <Route path="/aide" element={<Page title="Aide"><Help /></Page>} />
           <Route path="/a-propos" element={<Page title="À propos"><About /></Page>} />
           <Route path="/contact" element={<Page title="Contact"><Contact /></Page>} />
-          <Route path="/mentions-legales" element={<Page title="Mentions légales"><PlaceholderPage /></Page>} />
-          <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PlaceholderPage /></Page>} />
+          <Route path="/mentions-legales" element={<Page title="Mentions légales"><LegalMentions /></Page>} />
+          <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
+
+          {/* Redirects & Legacy */}
+          <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
+          <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
+          <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />
+          <Route path="/careers" element={<Page title="Carrières"><PlaceholderPage /></Page>} />
+          <Route path="/blog" element={<Page title="Blog"><PlaceholderPage /></Page>} />
+
           <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><CGU /></Page>} />
           <Route path="/cgu" element={<Page title="Conditions Générales d'Utilisation"><CGU /></Page>} />
 
