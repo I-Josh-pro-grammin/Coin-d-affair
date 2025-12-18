@@ -291,6 +291,13 @@ export const apiSlice = createApi({
         method: 'GET',
       }),
     }),
+    getLocations: builder.query({
+      query: () => ({
+        url: '/api/business/locations',
+        method: 'GET',
+      }),
+    }),
+
 
     // Cart Endpoints
     createCart: builder.mutation({
@@ -461,4 +468,5 @@ export const {
   useGetAdminNotificationsQuery,
   useCreateAdminNotificationMutation,
   useMarkNotificationReadMutation,
+  useGetLocationsQuery,
 } = apiSlice;

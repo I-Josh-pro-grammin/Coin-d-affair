@@ -2,7 +2,7 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Upload, X, Save, ArrowLeft, Loader2 } from 'lucide-react';
-import { useAddProductMutation, useGetListingQuery } from '@/redux/api/apiSlice';
+import { useAddProductMutation, useGetListingQuery, useGetCategoriesQuery, useGetLocationsQuery } from '@/redux/api/apiSlice';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -22,7 +22,7 @@ export default function ProductForm() {
         stock: '',
         condition: 'new',
         description: '',
-        locationId: '1', // Default location ID for now, should be dynamic
+        locationId: '', // Should be dynamic now
         currency: 'RWF',
         isNegotiable: false,
         canDeliver: false
@@ -30,6 +30,9 @@ export default function ProductForm() {
 
     const [images, setImages] = useState<File[]>([]);
     const [existingImages, setExistingImages] = useState<any[]>([]);
+
+    const { data: categories } = useGetCategoriesQuery();
+    const { data: locationsData } = useGetLocationsQuery();
 
     useEffect(() => {
         if (productData?.listing) {
@@ -62,43 +65,43 @@ export default function ProductForm() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+        e.preventDefault();
 
-  const formDt = new FormData();
+        const formDt = new FormData();
 
-  // Append all text fields (must match exact names expected by backend!)
-  formDt.append('title', formData.title);
-  formDt.append('categoryId', formData.categoryId);
-  formDt.append('subcategoryId', formData.subcategoryId || '');
-  formDt.append('price', formData.price);
-  formDt.append('stock', formData.stock);
-  formDt.append('condition', formData.condition);
-  formDt.append('description', formData.description);
-  formDt.append('locationId', formData.locationId);
-  formDt.append('currency', formData.currency);
-  formDt.append('isNegotiable', formData.isNegotiable ? 'true' : 'false');
-  formDt.append('canDeliver', formData.canDeliver ? 'true' : 'false');
+        // Append all text fields (must match exact names expected by backend!)
+        formDt.append('title', formData.title);
+        formDt.append('categoryId', formData.categoryId);
+        formDt.append('subcategoryId', formData.subcategoryId || '');
+        formDt.append('price', formData.price);
+        formDt.append('stock', formData.stock);
+        formDt.append('condition', formData.condition);
+        formDt.append('description', formData.description);
+        formDt.append('locationId', formData.locationId);
+        formDt.append('currency', formData.currency);
+        formDt.append('isNegotiable', formData.isNegotiable ? 'true' : 'false');
+        formDt.append('canDeliver', formData.canDeliver ? 'true' : 'false');
 
-  // Optional: attributes (if you add later)
-  // formData.append('attributes', JSON.stringify({ color: 'red', size: 'M' }));
+        // Optional: attributes (if you add later)
+        // formData.append('attributes', JSON.stringify({ color: 'red', size: 'M' }));
 
-  // Append images with the field name "images" → matches req.files in backend
-  images.forEach((image) => {
-    formDt.append('images', image); // This becomes req.files
-  });
+        // Append images with the field name "images" → matches req.files in backend
+        images.forEach((image) => {
+            formDt.append('images', image); // This becomes req.files
+        });
 
-  try {
-    await addProduct(formDt).unwrap();
+        try {
+            await addProduct(formDt).unwrap();
 
-    toast.success('Produit créé avec succès !');
-    
-    navigate('/dashboard/products');
-  } catch (error: any) {
-    console.error('Add product error:', error);
-    toast.error(error?.data?.message || 'Une erreur est survenue');
-  }
-};
-    
+            toast.success('Produit créé avec succès !');
+
+            navigate('/dashboard/products');
+        } catch (error: any) {
+            console.error('Add product error:', error);
+            toast.error(error?.data?.message || 'Une erreur est survenue');
+        }
+    };
+
 
     return (
         <DashboardLayout>
@@ -175,7 +178,14 @@ export default function ProductForm() {
                                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                 >
-                                    <option value="">Sélectionner une catégorie</option>
+                                    {
+                                        categories?.categories?.map((category) => (
+                                            <option key={category.id} value={category.id}>
+                                                {category.name}
+                                            </option>
+                                        ))
+                                    }
+                                    {/* <option value="">Sélectionner une catégorie</option>
                                     <option value="electronics">Électronique</option>
                                     <option value="home">Maison & Jardin</option>
                                     <option value="vehicles">Véhicules</option>
@@ -183,7 +193,7 @@ export default function ProductForm() {
                                     <option value="sports">Sports & Loisirs</option>
                                     <option value="books">Livres & Médias</option>
                                     <option value="toys">Jouets & Enfants</option>
-                                    <option value="services">Services</option>
+                                    <option value="services">Services</option> */}
                                 </select>
                             </div>
 
@@ -248,11 +258,11 @@ export default function ProductForm() {
                                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                             >
                                 <option value="">Sélectionner une ville</option>
-                                <option value="kigali">Kigali</option>
-                                <option value="butare">Butare</option>
-                                <option value="gisenyi">Gisenyi</option>
-                                <option value="ruhengeri">Ruhengeri</option>
-                                <option value="cyangugu">Cyangugu</option>
+                                {locationsData?.locations?.map((loc: any) => (
+                                    <option key={loc.id} value={loc.id}>
+                                        {loc.name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
