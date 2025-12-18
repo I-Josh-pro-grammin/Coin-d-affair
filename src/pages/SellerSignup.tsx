@@ -62,32 +62,65 @@ const SellerSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full">
-        {/* Back to home link */}
-        <Link
-          to="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour à l'accueil
-        </Link>
+    <div className="min-h-screen bg-white md:grid md:grid-cols-2">
+      {/* Left Column - Branding (Seller Specific) */}
+      <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden">
+        <div className="relative z-10">
+          <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+            <h1 className="text-3xl font-bold font-poppins text-white">CoinD'affaires</h1>
+          </Link>
+        </div>
 
-        <div className="bg-white rounded-2xl shadow-card p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <Link to="/" className="inline-block mb-4">
-              <h1 className="logo-text text-3xl">CoinD'affaires</h1>
+        <div className="relative z-10 max-w-lg">
+          <div className="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm font-medium mb-6 backdrop-blur-sm border border-white/20">
+            <Store className="w-4 h-4" />
+            <span>Espace Vendeur</span>
+          </div>
+          <h2 className="text-4xl font-bold mb-6 font-poppins leading-tight">
+            Lancez votre boutique en ligne aujourd'hui
+          </h2>
+          <p className="text-blue-100 text-lg leading-relaxed">
+            Profitez de nos outils professionnels pour gérer vos ventes, suivre vos commandes et développer votre activité.
+            Une audience de milliers d'acheteurs vous attend.
+          </p>
+        </div>
+
+        <div className="relative z-10 text-sm text-blue-200">
+          &copy; {new Date().getFullYear()} Coin D'Affaires. Tous droits réservés.
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[40rem] h-[40rem] bg-indigo-600 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[30rem] h-[30rem] bg-purple-600 rounded-full opacity-10 blur-3xl"></div>
+      </div>
+
+      {/* Right Column - Seller Signup Form */}
+      <div className="flex flex-col justify-center px-4 py-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50 overflow-y-auto h-screen">
+        <div className="w-full max-w-md mx-auto my-auto">
+          {/* Mobile Back Link & Logo */}
+          <div className="mb-8">
+            <Link
+              to="/"
+              className="inline-flex items-center text-gray-500 hover:text-[#000435] transition-colors mb-6 md:absolute md:top-8 md:right-8"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour
             </Link>
-            <h2 className="text-2xl font-bold font-poppins text-gray-900 mb-2">
+
+            <div className="md:hidden text-center mb-6">
+              <Link to="/" className="inline-block">
+                <h1 className="logo-text text-3xl">CoinD'affaires</h1>
+              </Link>
+            </div>
+
+            <h2 className="text-3xl font-bold font-poppins text-gray-900 mb-2">
               Devenez Vendeur
             </h2>
             <p className="text-gray-600">
-              Créez votre boutique et commencez à vendre
+              Créez votre compte professionnel pour commencer à vendre.
             </p>
           </div>
 
-          {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -101,7 +134,7 @@ const SellerSignup = () => {
                     value={formData.firstName}
                     onChange={(e) => updateFormData('firstName', e.target.value)}
                     placeholder="Prénom"
-                    className="pl-10 search-input"
+                    className="pl-10 search-input bg-white"
                     required
                   />
                 </div>
@@ -116,7 +149,7 @@ const SellerSignup = () => {
                   value={formData.lastName}
                   onChange={(e) => updateFormData('lastName', e.target.value)}
                   placeholder="Nom"
-                  className="search-input"
+                  className="search-input bg-white"
                   required
                 />
               </div>
@@ -133,7 +166,7 @@ const SellerSignup = () => {
                   value={formData.email}
                   onChange={(e) => updateFormData('email', e.target.value)}
                   placeholder="votre@email.com"
-                  className="pl-10 search-input"
+                  className="pl-10 search-input bg-white"
                   required
                 />
               </div>
@@ -150,61 +183,63 @@ const SellerSignup = () => {
                   value={formData.phone}
                   onChange={(e) => updateFormData('phone', e.target.value)}
                   placeholder="06 12 34 56 78"
-                  className="pl-10 search-input"
+                  className="pl-10 search-input bg-white"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={(e) => updateFormData('password', e.target.value)}
-                  placeholder="Mot de passe"
-                  className="pl-10 pr-10 search-input"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mot de passe
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={(e) => updateFormData('password', e.target.value)}
+                    placeholder="Mot de passe"
+                    className="pl-10 pr-10 search-input bg-white"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirmation
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={(e) => updateFormData('confirmPassword', e.target.value)}
+                    placeholder="Confirmer"
+                    className="pl-10 pr-10 search-input bg-white"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirmer le mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={(e) => updateFormData('confirmPassword', e.target.value)}
-                  placeholder="Confirmer le mot de passe"
-                  className="pl-10 pr-10 search-input"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start space-x-2 pt-2">
               <Checkbox
                 id="terms"
                 checked={formData.acceptTerms}
@@ -213,11 +248,11 @@ const SellerSignup = () => {
               />
               <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
                 J'accepte les{" "}
-                <Link to="/conditions-utilisation" className="text-blue-600 hover:underline">
+                <Link to="/conditions-utilisation" className="text-[#000435] hover:underline font-medium">
                   conditions d'utilisation
                 </Link>{" "}
                 et la{" "}
-                <Link to="/politique-confidentialite" className="text-blue-600 hover:underline">
+                <Link to="/politique-confidentialite" className="text-[#000435] hover:underline font-medium">
                   politique de confidentialité
                 </Link>
               </label>
@@ -225,7 +260,7 @@ const SellerSignup = () => {
 
             <Button
               type="submit"
-              className="w-full btn-primary"
+              className="w-full bg-[#000435] hover:bg-[#000435]/90 text-white h-11 text-base shadow-lg hover:shadow-xl transition-all duration-300 mt-4"
               disabled={!formData.acceptTerms || submitting}
             >
               {submitting ? (
@@ -242,13 +277,12 @@ const SellerSignup = () => {
             </Button>
           </form>
 
-          {/* Login link */}
-          <div className="text-center mt-6">
+          <div className="mt-8 text-center text-sm md:text-base pb-8">
             <p className="text-gray-600">
               Déjà un compte ?{" "}
               <Link
                 to="/connexion"
-                className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                className="text-[#000435] hover:text-[#000435]/80 font-bold transition-colors"
               >
                 Se connecter
               </Link>
