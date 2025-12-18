@@ -192,8 +192,8 @@ const CategoryListing = () => {
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`flex-1 p-2 text-center transition-colors ${viewMode === 'grid'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   <Grid className="h-4 w-4 mx-auto" />
@@ -201,8 +201,8 @@ const CategoryListing = () => {
                 <button
                   onClick={() => setViewMode('list')}
                   className={`flex-1 p-2 text-center transition-colors ${viewMode === 'list'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
                     }`}
                 >
                   <List className="h-4 w-4 mx-auto" />
@@ -250,7 +250,7 @@ const CategoryListing = () => {
 
                       <div className="p-4">
                         <h3 className="font-medium text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-                          <Link to={`/annonce/${item.listings_id || item.listing_id}`}>
+                          <Link to={`/produit/${item.listings_id || item.listing_id}`}>
                             {item.title}
                           </Link>
                         </h3>
@@ -294,7 +294,7 @@ const CategoryListing = () => {
                         />
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-900 mb-1 hover:text-blue-600">
-                            <Link to={`/annonce/${item.listings_id || item.listing_id}`}>
+                            <Link to={`/produit/${item.listings_id || item.listing_id}`}>
                               {item.title}
                             </Link>
                           </h3>

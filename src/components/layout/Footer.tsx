@@ -83,12 +83,12 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-bold mb-6 text-secondary-foreground">Catégories</h4>
             <ul className="space-y-3">
-              <li><Link to="/electronics" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Électronique <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/fashion" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Mode & Style <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/home" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Maison & Jardin <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/vehicles" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Véhicules <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/sports" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Sports & Loisirs <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
-              <li><Link to="/all" className="text-secondary-foreground hover:text-secondary-foreground/80 transition-colors duration-200 font-medium">Voir tout →</Link></li>
+              <li><Link to="/categorie/electronique" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Électronique <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/mode" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Mode & Style <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/maison" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Maison & Jardin <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/vehicules" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Véhicules <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/categorie/loisirs" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors duration-200 flex items-center group">Sports & Loisirs <ArrowRight className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></Link></li>
+              <li><Link to="/recherche" className="text-secondary-foreground hover:text-secondary-foreground/80 transition-colors duration-200 font-medium">Voir tout →</Link></li>
             </ul>
           </div>
 
@@ -99,16 +99,16 @@ export function Footer() {
               <div>
                 <h5 className="text-sm font-semibold text-secondary-foreground/60 mb-3 uppercase tracking-wider">Aide</h5>
                 <ul className="space-y-2">
-                  <li><Link to="/help" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Centre d'aide</Link></li>
+                  <li><Link to="/aide" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Centre d'aide</Link></li>
                   <li><Link to="/contact" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Nous contacter</Link></li>
-                  <li><Link to="/faq" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">FAQ</Link></li>
+                  <li><Link to="/aide" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">FAQ</Link></li>
                 </ul>
               </div>
 
               <div>
                 <h5 className="text-sm font-semibold text-secondary-foreground/60 mb-3 uppercase tracking-wider">Entreprise</h5>
                 <ul className="space-y-2">
-                  <li><Link to="/about" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">À propos</Link></li>
+                  <li><Link to="/a-propos" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">À propos</Link></li>
                   <li><Link to="/careers" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Carrières</Link></li>
                   <li><Link to="/press" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Presse</Link></li>
                   <li><Link to="/blog" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">Blog</Link></li>

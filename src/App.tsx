@@ -109,6 +109,9 @@ const App = () => (
           <Route path="/panier" element={<Page title="Mon panier"><Cart /></Page>} />
           <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
 
+          <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
+
+          <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
           <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
 
           <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
@@ -130,6 +133,7 @@ const App = () => (
           <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
 
           {/* Redirects & Legacy */}
+          <Route path="/faq" element={<Page title="FAQ"><Help /></Page>} />
           <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
           <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
           <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />

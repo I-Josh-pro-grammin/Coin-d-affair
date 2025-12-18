@@ -1,5 +1,5 @@
 import { Heart, ShoppingCart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { currencyFmt } from '@/lib/utils';
 
@@ -29,6 +29,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
     const { addToCart } = useCart();
+    const navigate = useNavigate();
 
     // Normalize data
     const rawId = product.listings_id || product.id;
@@ -55,7 +56,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     const handleBuyNow = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        window.location.href = `/acheter/${id}`;
+        navigate(`/acheter/${id}`);
     };
 
     return (
