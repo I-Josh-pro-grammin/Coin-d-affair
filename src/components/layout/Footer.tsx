@@ -24,11 +24,11 @@ export function Footer() {
           <p className="text-xl md:text-2xl text-secondary-foreground/80 mb-8 leading-relaxed">
             Votre prochaine grande trouvaille n'est qu'à un clic
           </p>
-          
+
           {/* Newsletter signup */}
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-12">
-            <Input 
-              placeholder="Votre email" 
+            <Input
+              placeholder="Votre email"
               className="bg-white/10 border-white/20 text-secondary-foreground placeholder:text-secondary-foreground/60 backdrop-blur-sm"
             />
             <Button className="bg-secondary-foreground hover:bg-secondary-foreground/90 text-secondary border-0 font-medium">
@@ -58,10 +58,10 @@ export function Footer() {
               </div>
             </div>
             <p className="text-secondary-foreground/80 text-lg leading-relaxed mb-8">
-              La marketplace française où découvrir, acheter et vendre devient un plaisir. 
+              La marketplace française où découvrir, acheter et vendre devient un plaisir.
               Des milliers d'articles uniques vous attendent.
             </p>
-            
+
             {/* Contact info */}
             <div className="space-y-3">
               <div className="flex items-center text-secondary-foreground/80">
@@ -104,7 +104,7 @@ export function Footer() {
                   <li><Link to="/faq" className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm">FAQ</Link></li>
                 </ul>
               </div>
-              
+
               <div>
                 <h5 className="text-sm font-semibold text-secondary-foreground/60 mb-3 uppercase tracking-wider">Entreprise</h5>
                 <ul className="space-y-2">
@@ -137,12 +137,12 @@ export function Footer() {
               </a>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm text-secondary-foreground/60">
             <p>© {currentYear} Coin D'Affaires. Tous droits réservés.</p>
             <div className="flex space-x-6">
-              <Link to="/terms" className="hover:text-secondary-foreground transition-colors">Conditions</Link>
-              <Link to="/privacy" className="hover:text-secondary-foreground transition-colors">Confidentialité</Link>
+              <Link to="/cgu" className="hover:text-secondary-foreground transition-colors">Conditions</Link>
+              <Link to="/politique-confidentialite" className="hover:text-secondary-foreground transition-colors">Confidentialité</Link>
               <Link to="/cookies" className="hover:text-secondary-foreground transition-colors">Cookies</Link>
             </div>
           </div>
