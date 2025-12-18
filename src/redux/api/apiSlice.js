@@ -101,9 +101,102 @@ export const apiSlice = createApi({
       }),
     }),
     getAdminOrders: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: '/api/admin/orders',
         method: 'GET',
+        params,
+      }),
+    }),
+    getAdminOrderDetails: builder.query({
+      query: (orderId) => ({
+        url: `/api/admin/order/${orderId}`,
+        method: 'GET',
+      }),
+    }),
+    updateAdminOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/api/admin/order/${orderId}/status`,
+        method: 'POST',
+        body: { status },
+      }),
+    }),
+
+    // Admin User Management
+    getAdminUserDetails: builder.query({
+      query: (userId) => ({
+        url: `/api/admin/user/${userId}`,
+        method: 'GET',
+      }),
+    }),
+    banUser: builder.mutation({
+      query: (userId) => ({
+        url: `/api/admin/user/${userId}/ban`,
+        method: 'POST',
+      }),
+    }),
+    unbanUser: builder.mutation({
+      query: (userId) => ({
+        url: `/api/admin/user/${userId}/unban`,
+        method: 'POST',
+      }),
+    }),
+
+    // Admin Listing Management
+    updateListingStatus: builder.mutation({
+      query: ({ listingId, action }) => ({
+        url: `/api/admin/listing/${listingId}/status`,
+        method: 'POST',
+        body: { action },
+      }),
+    }),
+    deleteAdminListing: builder.mutation({
+      query: (listingId) => ({
+        url: `/api/admin/listing/${listingId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    // Admin Subscriptions
+    getSubscriptionStats: builder.query({
+      query: () => ({
+        url: '/api/admin/subscriptions/stats',
+        method: 'GET',
+      }),
+    }),
+    getSubscriptionsList: builder.query({
+      query: (params) => ({
+        url: '/api/admin/subscriptions',
+        method: 'GET',
+        params,
+      }),
+    }),
+
+    // Admin Logs & Notifications
+    getAdminLogs: builder.query({
+      query: (params) => ({
+        url: '/api/admin/logs',
+        method: 'GET',
+        params,
+      }),
+    }),
+    getAdminNotifications: builder.query({
+      query: (params) => ({
+        url: '/api/admin/notifications',
+        method: 'GET',
+        params,
+      }),
+    }),
+    createAdminNotification: builder.mutation({
+      query: (data) => ({
+        url: '/api/admin/notifications',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    markNotificationRead: builder.mutation({
+      query: (notificationId) => ({
+        url: `/api/admin/notification/${notificationId}/read`,
+        method: 'POST',
       }),
     }),
 
@@ -158,7 +251,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Listings'],
     }),
-    
+
     updateProduct: builder.mutation({
       query: ({ productId, ...data }) => ({
         url: `/api/business/update-product/${productId}`,
@@ -355,4 +448,17 @@ export const {
   useGetAdminBusinessesQuery,
   useGetAdminListingsQuery,
   useGetAdminOrdersQuery,
+  useGetAdminOrderDetailsQuery,
+  useUpdateAdminOrderStatusMutation,
+  useGetAdminUserDetailsQuery,
+  useBanUserMutation,
+  useUnbanUserMutation,
+  useUpdateListingStatusMutation,
+  useDeleteAdminListingMutation,
+  useGetSubscriptionStatsQuery,
+  useGetSubscriptionsListQuery,
+  useGetAdminLogsQuery,
+  useGetAdminNotificationsQuery,
+  useCreateAdminNotificationMutation,
+  useMarkNotificationReadMutation,
 } = apiSlice;

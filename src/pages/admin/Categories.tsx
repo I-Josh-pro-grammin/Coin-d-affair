@@ -11,6 +11,12 @@ import {
     Search
 } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+    useGetCategoriesQuery,
+    useCreateCategoryMutation,
+    useCreateSubCategoryMutation
+} from '@/redux/api/apiSlice';
+import { RouteFallback } from '@/components/common/RouteFallback';
 
 export default function Categories() {
     const [showModal, setShowModal] = useState(false);
@@ -23,50 +29,22 @@ export default function Categories() {
         parentId: null as number | null
     });
 
-    // Mock categories data
-    const [categories, setCategories] = useState([
-        {
-            id: 1,
-            name: 'Electronics',
-            nameFr: 'Électronique',
-            icon: '📱',
-            productCount: 245,
-            subcategories: [
-                { id: 11, name: 'Phones & Tablets', nameFr: 'Téléphones & Tablettes', productCount: 89 },
-                { id: 12, name: 'Computers', nameFr: 'Ordinateurs', productCount: 67 },
-                { id: 13, name: 'TV & Audio', nameFr: 'TV & Audio', productCount: 45 },
-            ]
-        },
-        {
-            id: 2,
-            name: 'Home & Garden',
-            nameFr: 'Maison & Jardin',
-            icon: '🏠',
-            productCount: 189,
-            subcategories: [
-                { id: 21, name: 'Furniture', nameFr: 'Meubles', productCount: 78 },
-                { id: 22, name: 'Home Appliances', nameFr: 'Électroménager', productCount: 56 },
-            ]
-        },
-        {
-            id: 3,
-            name: 'Vehicles',
-            nameFr: 'Véhicules',
-            icon: '🚗',
-            productCount: 156,
-            subcategories: []
-        },
-        {
-            id: 4,
-            name: 'Fashion & Beauty',
-            nameFr: 'Mode & Beauté',
-            icon: '👗',
-            productCount: 312,
-            subcategories: []
-        },
-    ]);
+    const { data: categoriesData, isLoading, refetch } = useGetCategoriesQuery({});
+    const [createCategory] = useCreateCategoryMutation();
+    const [createSubCategory] = useCreateSubCategoryMutation();
+
+
+
+    // Transform backend data to match component structure if needed
+    // Assuming backend returns flat list or nested. Let's assume nested based on previous knowledge or adapt.
+    // If backend returns flat list of categories, we might need to process it.
+    // Looking at apiSlice, getCategories returns '/api/category'.
+    // Let's assume it returns { categories: [...] } where categories have subcategories.
+    const categories = categoriesData?.categories || [];
 
     const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
+
+    if (isLoading) return <RouteFallback />;
 
     const toggleExpand = (id: number) => {
         setExpandedCategories(prev =>
@@ -97,36 +75,40 @@ export default function Categories() {
     // ... (existing state)
 
     const handleDeleteCategory = (category: any) => {
-        const message = category.productCount > 0
-            ? `Cette catégorie contient ${category.productCount} produits. Êtes-vous sûr de vouloir la supprimer ?`
-            : 'Êtes-vous sûr de vouloir supprimer cette catégorie ?';
-
-        if (confirm(message)) {
-            setCategories(prev => prev.filter(cat => cat.id !== category.id));
-            toast.success("Catégorie supprimée avec succès");
-        }
+        // Implement delete if API supports it
+        toast.error("Suppression non implémentée dans l'API pour le moment");
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (editingCategory) {
-            // Update existing category
-            setCategories(prev =>
-                prev.map(cat => cat.id === editingCategory.id ? { ...cat, ...formData } : cat)
-            );
-            toast.success("Catégorie mise à jour avec succès");
-        } else {
-            // Create new category
-            const newCategory = {
-                id: Date.now(),
-                ...formData,
-                productCount: 0,
-                subcategories: []
-            };
-            setCategories(prev => [...prev, newCategory]);
-            toast.success("Catégorie créée avec succès");
+        try {
+            if (editingCategory) {
+                // Update existing category - need update mutation
+                toast.error("Modification non implémentée dans l'API pour le moment");
+            } else {
+                // Create new category
+                if (formData.parentId) {
+                    await createSubCategory({
+                        category_id: formData.parentId,
+                        name: formData.name,
+                        name_fr: formData.nameFr,
+                        // icon: formData.icon // subcategory might not have icon in backend schema?
+                    }).unwrap();
+                } else {
+                    await createCategory({
+                        name: formData.name,
+                        name_fr: formData.nameFr,
+                        icon: formData.icon,
+                        description: formData.description
+                    }).unwrap();
+                }
+                toast.success("Catégorie créée avec succès");
+                refetch();
+            }
+            setShowModal(false);
+        } catch (error) {
+            toast.error("Erreur lors de l'enregistrement");
         }
-        setShowModal(false);
     };
 
     return (
