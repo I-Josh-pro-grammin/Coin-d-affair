@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -6,16 +6,25 @@ import { getProductById } from '@/data/mockProducts';
 import { currencyFmt } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
 import { ArrowLeft, Package, MapPin, CreditCard, Smartphone } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Buy() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [quantity, setQuantity] = useState(1);
     const [deliveryMethod, setDeliveryMethod] = useState('standard');
     const [paymentMethod, setPaymentMethod] = useState('mobile-money');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const product = id ? getProductById(id) : undefined;
+
+    // Require authentication to purchase
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+        }
+    }, [user, navigate]);
 
     if (!product) {
         return (

@@ -4,8 +4,10 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/common/ProductCard';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useGetListingQuery, useGetListingsQuery } from '@/redux/api/apiSlice';
-import { currencyFmt } from '@/lib/utils';
+import { currencyFmt, resolveImageSource } from '@/lib/utils';
 import { RouteFallback } from '@/components/common/RouteFallback';
 import {
     ShoppingCart,
@@ -62,7 +64,7 @@ export default function ProductDetail() {
         name: productData.title,
         price: Number(productData.price),
         currency: productData.currency,
-        image: productData.image_url, // Assuming image_url exists
+        image: resolveImageSource(productData),
         category: productData.category_name,
         condition: productData.condition,
         location: productData.location || 'Non spécifié',
@@ -78,10 +80,17 @@ export default function ProductDetail() {
         badge: '' // Mock badge
     };
 
-    // Mock images (in real app, product would have multiple images)
+    // Images (normalize from API)
     const images = product.image ? [product.image] : [];
 
+    const navigate = useNavigate();
+    const { user } = useAuth();
+
     const handleAddToCart = () => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
         addToCart({
             id: product.id.toString(),
             name: product.name,
@@ -93,6 +102,10 @@ export default function ProductDetail() {
     };
 
     const handleBuyNow = () => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
         navigate(`/acheter/${product.id}`);
     };
 

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetCategoriesQuery, useGetListingsQuery } from "@/redux/api/apiSlice";
+import { resolveImageSource } from '@/lib/utils';
 
 const formatPrice = (value?: number, currency = "EUR") => {
   if (!value) return "Prix sur demande";
@@ -229,12 +230,12 @@ const CategoryListing = () => {
             {viewMode === 'grid' ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {listings.map((item: any) => {
-                  const createdAt = item.created_at ? new Date(item.created_at) : null;
+                          const createdAt = item.created_at ? new Date(item.created_at) : null;
                   return (
                     <div key={item.listings_id || item.listing_id} className="ad-card group">
                       <div className="relative">
                         <img
-                          src={item.cover_image || "/placeholder.svg"}
+                          src={resolveImageSource(item)}
                           alt={item.title}
                           className="w-full h-48 object-cover"
                         />
@@ -288,7 +289,7 @@ const CategoryListing = () => {
                     <div key={item.listings_id || item.listing_id} className="bg-white rounded-lg shadow-soft hover:shadow-card transition-all p-4">
                       <div className="flex items-center space-x-4">
                         <img
-                          src={item.cover_image || "/placeholder.svg"}
+                          src={resolveImageSource(item)}
                           alt={item.title}
                           className="w-24 h-24 object-cover rounded-lg"
                         />

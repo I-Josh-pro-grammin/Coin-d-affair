@@ -15,6 +15,7 @@ import {
     Home
 } from 'lucide-react';
 import { useGetBusinessProductsQuery, useDeleteProductMutation } from '@/redux/api/apiSlice';
+import { resolveImageSource } from '@/lib/utils';
 import { RouteFallback } from '@/components/common/RouteFallback';
 import { toast } from 'sonner';
 
@@ -23,7 +24,6 @@ export default function Products() {
     const [filterOpen, setFilterOpen] = useState(false);
     const { data, isLoading } = useGetBusinessProductsQuery({});
     const [deleteProduct] = useDeleteProductMutation();
-    console.log(data?.allProducts?.rows);
 
     const products = data?.allProducts?.rows || [];
 
@@ -127,18 +127,13 @@ export default function Products() {
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-<<<<<<< HEAD
                 {filteredProducts?.map((product: any) => (
                     <div key={product.listings_id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
-=======
-                {filteredProducts.map((product: any) => (
-                    <div key={product.listings_id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group flex flex-col">
->>>>>>> 674f2982f685bd3a6bdc5399b4f852fc0fa0a3e5
                         {/* Product Image */}
                         <div className="relative aspect-square bg-gray-100">
                             {/* Placeholder image - replace with actual image */}
                             {product?.media ? (
-                                <img src={product?.media[0]?.url} alt={product.title} className="w-full h-full object-cover" />
+                                <img src={resolveImageSource(product)} alt={product.title} className="w-full h-full object-cover" />
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center text-gray-300">
                                     <Package size={40} />

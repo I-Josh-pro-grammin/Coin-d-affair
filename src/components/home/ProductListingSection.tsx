@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Star, ChevronLeft, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useGetCategoriesQuery, useGetListingsQuery, useGetBusinessProductsQuery } from "@/redux/api/apiSlice";
+import { useGetCategoriesQuery, useGetListingsQuery } from "@/redux/api/apiSlice";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, ChevronDown } from 'lucide-react';
@@ -103,13 +103,14 @@ export function ProductListingSection() {
     setIsAllProductsOpen(!isAllProductsOpen);
   };
 
-  const { data: trendingData } = useGetBusinessProductsQuery({ sortBy: 'popularity', order: 'desc', limit: 6 });
-  const { data: latestData } = useGetBusinessProductsQuery({ sortBy: 'date', order: 'desc', limit: 6 });
+  // Use public listings endpoint for homepage visibility (supports sortBy: price_asc, price_desc)
+  const { data: trendingData } = useGetListingsQuery({ limit: 6 });
+  const { data: latestData } = useGetListingsQuery({ limit: 6 });
   
 
-  // console.log(latestData?.allProducts?.rows);
-  const trendingProducts = trendingData?.allProducts?.rows || [];
-  const latestProducts = latestData?.allProducts?.rows || [];
+  // console.log(latestData?.listings);
+  const trendingProducts = trendingData?.listings || [];
+  const latestProducts = latestData?.listings || [];
 
   return (
     <section className="py-12 bg-white">

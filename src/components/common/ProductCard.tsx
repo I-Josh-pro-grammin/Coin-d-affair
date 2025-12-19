@@ -1,6 +1,7 @@
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { currencyFmt } from '@/lib/utils';
 
 export interface Media {
@@ -36,6 +37,7 @@ interface ProductCardProps {
 export function ProductCard({ product, onClick }: ProductCardProps) {
     const { addToCart } = useCart();
     const navigate = useNavigate();
+    const { user } = useAuth();
     // Normalize data
     const rawId = product?.listings_id || product.id;
     const id = rawId ? String(rawId) : undefined;
@@ -66,6 +68,10 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!user) {
+            navigate('/login');
+            return;
+        }
             if (id && title) {
             addToCart({
                 id: id,
@@ -81,6 +87,10 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     const handleBuyNow = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!user) {
+            navigate('/login');
+            return;
+        }
         navigate(`/acheter/${id}`);
     };
 
@@ -125,6 +135,10 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        if (!user) {
+                            navigate('/login');
+                            return;
+                        }
                         // TODO: Add to favorites
                     }}
                     className="absolute bottom-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors opacity-0 group-hover:opacity-100"

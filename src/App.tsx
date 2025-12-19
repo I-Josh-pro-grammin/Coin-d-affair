@@ -109,8 +109,6 @@ const App = () => (
           <Route path="/panier" element={<Page title="Mon panier"><Cart /></Page>} />
           <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
 
-          <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
-
           <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
           <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
 
