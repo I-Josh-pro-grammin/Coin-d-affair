@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/common/ProductCard';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+
 import { useGetListingQuery, useGetListingsQuery } from '@/redux/api/apiSlice';
 import { currencyFmt, resolveImageSource } from '@/lib/utils';
 import { RouteFallback } from '@/components/common/RouteFallback';
@@ -125,7 +125,7 @@ export default function ProductDetail() {
     // Images (normalize from API)
     const images = product.image ? [product.image] : [];
 
-    const navigate = useNavigate();
+
     const { user } = useAuth();
 
     const handleAddToCart = () => {
