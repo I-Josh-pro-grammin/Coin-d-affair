@@ -31,57 +31,15 @@ export default function ProductDetail() {
     const [selectedImage, setSelectedImage] = useState(0);
     const [activeTab, setActiveTab] = useState<'details' | 'specs' | 'reviews'>('details');
 
-    // const { data, isLoading } = useGetListingQuery(id || '', { skip: !id });
-    // const productData = data?.listing;
+    const { data, isLoading } = useGetListingQuery(id || '', { skip: !id });
+    const productData = data?.listing;
 
-    // const { data: similarData } = useGetListingsQuery(
-    //     { categoryId: productData?.category_id, limit: 5 },
-    //     { skip: !productData?.category_id }
-    // );
+    const { data: similarData } = useGetListingsQuery(
+        { categoryId: productData?.category_id, limit: 5 },
+        { skip: !productData?.category_id }
+    );
 
-    // MOCK DATA FOR DEVELOPMENT (Backend Disabled)
-    const isLoading = false;
-    // Use first mock product or default template if not found
-    const productData = {
-        listings_id: id || 101,
-        title: "iPhone 15 Pro Max 256GB - Comme Neuf",
-        price: 1200,
-        currency: "€",
-        image_url: "https://images.unsplash.com/photo-1695048180490-30ed069255a5?q=80&w=2070&auto=format&fit=crop",
-        category_name: "Électronique",
-        category_id: 1,
-        condition: "Comme neuf",
-        location: "Paris, France",
-        business_name: "TechResale Pro",
-        description: "iPhone 15 Pro Max 256GB en excellent état. Batterie à 98%. Vendu avec boîte et chargeur d'origine. Garantie encore 6 mois Apple. Remise en main propre sur Paris ou envoi sécurisé.",
-        stock: 1,
-        phone: "+33612345678",
-        listing_type: "product"
-    };
-
-    // Mock similar products
-    const similarProducts = [
-        {
-            id: 102,
-            listings_id: 102,
-            title: "Samsung Galaxy S24 Ultra",
-            price: 1100,
-            image_url: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=2071&auto=format&fit=crop",
-            location: "Lyon",
-            category: "Électronique"
-        },
-        {
-            id: 103,
-            listings_id: 103,
-            title: "MacBook Pro M3 14\"",
-            price: 1800,
-            image_url: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?q=80&w=2026&auto=format&fit=crop",
-            location: "Bordeaux",
-            category: "Ordinateurs"
-        }
-    ];
-
-    // const similarProducts = similarData?.listings?.filter((p: any) => p.listings_id !== id) || [];
+    const similarProducts = similarData?.listings?.filter((p: any) => p.listings_id !== id) || [];
 
     if (isLoading) {
         return <RouteFallback />;
