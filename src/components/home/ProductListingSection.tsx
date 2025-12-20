@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { ProductCard } from '@/components/common/ProductCard';
-import { trendingProducts, latestProducts, recentSearchProducts, allProducts } from '@/data/mockProducts';
 
 
 
@@ -58,12 +57,13 @@ export function ProductListingSection() {
   const [isAllProductsOpen, setIsAllProductsOpen] = useState(true);
 
   const { data: categoryData, isLoading: categoriesLoading } = useGetCategoriesQuery();
-  const categories = categoryData?.categories?.length ? categoryData.categories : fallbackCategories;
+  const categories = categoryData?.categories || fallbackCategories;
 
   const activeCategory = useMemo(
     () => categories.find((category: any) => category.slug === selectedCategory),
     [categories, selectedCategory]
   );
+
   const activeSubcategory = useMemo(
     () =>
       activeCategory?.subcategories?.find(
@@ -103,9 +103,12 @@ export function ProductListingSection() {
     setIsAllProductsOpen(!isAllProductsOpen);
   };
 
-  const { data: trendingData } = useGetListingsQuery({ sortBy: 'popularity', order: 'desc', limit: 6 });
-  const { data: latestData } = useGetListingsQuery({ sortBy: 'date', order: 'desc', limit: 6 });
+  // Use public listings endpoint for homepage visibility (supports sortBy: price_asc, price_desc)
+  const { data: trendingData } = useGetListingsQuery({ limit: 6 });
+  const { data: latestData } = useGetListingsQuery({ limit: 6 });
+  
 
+  // console.log(latestData?.listings);
   const trendingProducts = trendingData?.listings || [];
   const latestProducts = latestData?.listings || [];
 
@@ -139,13 +142,13 @@ export function ProductListingSection() {
               {/* Category Buttons */}
               {isAllProductsOpen && (
                 <div className="space-y-3 mb-8">
-                  {categories.map((category: any) => {
-                    const label = category.category_name || category.name;
+                  {categories.map((category: any, idx:number) => {
+                    const label = category?.name || category?.category_name;
                     const slug =
-                      category.slug || label?.toLowerCase().replace(/\s+/g, "-");
+                      category?.slug || label?.toLowerCase().replace(/\s+/g, "-");
                     return (
                       <button
-                        key={slug}
+                        key={idx}
                         onClick={() => handleCategoryClick(slug)}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-full bg-white shadow-md transition-all duration-300 ${selectedCategory === slug
                           ? 'border-2 border-[#000435] bg-blue-50'
@@ -153,7 +156,7 @@ export function ProductListingSection() {
                           }`}
                       >
                         <span className="font-medium text-gray-800">{label}</span>
-                        {category.subcategories?.length > 0 && (
+                        {category.subcategories?.length && (
                           <span className="text-sm text-gray-500">
                             ({category.subcategories.length})
                           </span>
@@ -187,8 +190,8 @@ export function ProductListingSection() {
 
                   {trendingProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                      {trendingProducts.map((product: any) => (
-                        <ProductCard key={product.listings_id} product={product} />
+                      {trendingProducts.map((product: any, idx:number) => (
+                        <ProductCard key={idx} product={product} />
                       ))}
                     </div>
                   ) : (

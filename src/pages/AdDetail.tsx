@@ -19,6 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetListingQuery, useAddItemToCartMutation } from "@/redux/api/apiSlice";
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 
 const formatPrice = (value?: number, currency = "EUR") => {
@@ -40,6 +42,8 @@ const AdDetail = () => {
   });
 
   const [addItemToCart, { isLoading: isAddingToCart }] = useAddItemToCartMutation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const listing = data?.listing;
   const images = useMemo(() => {
@@ -89,6 +93,10 @@ const AdDetail = () => {
 
   const handleAddToCart = async () => {
     if (!listing) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     try {
       await addItemToCart({
         listing_id: listing.listings_id,

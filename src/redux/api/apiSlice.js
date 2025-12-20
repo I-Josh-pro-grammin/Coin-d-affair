@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const API_BASE_URL =
-  'https://coin-d-affaires-backend.vercel.app/' || 
+  // 'https://coin-d-affaires-backend.vercel.app/' || 
   'http://localhost:5000';
 
 const baseQuery = fetchBaseQuery({

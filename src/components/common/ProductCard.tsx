@@ -1,9 +1,16 @@
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { currencyFmt } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
 
+export interface Media {
+    media_id: string | number
+    order: number | string
+    type: "image" | "video"
+    url: string
+}
 export interface Product {
     listings_id?: string | number;
     id?: string | number;
@@ -11,7 +18,7 @@ export interface Product {
     name?: string;
     price: number;
     image_url?: string;
-    image?: string;
+    media?: Array<Media>;
     cover_image?: string;
     category?: string;
     category_name?: string;
@@ -31,24 +38,48 @@ interface ProductCardProps {
 export function ProductCard({ product, onClick }: ProductCardProps) {
     const { addToCart } = useCart();
     const navigate = useNavigate();
-
+    const { user } = useAuth();
     // Normalize data
-    const rawId = product.listings_id || product.id;
+    const rawId = product?.listings_id || product.id;
     const id = rawId ? String(rawId) : undefined;
-    const title = product.title || product.name;
-    const image = product.image_url || product.cover_image || product.image || '/placeholder.svg';
-    const category = product.category_name || product.category;
+    const title = product?.title || product?.name;
+
+    // Resolve image URL from various possible shapes: media array, cover_image, image_url, or fallback
+    let imageUrl: string = '/placeholder.svg';
+    try {
+        if (Array.isArray(product?.media) && product.media.length) {
+            // media items may be objects with a `url` property or strings
+            const first = product.media[0];
+            if (first && typeof first === 'object' && 'url' in first && first.url) {
+                imageUrl = String((first as any).url);
+            } else if (typeof first === 'string') {
+                imageUrl = first;
+            }
+        } else if (product?.cover_image) {
+            imageUrl = String(product.cover_image);
+        } else if (product?.image_url) {
+            imageUrl = String(product.image_url);
+        }
+    } catch (e) {
+        // keep fallback
+    }
+    const image = imageUrl;
+    const category = product?.category_name || product?.category;
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (id && title) {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+            if (id && title) {
             addToCart({
                 id: id,
                 name: title,
-                price: product.price,
+                price: product?.price,
                 quantity: 1,
-                image: image,
+                image: image, // pass resolved image URL string
                 seller: 'Coin d\'affaire' // Default or fetch from product if available
             });
         }
@@ -57,6 +88,10 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     const handleBuyNow = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!user) {
+            navigate('/login');
+            return;
+        }
         navigate(`/acheter/${id}`);
     };
 
@@ -71,7 +106,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 {/* Product Image */}
                 <img
                     src={image}
-                    alt={title}
+                    alt={title || 'Produit'}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                         e.currentTarget.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500';
@@ -101,6 +136,10 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        if (!user) {
+                            navigate('/login');
+                            return;
+                        }
                         // TODO: Add to favorites
                     }}
                     className="absolute bottom-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors opacity-0 group-hover:opacity-100"

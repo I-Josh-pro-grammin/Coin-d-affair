@@ -2,7 +2,7 @@ import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, User, MapPin, Phone, Mail, CheckCircle, Printer } from 'lucide-react';
 import { useGetOrderByIdQuery, useUpdateOrderMutation } from '@/redux/api/apiSlice';
-import { currencyFmt } from '@/lib/utils';
+import { currencyFmt, resolveImageSource } from '@/lib/utils';
 import { toast } from 'sonner';
 import { RouteFallback } from '@/components/common/RouteFallback';
 
@@ -68,7 +68,7 @@ export default function OrderDetails() {
                                 <div key={item.order_item_id} className="flex gap-4 p-4 border border-gray-200 rounded-xl">
                                     <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                                         {item.image_url ? (
-                                            <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+                                            <img src={resolveImageSource(item)} alt={item.title} className="w-full h-full object-cover" />
                                         ) : (
                                             <Package size={32} className="text-gray-400" />
                                         )}

@@ -7,9 +7,11 @@ import { currencyFmt } from '@/lib/utils';
 import { Check, CreditCard, Truck, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCreateOrderMutation, useCreateCheckoutSessionMutation } from '@/redux/api/apiSlice';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Checkout() {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const { cart, cartTotal, clearCart } = useCart();
     const [step, setStep] = useState(1);
     const [createOrder, { isLoading }] = useCreateOrderMutation();
@@ -33,6 +35,11 @@ export default function Checkout() {
 
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!user) {
+            toast.error('Veuillez vous connecter pour effectuer le paiement');
+            navigate('/login');
+            return;
+        }
 
         try {
             const checkoutData = {
