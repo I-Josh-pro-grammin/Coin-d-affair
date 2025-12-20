@@ -50,6 +50,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Search = lazy(() => import("./pages/Search"));
 const About = lazy(() => import("./pages/About"));
 const Help = lazy(() => import("./pages/Help"));
+const Careers = lazy(() => import("./pages/Careers"));
 const Contact = lazy(() => import("./pages/Contact"));
 const CGU = lazy(() => import("./pages/CGU"));
 const LegalMentions = lazy(() => import("./pages/LegalMentions"));
@@ -137,7 +138,7 @@ const App = () => (
           <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
           <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
           <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />
-          <Route path="/careers" element={<Page title="Carrières"><PlaceholderPage /></Page>} />
+          <Route path="/careers" element={<Page title="Carrières"><Careers /></Page>} />
           <Route path="/blog" element={<Page title="Blog"><PlaceholderPage /></Page>} />
 
           <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><CGU /></Page>} />
