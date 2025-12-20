@@ -56,7 +56,7 @@ export default function AdminDashboard() {
         },
         {
             title: 'Revenus',
-            value: `${statsData?.stats?.totalRevenue || 0} RWF`,
+            value: `${statsData?.stats?.totalRevenue || 0} BIF`,
             change: '+0%',
             trend: 'up', // Assuming up for now
             icon: DollarSign,

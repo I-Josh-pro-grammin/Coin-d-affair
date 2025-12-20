@@ -29,11 +29,11 @@ export const trendingProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Smartphones',
         condition: 'Comme neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'iPhone 13 Pro en excellent état, 256GB de stockage. Batterie à 95%. Aucune rayure.',
         seller: {
             id: 1,
-            name: 'Tech Store Rwanda',
+            name: 'Tech Store Burundi',
             rating: 4.8,
             totalSales: 234
         },
@@ -50,11 +50,11 @@ export const trendingProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Ordinateurs',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'MacBook Pro 14 pouces avec puce M1 Pro. 16GB RAM, 512GB SSD. Neuf dans sa boîte.',
         seller: {
             id: 2,
-            name: 'Apple Store RW',
+            name: 'Apple Store BI',
             rating: 5.0,
             totalSales: 156
         },
@@ -71,7 +71,7 @@ export const trendingProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Smartphones',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Samsung Galaxy S23 Ultra neuf. 256GB, couleur noir fantôme.',
         seller: {
             id: 3,
@@ -91,11 +91,11 @@ export const trendingProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Audio',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'AirPods Pro 2ème génération avec réduction de bruit active.',
         seller: {
             id: 1,
-            name: 'Tech Store Rwanda',
+            name: 'Tech Store Burundi',
             rating: 4.8,
             totalSales: 234
         },
@@ -111,7 +111,7 @@ export const trendingProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Audio',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Casque Sony WH-1000XM5 avec réduction de bruit leader du marché.',
         seller: {
             id: 4,
@@ -135,11 +135,11 @@ export const latestProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Tablettes',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'iPad Air 5 avec puce M1. 64GB, Wi-Fi. Couleur gris sidéral.',
         seller: {
             id: 2,
-            name: 'Apple Store RW',
+            name: 'Apple Store BI',
             rating: 5.0,
             totalSales: 156
         },
@@ -156,7 +156,7 @@ export const latestProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Ordinateurs',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Dell XPS 15 avec Intel i7, 16GB RAM, 512GB SSD, écran 4K.',
         seller: {
             id: 5,
@@ -177,7 +177,7 @@ export const latestProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Appareils photo',
         condition: 'Comme neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Canon EOS R6 en excellent état. Utilisé 3 mois seulement.',
         seller: {
             id: 6,
@@ -198,7 +198,7 @@ export const latestProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Jeux vidéo',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Nintendo Switch modèle OLED avec écran amélioré.',
         seller: {
             id: 7,
@@ -219,11 +219,11 @@ export const latestProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Montres connectées',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Apple Watch Series 8, 45mm, GPS + Cellular.',
         seller: {
             id: 1,
-            name: 'Tech Store Rwanda',
+            name: 'Tech Store Burundi',
             rating: 4.8,
             totalSales: 234
         },
@@ -243,7 +243,7 @@ export const recentSearchProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Audio',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Écouteurs Samsung Galaxy Buds2 Pro avec réduction de bruit.',
         seller: {
             id: 3,
@@ -263,7 +263,7 @@ export const recentSearchProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'TV & Audio',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'TV LG OLED 55 pouces, 4K, HDR10, Dolby Vision.',
         seller: {
             id: 8,
@@ -283,7 +283,7 @@ export const recentSearchProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Drones',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Drone DJI Mini 3 Pro avec caméra 4K.',
         seller: {
             id: 6,
@@ -303,7 +303,7 @@ export const recentSearchProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Accessoires',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'Souris sans fil Logitech MX Master 3S.',
         seller: {
             id: 5,
@@ -323,7 +323,7 @@ export const recentSearchProducts: Product[] = [
         category: 'Électronique',
         subcategory: 'Appareils photo',
         condition: 'Neuf',
-        location: 'Kigali, Rwanda',
+        location: 'Bujumbura, Burundi',
         description: 'GoPro Hero 11 Black avec stabilisation HyperSmooth 5.0.',
         seller: {
             id: 6,

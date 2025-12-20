@@ -23,7 +23,7 @@ export default function ProductForm() {
         condition: 'new',
         description: '',
         locationId: '', // Should be dynamic now
-        currency: 'RWF',
+        currency: 'BIF',
         isNegotiable: false,
         canDeliver: false
     });
@@ -219,7 +219,7 @@ export default function ProductForm() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Prix (RWF) *
+                                    Prix (BIF) *
                                 </label>
                                 <input
                                     type="number"

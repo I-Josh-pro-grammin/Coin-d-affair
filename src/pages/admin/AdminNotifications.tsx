@@ -16,7 +16,7 @@ const mockNotifications = [
         id: 2,
         type: 'success',
         title: 'Vente record atteinte',
-        message: 'Le volume des ventes a dépassé 1M RWF aujourd\'hui !',
+        message: 'Le volume des ventes a dépassé 1M BIF aujourd\'hui !',
         time: 'Il y a 2 heures',
         read: false
     },

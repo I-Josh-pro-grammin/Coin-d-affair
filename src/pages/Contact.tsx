@@ -73,8 +73,8 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         <p className="text-white/60 text-sm mb-1">Téléphone</p>
-                                        <a href="tel:+250700000000" className="hover:text-amber-400 transition-colors font-medium">
-                                            +250 700 000 000
+                                        <a href="tel:+25770000000" className="hover:text-amber-400 transition-colors font-medium">
+                                            +257 70 000 000
                                         </a>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@ export default function Contact() {
                                     <div>
                                         <p className="text-white/60 text-sm mb-1">Adresse</p>
                                         <p className="font-medium">
-                                            Kigali, Rwanda<br />
+                                            Bujumbura, Burundi<br />
                                             123 Rue de l'Commerce
                                         </p>
                                     </div>
@@ -199,8 +199,8 @@ export default function Contact() {
                                         type="submit"
                                         disabled={!isFormValid || isSubmitting}
                                         className={`w-full py-4 px-6 rounded-full font-bold text-white flex items-center justify-center gap-2 transition-all duration-300 ${isFormValid && !isSubmitting
-                                                ? 'bg-[#000435] hover:bg-[#000435]/90 hover:shadow-lg hover:-translate-y-0.5'
-                                                : 'bg-gray-300 cursor-not-allowed'
+                                            ? 'bg-[#000435] hover:bg-[#000435]/90 hover:shadow-lg hover:-translate-y-0.5'
+                                            : 'bg-gray-300 cursor-not-allowed'
                                             }`}
                                     >
                                         {isSubmitting ? (
