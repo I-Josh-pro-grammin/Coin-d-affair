@@ -126,7 +126,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                 to={item.path}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${active
-                                    ? 'bg-[#000435] text-white shadow-md'
+                                    ? 'bg-primary text-primary-foreground shadow-md'
                                     : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >

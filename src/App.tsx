@@ -23,7 +23,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"));
 const EmailVerificationRequired = lazy(() => import("./pages/auth/EmailVerificationRequired"));
 // const Dashboard = lazy(() => import("./pages/Dashboard"));
-// const Messages = lazy(() => import("./pages/Messages"));
+const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const CategoryListing = lazy(() => import("./pages/CategoryListing"));
@@ -63,6 +63,8 @@ const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
 const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications'));
+const RoutesTest = lazy(() => import('./pages/dev/RoutesTest'));
 
 
 
@@ -151,6 +153,11 @@ const App = () => (
           <Route path="/admin/orders" element={<RequireAdmin><Page title="Toutes les Commandes"><AdminOrders /></Page></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><Page title="Analyses"><AdminAnalytics /></Page></RequireAdmin>} />
           <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
+          <Route path="/admin/notifications" element={<RequireAdmin><Page title="Notifications Admin"><AdminNotifications /></Page></RequireAdmin>} />
+
+
+          {/* Dev Tools */}
+          <Route path="/dev/routes" element={<Page title="Route Test"><RoutesTest /></Page>} />
 
           {/* Catch-all */}
           <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
