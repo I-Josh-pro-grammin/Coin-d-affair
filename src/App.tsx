@@ -139,7 +139,7 @@ const App = () => (
           <Route path="/faq" element={<Page title="FAQ"><Help /></Page>} />
           <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
           <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
-          <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
+
           <Route path="/press" element={<Page title="Presse"><Press /></Page>} />
           <Route path="/careers" element={<Page title="Carrières"><Careers /></Page>} />
           <Route path="/blog" element={<Page title="Blog"><Blog /></Page>} />
