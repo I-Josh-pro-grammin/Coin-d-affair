@@ -44,6 +44,7 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Buy = lazy(() => import("./pages/Buy"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Checkout = lazy(() => import("./pages/Checkout"));
+const MobileMoneySimulate = lazy(() => import("./pages/MobileMoneySimulate"));
 
 const Deposer = lazy(() => import("./pages/Deposer"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -108,6 +109,7 @@ const App = () => (
           <Route path="/acheter/:id" element={<Page title="Finaliser l'achat"><Buy /></Page>} />
           <Route path="/panier" element={<Page title="Mon panier"><Cart /></Page>} />
           <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
+          <Route path="/mobile-money/simulate" element={<Page title="Paiement Mobile (Simulation)"><MobileMoneySimulate /></Page>} />
 
           <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
           <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />

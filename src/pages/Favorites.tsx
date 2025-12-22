@@ -2,11 +2,11 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ProductCard } from "@/components/common/ProductCard";
 import { Heart } from "lucide-react";
-import { trendingProducts } from "@/data/mockProducts"; // Using mock data for now
+import { useGetFavoritesQuery } from '@/redux/api/apiSlice';
 
 const Favorites = () => {
-  // Simulate some favorite products
-  const favoriteProducts = trendingProducts.slice(0, 4);
+  const { data, isLoading } = useGetFavoritesQuery();
+  const favoriteProducts = data?.listings || [];
 
   return (
     <div className="min-h-screen bg-gray-50">

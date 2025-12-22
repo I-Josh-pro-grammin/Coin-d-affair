@@ -1,7 +1,9 @@
+import React from 'react';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAddFavoriteMutation, useRemoveFavoriteMutation } from '@/redux/api/apiSlice';
 import { currencyFmt } from '@/lib/utils';
 
 export interface Media {
@@ -38,6 +40,9 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     const { addToCart } = useCart();
     const navigate = useNavigate();
     const { user } = useAuth();
+    const [addFavorite] = useAddFavoriteMutation();
+    const [removeFavorite] = useRemoveFavoriteMutation();
+    const [isFavorite, setIsFavorite] = React.useState(false);
     // Normalize data
     const rawId = product?.listings_id || product.id;
     const id = rawId ? String(rawId) : undefined;
@@ -139,12 +144,29 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                             navigate('/login');
                             return;
                         }
-                        // TODO: Add to favorites
+                                                // Toggle favorite (optimistic)
+                                                const listingId = id;
+                                                if (!listingId) return;
+                                                if (!isFavorite) {
+                                                        addFavorite({ listing_id: listingId })
+                                                            .unwrap()
+                                                            .then(() => setIsFavorite(true))
+                                                            .catch(() => {
+                                                                // ignore errors for now
+                                                            });
+                                                } else {
+                                                        removeFavorite(listingId)
+                                                            .unwrap()
+                                                            .then(() => setIsFavorite(false))
+                                                            .catch(() => {
+                                                                // ignore errors for now
+                                                            });
+                                                }
                     }}
                     className="absolute bottom-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
                     aria-label="Ajouter aux favoris"
                 >
-                    <Heart className="w-5 h-5 text-gray-600 hover:text-red-500 transition-colors" />
+                                        <Heart className={`w-5 h-5 transition-colors ${isFavorite ? 'text-red-500' : 'text-gray-600 hover:text-red-500'}`} />
                 </button>
             </div>
 

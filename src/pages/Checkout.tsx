@@ -32,6 +32,9 @@ export default function Checkout() {
     };
 
     const [createCheckoutSession, { isLoading: isPaymentLoading }] = useCreateCheckoutSessionMutation();
+    const [paymentMethod, setPaymentMethod] = useState<'card'|'mobile_money'|'cod'>('card');
+    const [phone, setPhone] = useState('');
+    const [paymentProvider, setPaymentProvider] = useState('mtn');
 
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,10 +46,13 @@ export default function Checkout() {
 
         try {
             const checkoutData = {
-                cartItems: cart.map(item => ({
-                    listingId: item.id,
-                    quantity: item.quantity
-                }))
+                    cartItems: cart.map(item => ({
+                        listingId: item.id,
+                        quantity: item.quantity
+                    })),
+                    paymentMethod,
+                    phone: paymentMethod === 'mobile_money' ? phone : undefined,
+                    paymentProvider: paymentMethod === 'mobile_money' ? paymentProvider : undefined
             };
 
             const response = await createCheckoutSession(checkoutData).unwrap();
@@ -160,36 +166,68 @@ export default function Checkout() {
                             </div>
 
                             {step === 2 && (
-                                <form onSubmit={handlePayment}>
-                                    <div className="space-y-4 mb-6">
-                                        <label className="flex items-center gap-4 p-4 border-2 border-[#000435] bg-blue-50 rounded-xl cursor-pointer">
-                                            <input type="radio" name="payment" defaultChecked className="w-5 h-5 text-[#000435]" />
-                                            <div className="flex-1">
-                                                <span className="font-bold text-gray-900 block">Mobile Money</span>
-                                                <span className="text-sm text-gray-600">MTN / Airtel</span>
-                                            </div>
-                                            <CreditCard className="text-[#000435]" />
-                                        </label>
+                                                <form onSubmit={handlePayment}>
+                                                    <div className="space-y-4 mb-6">
+                                                        <label className="flex items-center gap-4 p-4 border-2 border-[#000435] bg-blue-50 rounded-xl cursor-pointer">
+                                                            <input type="radio" name="payment" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="w-5 h-5 text-[#000435]" />
+                                                            <div className="flex-1">
+                                                                <span className="font-bold text-gray-900 block">Carte bancaire</span>
+                                                                <span className="text-sm text-gray-600">Paiement par carte (Stripe)</span>
+                                                            </div>
+                                                            <CreditCard className="text-[#000435]" />
+                                                        </label>
 
-                                        <label className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-gray-300">
-                                            <input type="radio" name="payment" className="w-5 h-5 text-[#000435]" />
-                                            <div className="flex-1">
-                                                <span className="font-bold text-gray-900 block">Paiement à la livraison</span>
-                                                <span className="text-sm text-gray-600">Payer en espèces à la réception</span>
-                                            </div>
-                                            <Truck className="text-gray-400" />
-                                        </label>
-                                    </div>
+                                                        <label className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-gray-300">
+                                                            <input type="radio" name="payment" checked={paymentMethod === 'mobile_money'} onChange={() => setPaymentMethod('mobile_money')} className="w-5 h-5 text-[#000435]" />
+                                                            <div className="flex-1">
+                                                                <span className="font-bold text-gray-900 block">Mobile Money</span>
+                                                                <span className="text-sm text-gray-600">MTN / Airtel (via Stripe if enabled)</span>
+                                                            </div>
+                                                            <CreditCard className="text-gray-400" />
+                                                        </label>
 
-                                    <button
-                                        type="submit"
-                                        disabled={isPaymentLoading}
-                                        className="w-full bg-[#000435] text-white py-4 rounded-xl font-bold hover:bg-[#000435]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                                    >
-                                        {isPaymentLoading ? 'Redirection...' : `Payer ${currencyFmt(total)}`}
-                                    </button>
-                                </form>
-                            )}
+                                                        <label className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-gray-300">
+                                                            <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="w-5 h-5 text-[#000435]" />
+                                                            <div className="flex-1">
+                                                                <span className="font-bold text-gray-900 block">Paiement à la livraison</span>
+                                                                <span className="text-sm text-gray-600">Payer en espèces à la réception</span>
+                                                            </div>
+                                                            <Truck className="text-gray-400" />
+                                                        </label>
+
+                                                        {paymentMethod === 'mobile_money' && (
+                                                            <div className="mt-2 space-y-3">
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Numéro de téléphone (ex: +2507...)</label>
+                                                                    <input
+                                                                        required
+                                                                        type="tel"
+                                                                        value={phone}
+                                                                        onChange={(e) => setPhone(e.target.value)}
+                                                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                                                        placeholder="+2507..."
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Fournisseur</label>
+                                                                    <select value={paymentProvider} onChange={(e) => setPaymentProvider(e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-xl">
+                                                                        <option value="mtn">MTN</option>
+                                                                        <option value="airtel">Airtel</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <button
+                                                        type="submit"
+                                                        disabled={isPaymentLoading}
+                                                        className="w-full bg-[#000435] text-white py-4 rounded-xl font-bold hover:bg-[#000435]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                                    >
+                                                        {isPaymentLoading ? 'Redirection...' : `Payer ${currencyFmt(total)}`}
+                                                    </button>
+                                                </form>
+                                            )}
                         </div>
                     </div>
 

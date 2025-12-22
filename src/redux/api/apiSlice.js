@@ -74,6 +74,35 @@ export const apiSlice = createApi({
       }),
       providesTags: ['Categories'],
     }),
+    // Favorites
+    getFavorites: builder.query({
+      query: () => ({
+        url: '/api/favorites',
+        method: 'GET',
+      }),
+      providesTags: (result) =>
+        result?.listings
+          ? [
+              ...result.listings.map((listing) => ({ type: 'Listings', id: listing.listings_id })),
+              { type: 'Listings', id: 'FAVORITES' },
+            ]
+          : [{ type: 'Listings', id: 'FAVORITES' }],
+    }),
+    addFavorite: builder.mutation({
+      query: (body) => ({
+        url: '/api/favorites',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Listings', id: 'FAVORITES' }],
+    }),
+    removeFavorite: builder.mutation({
+      query: (listingId) => ({
+        url: `/api/favorites/${listingId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Listings', id: 'FAVORITES' }],
+    }),
 
     // Admin Endpoints
     getAdminStats: builder.query({
@@ -217,7 +246,7 @@ export const apiSlice = createApi({
     }),
     createCheckoutSession: builder.mutation({
       query: (data) => ({
-        url: '/api/payment/create-checkout-session',
+        url: '/api/checkout-session',
         method: 'POST',
         body: data,
       }),
@@ -469,4 +498,8 @@ export const {
   useCreateAdminNotificationMutation,
   useMarkNotificationReadMutation,
   useGetLocationsQuery,
+  // Favorites
+  useGetFavoritesQuery,
+  useAddFavoriteMutation,
+  useRemoveFavoriteMutation,
 } = apiSlice;
