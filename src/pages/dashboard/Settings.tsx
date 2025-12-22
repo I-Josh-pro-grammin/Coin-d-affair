@@ -168,8 +168,8 @@ export default function Settings() {
                                         <input
                                             type="tel"
                                             required
-                                            placeholder="+250 XXX XXX XXX"
-                                            defaultValue="+250 788 123 456"
+                                            placeholder="+257 XXX XXX XXX"
+                                            defaultValue="+257 71 123 456"
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">
@@ -185,7 +185,7 @@ export default function Settings() {
                                     </label>
                                     <input
                                         type="text"
-                                        defaultValue="Kigali, Rwanda"
+                                        defaultValue="Bujumbura, Burundi"
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                     />
                                 </div>
@@ -385,13 +385,138 @@ export default function Settings() {
                         </div>
                     )}
 
-                    {/* Payment & Shipping - Placeholder for other tabs */}
-                    {(activeTab === 'payment' || activeTab === 'shipping') && (
-                        <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                {activeTab === 'payment' ? 'Paramètres de paiement' : 'Paramètres de livraison'}
-                            </h3>
-                            <p className="text-gray-600">Cette section sera bientôt disponible</p>
+                    {/* Payment Settings */}
+                    {activeTab === 'payment' && (
+                        <div className="bg-white rounded-2xl shadow-sm p-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6">Paramètres de paiement</h2>
+                            <p className="text-gray-600 mb-8">Gérez vos méthodes de retrait et préférences de devise.</p>
+
+                            <div className="space-y-8">
+                                {/* Mobile Money Section */}
+                                <div className="border rounded-xl p-6">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-700">
+                                                <CreditCard size={24} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-gray-900">Mobile Money</h3>
+                                                <p className="text-sm text-gray-600">Recevoir les paiements via MOMO/Airtel</p>
+                                            </div>
+                                        </div>
+                                        <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">ACTIF</span>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Fournisseur</label>
+                                            <select className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent">
+                                                <option>Ecocash</option>
+                                                <option>Lumicash</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Numéro de téléphone</label>
+                                            <input
+                                                type="tel"
+                                                defaultValue="+257 71 123 456"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bank Transfer Section */}
+                                <div className="border rounded-xl p-6">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-700">
+                                                <Store size={24} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-gray-900">Virement Bancaire</h3>
+                                                <p className="text-sm text-gray-600">Pour les gros montants</p>
+                                            </div>
+                                        </div>
+                                        <button className="text-[#000435] text-sm font-medium hover:underline">Configurer</button>
+                                    </div>
+                                    <p className="text-sm text-gray-500">Aucun compte bancaire configuré.</p>
+                                </div>
+                            </div>
+
+                            <button className="mt-8 flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all">
+                                <Save size={20} />
+                                Sauvegarder les méthodes
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Shipping Settings */}
+                    {activeTab === 'shipping' && (
+                        <div className="bg-white rounded-2xl shadow-sm p-6">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6">Paramètres de livraison</h2>
+                            <p className="text-gray-600 mb-8">Définissez vos zones et tarifs de livraison.</p>
+
+                            <div className="space-y-6">
+                                {/* Local Delivery */}
+                                <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <Truck className="text-[#000435]" size={24} />
+                                            <div>
+                                                <h3 className="font-bold text-gray-900">Livraison Standard (Bujumbura)</h3>
+                                                <p className="text-sm text-gray-600">Livraison en 24-48h</p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" defaultChecked className="sr-only peer" />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#000435]"></div>
+                                        </label>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex-1">
+                                            <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Tarif (BIF)</label>
+                                            <input
+                                                type="number"
+                                                defaultValue="2000"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <label className="block text-xs font-medium text-gray-500 mb-1 uppercase">Délai (Heures)</label>
+                                            <input
+                                                type="text"
+                                                defaultValue="24-48h"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#000435] focus:border-transparent"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Pickup Option */}
+                                <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <Store className="text-[#000435]" size={24} />
+                                            <div>
+                                                <h3 className="font-bold text-gray-900">Retrait en magasin</h3>
+                                                <p className="text-sm text-gray-600">Le client vient récupérer sa commande</p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" defaultChecked className="sr-only peer" />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#000435]"></div>
+                                        </label>
+                                    </div>
+                                    <p className="text-sm text-gray-500 italic">Gratuit pour le client</p>
+                                </div>
+
+                                {/* Add New Method */}
+                                <button className="w-full py-4 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-[#000435] hover:text-[#000435] transition-all font-medium flex items-center justify-center gap-2">
+                                    <Truck size={20} />
+                                    Ajouter une zone de livraison
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

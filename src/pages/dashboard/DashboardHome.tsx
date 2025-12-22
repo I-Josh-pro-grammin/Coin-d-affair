@@ -37,7 +37,7 @@ export default function DashboardHome() {
     const stats = [
         {
             title: 'Revenus totaux',
-            value: `${totalRevenue} RWF`,
+            value: `${totalRevenue} BIF`,
             change: '+0%', // Placeholder as we don't have historical data yet
             trend: 'up',
             icon: DollarSign,

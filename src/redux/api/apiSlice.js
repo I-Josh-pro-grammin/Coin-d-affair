@@ -4,6 +4,7 @@ const API_BASE_URL =
   'https://coin-d-affaires-backend.vercel.app/' || 
   'http://localhost:5000';
 
+
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   credentials: 'include',

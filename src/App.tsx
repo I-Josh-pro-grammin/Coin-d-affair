@@ -23,7 +23,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const VerifyEmail = lazy(() => import("./pages/auth/VerifyEmail"));
 const EmailVerificationRequired = lazy(() => import("./pages/auth/EmailVerificationRequired"));
 // const Dashboard = lazy(() => import("./pages/Dashboard"));
-// const Messages = lazy(() => import("./pages/Messages"));
+const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const CategoryListing = lazy(() => import("./pages/CategoryListing"));
@@ -51,6 +51,9 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Search = lazy(() => import("./pages/Search"));
 const About = lazy(() => import("./pages/About"));
 const Help = lazy(() => import("./pages/Help"));
+const Careers = lazy(() => import("./pages/Careers"));
+const Blog = lazy(() => import("./pages/Blog"));
+const Press = lazy(() => import("./pages/Press"));
 const Contact = lazy(() => import("./pages/Contact"));
 const CGU = lazy(() => import("./pages/CGU"));
 const LegalMentions = lazy(() => import("./pages/LegalMentions"));
@@ -64,6 +67,8 @@ const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
 const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications'));
+const RoutesTest = lazy(() => import('./pages/dev/RoutesTest'));
 
 
 
@@ -136,9 +141,10 @@ const App = () => (
           <Route path="/faq" element={<Page title="FAQ"><Help /></Page>} />
           <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
           <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
-          <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />
-          <Route path="/careers" element={<Page title="Carrières"><PlaceholderPage /></Page>} />
-          <Route path="/blog" element={<Page title="Blog"><PlaceholderPage /></Page>} />
+
+          <Route path="/press" element={<Page title="Presse"><Press /></Page>} />
+          <Route path="/careers" element={<Page title="Carrières"><Careers /></Page>} />
+          <Route path="/blog" element={<Page title="Blog"><Blog /></Page>} />
 
           <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><CGU /></Page>} />
           <Route path="/cgu" element={<Page title="Conditions Générales d'Utilisation"><CGU /></Page>} />
@@ -151,6 +157,11 @@ const App = () => (
           <Route path="/admin/orders" element={<RequireAdmin><Page title="Toutes les Commandes"><AdminOrders /></Page></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><Page title="Analyses"><AdminAnalytics /></Page></RequireAdmin>} />
           <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
+          <Route path="/admin/notifications" element={<RequireAdmin><Page title="Notifications Admin"><AdminNotifications /></Page></RequireAdmin>} />
+
+
+          {/* Dev Tools */}
+          <Route path="/dev/routes" element={<Page title="Route Test"><RoutesTest /></Page>} />
 
           {/* Catch-all */}
           <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />

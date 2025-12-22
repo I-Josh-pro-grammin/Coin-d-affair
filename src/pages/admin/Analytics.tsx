@@ -18,7 +18,7 @@ export default function Analytics() {
     const kpis = [
         {
             title: 'Revenus Totaux',
-            value: `${statsData?.stats?.totalRevenue || 0} RWF`,
+            value: `${statsData?.stats?.totalRevenue || 0} BIF`,
             change: '+0%', // Need historical data
             icon: DollarSign,
             color: 'bg-green-100 text-green-600'

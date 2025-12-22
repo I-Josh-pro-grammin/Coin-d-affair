@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Logo } from '@/components/common/Logo';
 import {
     LayoutDashboard,
     Users,
@@ -53,15 +54,10 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                         </button>
 
                         {/* Logo with Admin Badge */}
-                        <Link to="/admin" className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-[#000435] rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold">C</span>
-                            </div>
-                            <div>
-                                <span className="font-bold text-lg">Coin D'Affaires</span>
-                                <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-800 text-xs font-bold rounded-full">ADMIN</span>
-                            </div>
-                        </Link>
+                        <div className="flex items-center gap-2">
+                            <Logo withText={true} to="/admin" />
+                            <span className="px-2 py-0.5 bg-red-100 text-red-800 text-xs font-bold rounded-full">ADMIN</span>
+                        </div>
                     </div>
 
                     {/* Right side */}
@@ -75,10 +71,10 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                         </Link>
 
                         {/* Notifications */}
-                        <button className="relative p-2 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-full transition-colors">
+                        <Link to="/admin/notifications" className="relative p-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-full transition-colors">
                             <Bell size={20} />
                             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                        </button>
+                        </Link>
 
                         {/* Profile Dropdown */}
                         <div className="relative">
@@ -133,8 +129,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                                 to={item.path}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${active
-                                        ? 'bg-[#000435] text-white shadow-md'
-                                        : 'text-gray-700 hover:bg-gray-100'
+                                    ? 'bg-primary text-primary-foreground shadow-md'
+                                    : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
                                 <Icon size={20} />

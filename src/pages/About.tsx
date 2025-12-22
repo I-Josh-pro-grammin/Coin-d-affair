@@ -10,7 +10,7 @@ export default function About() {
                     <h1 className="text-3xl font-bold text-gray-900 mb-6">À propos de Coin D'Affaires</h1>
                     <div className="prose prose-lg text-gray-600">
                         <p className="mb-4">
-                            Coin D'Affaires est la première plateforme de commerce électronique au Rwanda, connectant les acheteurs et les vendeurs dans un environnement sécurisé et convivial.
+                            Coin D'Affaires est la première plateforme de commerce électronique au Burundi, connectant les acheteurs et les vendeurs dans un environnement sécurisé et convivial.
                         </p>
                         <p className="mb-4">
                             Notre mission est de simplifier le commerce en ligne en Afrique, en offrant des outils puissants aux vendeurs pour développer leur activité et une expérience d'achat exceptionnelle aux consommateurs.

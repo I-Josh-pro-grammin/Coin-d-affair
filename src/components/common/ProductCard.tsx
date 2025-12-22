@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAddFavoriteMutation, useRemoveFavoriteMutation } from '@/redux/api/apiSlice';
 import { currencyFmt } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
 
 export interface Media {
     media_id: string | number
@@ -192,7 +193,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     {/* Add to Cart - Ghost/Outline Button */}
                     <button
                         onClick={handleAddToCart}
-                        className="w-full py-2.5 px-4 border-2 border-[#000435] text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 bg-transparent flex items-center justify-center gap-2"
+                        className="w-full py-2.5 px-4 border-2 border-primary text-primary font-medium rounded-full hover:bg-primary hover:text-white transition-all duration-300 bg-transparent flex items-center justify-center gap-2"
                         aria-label="Ajouter au panier"
                     >
                         <ShoppingCart size={18} />
@@ -202,7 +203,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     {/* Buy Now - Solid Button */}
                     <button
                         onClick={handleBuyNow}
-                        className="w-full py-2.5 px-4 bg-[#000435] text-white font-medium rounded-full hover:bg-[#000435]/90 transition-all duration-300"
+                        className="w-full py-2.5 px-4 bg-primary text-primary-foreground font-medium rounded-full hover:bg-primary/90 transition-all duration-300 shadow-sm"
                     >
                         Acheter maintenant
                     </button>

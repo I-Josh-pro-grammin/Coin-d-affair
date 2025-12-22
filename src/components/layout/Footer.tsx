@@ -66,7 +66,7 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center text-secondary-foreground/80">
                 <MapPin className="h-5 w-5 mr-3 text-secondary-foreground" />
-                <span>Paris, France</span>
+                <span>Bujumbura, Burundi</span>
               </div>
               <div className="flex items-center text-secondary-foreground/80">
                 <Mail className="h-5 w-5 mr-3 text-secondary-foreground" />

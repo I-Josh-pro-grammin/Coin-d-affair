@@ -27,7 +27,7 @@ export default function LegalMentions() {
                                 <p className="text-gray-700 leading-relaxed">
                                     <strong>Dénomination :</strong> Coin D'Affaires SAS<br />
                                     <strong>Siège social :</strong> 123 Avenue du Commerce, Kigali, Rwanda<br />
-                                    <strong>Capital social :</strong> 1 000 000 RWF<br />
+                                    <strong>Capital social :</strong> 1 000 000 BIF<br />
                                     <strong>RCS :</strong> Kigali B 123 456 789<br />
                                     <strong>Directeur de la publication :</strong> John Doe
                                 </p>

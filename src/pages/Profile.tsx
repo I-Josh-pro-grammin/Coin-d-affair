@@ -37,10 +37,10 @@ export default function Profile() {
                         <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-500">
-                                    {user.fullName.charAt(0)}
+                                    {user.name.charAt(0)}
                                 </div>
                                 <div>
-                                    <h2 className="font-bold text-gray-900">{user.fullName}</h2>
+                                    <h2 className="font-bold text-gray-900">{user.name}</h2>
                                     <p className="text-sm text-gray-500">{user.email}</p>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@ export default function Profile() {
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Nom complet</label>
                                             <div className="relative">
                                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                                <input type="text" defaultValue={user.fullName} className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                                <input type="text" defaultValue={user.name} className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
                                             </div>
                                         </div>
                                         <div>
@@ -110,7 +110,7 @@ export default function Profile() {
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
                                             <div className="relative">
                                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                                <input type="tel" defaultValue={user.phone || ''} placeholder="+250..." className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
+                                                <input type="tel" defaultValue={user.phone || ''} placeholder="+257..." className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent" />
                                             </div>
                                         </div>
                                         <div>
