@@ -28,11 +28,26 @@ const SellerSignup = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  /* Password Validation Logic */
+  const passwordRules = [
+    { label: "Au moins 8 caractères", valid: formData.password.length >= 8 },
+    { label: "Une majuscule", valid: /[A-Z]/.test(formData.password) },
+    { label: "Une minuscule", valid: /[a-z]/.test(formData.password) },
+    { label: "Un chiffre", valid: /\d/.test(formData.password) },
+  ];
+
+  const isPasswordValid = passwordRules.every((rule) => rule.valid);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Les mots de passe ne correspondent pas");
+      return;
+    }
+
+    if (!isPasswordValid) {
+      toast.error("Le mot de passe ne respecte pas les critères de sécurité");
       return;
     }
 
@@ -48,7 +63,7 @@ const SellerSignup = () => {
         email: formData.email,
         password: formData.password,
         accountType: "business",
-        number: formData.phone
+        phone: formData.phone // Corrected from number -> phone
       });
 
       toast.success("Compte vendeur créé avec succès");
@@ -240,6 +255,18 @@ const SellerSignup = () => {
               </div>
             </div>
 
+            {/* Password Rules Feedback */}
+            {formData.password && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {passwordRules.map((rule, idx) => (
+                  <div key={idx} className={`flex items-center gap-1 ${rule.valid ? "text-green-600" : "text-gray-400"}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${rule.valid ? "bg-green-600" : "bg-gray-300"}`} />
+                    {rule.label}
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="flex items-start space-x-2 pt-2">
               <Checkbox
                 id="terms"
@@ -261,8 +288,8 @@ const SellerSignup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-[#000435] hover:bg-[#000435]/90 text-white h-11 text-base shadow-lg hover:shadow-xl transition-all duration-300 mt-4"
-              disabled={!formData.acceptTerms || submitting}
+              className="w-full bg-[#000435] hover:bg-[#000435]/90 text-white h-11 text-base shadow-lg hover:shadow-xl transition-all duration-300 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!formData.acceptTerms || submitting || !isPasswordValid}
             >
               {submitting ? (
                 <>

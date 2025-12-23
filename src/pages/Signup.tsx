@@ -47,7 +47,7 @@ const Signup = () => {
         email: formData.email,
         password: formData.password,
         accountType: formData.accountType as 'user' | 'business',
-        number: formData.phone,
+        phone: formData.phone,
       });
       toast.success("Compte créé avec succès");
       navigate("/");
