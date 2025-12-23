@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import Loader from '@/components/common/Loader';
 import { Search as SearchIcon, Filter, SlidersHorizontal } from 'lucide-react';
 import { currencyFmt } from '@/lib/utils';
-import { useGetListingsQuery } from '@/redux/api/apiSlice'
+import { useGetListingsQuery, useGetCategoriesQuery } from '@/redux/api/apiSlice'
 
 // Mock data for search results
 const MOCK_PRODUCTS = [
@@ -18,21 +19,72 @@ const MOCK_PRODUCTS = [
 export default function Search() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
-    const [results, setResults] = useState(MOCK_PRODUCTS);
+    const [results, setResults] = useState([]);
     const [priceRange, setPriceRange] = useState([0, 2000000]);
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedCategory, setSelectedCategory] = useState('all');
 
-    const {data} = useGetListingsQuery();
-    console.log(data);
+    const { data, isLoading: listingsLoading } = useGetListingsQuery();
+    const { data: categories } = useGetCategoriesQuery();
+    const products = data?.listings || [];
+
+    const getId = (p: any) => String(p?.listings_id ?? p?.listing_id ?? p?.id ?? JSON.stringify(p));
+
+    // Normalize categories into { key, label, value } where value is a slug string
+    const rawCategories = categories?.categories ?? categories ?? [];
+    const normalizedCategories = [
+        { key: 'all', label: 'Toutes', value: 'all' },
+        ...rawCategories.map((c: any, idx: number) => {
+            const name = c?.name ?? c?.nameFr ?? c?.category_name ?? c?.title ?? String(c ?? '');
+            const slug =
+                c?.slug || c?.category_slug || (name || '').toLowerCase().replace(/\s+/g, '-');
+            const key = c?.id ?? c?.category_id ?? slug ?? `cat-${idx}`;
+            return { key, label: name, value: slug };
+        }),
+    ];
+
+    const productTitle = (p: any) => (p?.title || p?.name || '').toString();
+    const productCategorySlug = (p: any) =>
+        p?.category_slug || p?.slug || (p?.category_name || p?.category || '').toString().toLowerCase().replace(/\s+/g, '-');
+
+    // Avoid updating results on every render with a new array reference — only update when contents change
     useEffect(() => {
-        // Filter results based on query
-        const filtered = MOCK_PRODUCTS.filter(p =>
-            p.name.toLowerCase().includes(query.toLowerCase()) &&
-            (selectedCategory === 'All' || p.category === selectedCategory) &&
-            p.price >= priceRange[0] && p.price <= priceRange[1]
+        if (!products || products.length === 0) {
+            // Only clear if results currently non-empty to avoid ping-pong
+            setResults((prev) => (prev.length ? [] : prev));
+            return;
+        }
+
+        const filtered = products.filter((p: any) => {
+            const title = productTitle(p).toLowerCase();
+            const matchesQuery = query ? title.includes(query.toLowerCase()) : true;
+            const prodSlug = productCategorySlug(p);
+            const matchesCategory = selectedCategory === 'all' || prodSlug === selectedCategory;
+            const price = Number(p?.price ?? p?.amount ?? 0);
+            const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
+            return matchesQuery && matchesCategory && matchesPrice;
+        });
+
+        // shallow compare by id and length
+        setResults((prev) => {
+            if (prev.length === filtered.length && prev.every((it: any, i: number) => getId(it) === getId(filtered[i]))) {
+                return prev; // no change
+            }
+            return filtered;
+        });
+    }, [products, query, selectedCategory, priceRange]);
+      
+
+    if (listingsLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50">
+                <Navbar />
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <Loader message="Recherche en cours..." />
+                </main>
+                <Footer />
+            </div>
         );
-        setResults(filtered);
-    }, [query, selectedCategory, priceRange]);
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -52,16 +104,17 @@ export default function Search() {
                             <div className="mb-8">
                                 <h3 className="font-medium text-gray-900 mb-3">Catégories</h3>
                                 <div className="space-y-2">
-                                    {['All', 'Électronique', 'Mode', 'Maison', 'Beauté'].map(cat => (
-                                        <label key={cat} className="flex items-center gap-2 cursor-pointer">
+                                    {normalizedCategories.map((cat) => (
+                                        <label key={cat.key} className="flex items-center gap-2 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="category"
-                                                checked={selectedCategory === cat}
-                                                onChange={() => setSelectedCategory(cat)}
+                                                value={cat.value}
+                                                checked={selectedCategory === cat.value}
+                                                onChange={(e) => setSelectedCategory(e.target.value)}
                                                 className="text-[#000435] focus:ring-[#000435]"
                                             />
-                                            <span className="text-sm text-gray-600">{cat === 'All' ? 'Toutes' : cat}</span>
+                                            <span className="text-sm text-gray-600">{cat.label}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -92,35 +145,40 @@ export default function Search() {
                     {/* Results */}
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6">
-                            <h1 className="text-xl font-bold text-gray-900">
-                                {results.length} résultat{results.length > 1 ? 's' : ''} pour "{query}"
-                            </h1>
+                        <h1 className="text-xl font-bold text-gray-900">
+                            {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{query}"
+                        </h1>
+
                             <button className="flex items-center gap-2 text-gray-600 hover:text-[#000435] md:hidden">
                                 <SlidersHorizontal size={20} />
                                 Filtres
                             </button>
                         </div>
 
-                        {results.length > 0 ? (
+                        {results?.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {results.map((product) => (
-                                    <Link key={product.id} to={`/produit/${product.id}`} className="group">
-                                        <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all">
-                                            <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                                                <img
-                                                    src={product.image}
-                                                    alt={product.name}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                />
+                                {results?.map((product, idx) => {
+                                    const pid = getId(product) || `idx-${idx}`;
+                                    const title = product?.title || product?.name || 'Produit';
+                                    return (
+                                        <Link key={String(pid)} to={`/produit/${encodeURIComponent(pid)}`} className="group">
+                                            <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all">
+                                                <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                                                    <img
+                                                        src={product?.media?.[0]?.url || product.image || 'https://via.placeholder.com/400'}
+                                                        alt={title}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                </div>
+                                                <div className="p-4">
+                                                    <p className="text-xs text-gray-500 mb-1">{product?.category_name || product?.category}</p>
+                                                    <h3 className="font-semibold text-gray-900 mb-2 truncate">{title}</h3>
+                                                    <p className="text-lg font-bold text-[#000435]">{currencyFmt(product?.price)}</p>
+                                                </div>
                                             </div>
-                                            <div className="p-4">
-                                                <p className="text-xs text-gray-500 mb-1">{product.category}</p>
-                                                <h3 className="font-semibold text-gray-900 mb-2 truncate">{product.name}</h3>
-                                                <p className="text-lg font-bold text-[#000435]">{currencyFmt(product.price)}</p>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <div className="text-center py-12 bg-white rounded-2xl shadow-sm">

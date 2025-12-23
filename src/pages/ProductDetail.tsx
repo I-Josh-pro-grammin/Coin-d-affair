@@ -5,10 +5,9 @@ import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/common/ProductCard';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-
+import Loader from '@/components/common/Loader';
 import { useGetListingQuery, useGetListingsQuery } from '@/redux/api/apiSlice';
 import { currencyFmt, resolveImageSource } from '@/lib/utils';
-import { RouteFallback } from '@/components/common/RouteFallback';
 import {
     ShoppingCart,
     Heart,
@@ -42,7 +41,11 @@ export default function ProductDetail() {
     const similarProducts = similarData?.listings?.filter((p: any) => p.listings_id !== id) || [];
 
     if (isLoading) {
-        return <RouteFallback />;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <Loader message="Chargement du produit..." />
+            </div>
+        );
     }
 
     if (!productData) {
@@ -82,7 +85,6 @@ export default function ProductDetail() {
 
     // Images (normalize from API)
     const images = product.image ? [product.image] : [];
-
 
     const { user } = useAuth();
 

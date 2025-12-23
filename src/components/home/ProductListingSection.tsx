@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { ProductCard } from '@/components/common/ProductCard';
+import Loader from '@/components/common/Loader';
 
 
 
@@ -57,29 +58,32 @@ export function ProductListingSection() {
   const [isAllProductsOpen, setIsAllProductsOpen] = useState(true);
 
   const { data: categoryData, isLoading: categoriesLoading } = useGetCategoriesQuery();
-  const categories = categoryData?.categories || fallbackCategories;
+  const categories = categoryData?.categories || categoryData || fallbackCategories;
+
+  const getCategorySlug = (category: any) =>
+    category?.slug || category?.category_slug || (category?.name || category?.category_name || '').toString().toLowerCase().replace(/\s+/g, '-');
+
+  const getCategoryId = (category: any) => category?.category_id ?? category?.id ?? category?.categoryId ?? undefined;
 
   const activeCategory = useMemo(
-    () => categories.find((category: any) => category.slug === selectedCategory),
+    () => categories.find((category: any) => getCategorySlug(category) === selectedCategory),
     [categories, selectedCategory]
   );
 
   const activeSubcategory = useMemo(
     () =>
-      activeCategory?.subcategories?.find(
-        (subcategory: any) => subcategory.slug === selectedSubcategory
+      activeCategory?.subcategories?.find((subcategory: any) =>
+        (subcategory?.slug || subcategory?.subcategory_slug || (subcategory?.name || subcategory?.subcategory_name || '').toString().toLowerCase().replace(/\s+/g, '-')) === selectedSubcategory
       ),
     [activeCategory, selectedSubcategory]
   );
 
   const queryArgs = useMemo(() => {
     const args: Record<string, any> = { limit: 9 };
-    if (activeCategory?.category_id) {
-      args.categoryId = activeCategory.category_id;
-    }
-    if (activeSubcategory?.subcategory_id) {
-      args.subcategoryId = activeSubcategory.subcategory_id;
-    }
+    const catId = getCategoryId(activeCategory);
+    if (catId) args.categoryId = catId;
+    const subId = activeSubcategory?.subcategory_id ?? activeSubcategory?.id ?? activeSubcategory?.subcategoryId;
+    if (subId) args.subcategoryId = subId;
     return args;
   }, [activeCategory, activeSubcategory]);
 
@@ -104,13 +108,16 @@ export function ProductListingSection() {
   };
 
   // Use public listings endpoint for homepage visibility (supports sortBy: price_asc, price_desc)
-  const { data: trendingData } = useGetListingsQuery({ limit: 6 });
+  const { data: trendingData, isLoading: isLoadingTrends, isError: errorLoadingTrends } = useGetListingsQuery({ limit: 6 });
   const { data: latestData } = useGetListingsQuery({ limit: 6 });
-  
 
   // console.log(latestData?.listings);
   const trendingProducts = trendingData?.listings || [];
   const latestProducts = latestData?.listings || [];
+
+  if(isLoadingTrends) {
+    return <Loader />;
+  }
 
   return (
     <section className="py-12 bg-white">
@@ -142,7 +149,7 @@ export function ProductListingSection() {
               {/* Category Buttons */}
               {isAllProductsOpen && (
                 <div className="space-y-3 mb-8">
-                  {categories.map((category: any, idx:number) => {
+                  {categories.map((category: any, idx: number) => {
                     const label = category?.name || category?.category_name;
                     const slug =
                       category?.slug || label?.toLowerCase().replace(/\s+/g, "-");
@@ -190,7 +197,7 @@ export function ProductListingSection() {
 
                   {trendingProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                      {trendingProducts.map((product: any, idx:number) => (
+                      {trendingProducts.map((product: any, idx: number) => (
                         <ProductCard key={idx} product={product} />
                       ))}
                     </div>
@@ -242,7 +249,9 @@ export function ProductListingSection() {
                 )}
               </div>
               {(listingsLoading || isFetching) && (
-                <span className="text-sm text-gray-500">Chargement...</span>
+                <div className="pl-2">
+                  <Loader size={40} message="Chargement des produits..." />
+                </div>
               )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

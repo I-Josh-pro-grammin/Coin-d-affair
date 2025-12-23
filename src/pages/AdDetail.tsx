@@ -22,6 +22,7 @@ import { useGetListingQuery, useAddItemToCartMutation, useAddFavoriteMutation, u
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
+import Loader from '@/components/common/Loader';
 
 const formatPrice = (value?: number, currency = "EUR") => {
   if (!value) return "Prix sur demande";
@@ -112,8 +113,8 @@ const AdDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Chargement de l'annonce...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader message="Chargement de l'annonce..." />
       </div>
     );
   }
@@ -193,33 +194,33 @@ const AdDetail = () => {
 
                 {/* Action Buttons */}
                 <div className="absolute top-4 right-4 flex space-x-2">
-                    <button
-                      onClick={async () => {
-                        if (!user) {
-                          navigate('/login');
-                          return;
+                  <button
+                    onClick={async () => {
+                      if (!user) {
+                        navigate('/login');
+                        return;
+                      }
+                      try {
+                        if (!isFavorite) {
+                          await addFavorite({ listing_id: listing.listings_id }).unwrap();
+                          setIsFavorite(true);
+                          toast.success('Ajouté aux favoris');
+                        } else {
+                          await removeFavorite(listing.listings_id).unwrap();
+                          setIsFavorite(false);
+                          toast.success('Retiré des favoris');
                         }
-                        try {
-                          if (!isFavorite) {
-                            await addFavorite({ listing_id: listing.listings_id }).unwrap();
-                            setIsFavorite(true);
-                            toast.success('Ajouté aux favoris');
-                          } else {
-                            await removeFavorite(listing.listings_id).unwrap();
-                            setIsFavorite(false);
-                            toast.success('Retiré des favoris');
-                          }
-                        } catch (err) {
-                          toast.error('Erreur favoris');
-                        }
-                      }}
-                      className={`p-2 rounded-full transition-all ${isFavorite
-                        ? 'bg-red-500 text-white'
-                        : 'bg-white text-gray-600 hover:bg-red-50'
-                        }`}
-                    >
-                      <Heart className="h-5 w-5" />
-                    </button>
+                      } catch (err) {
+                        toast.error('Erreur favoris');
+                      }
+                    }}
+                    className={`p-2 rounded-full transition-all ${isFavorite
+                      ? 'bg-red-500 text-white'
+                      : 'bg-white text-gray-600 hover:bg-red-50'
+                      }`}
+                  >
+                    <Heart className="h-5 w-5" />
+                  </button>
                   <button className="p-2 bg-white text-gray-600 rounded-full hover:bg-gray-50 transition-all">
                     <Share2 className="h-5 w-5" />
                   </button>

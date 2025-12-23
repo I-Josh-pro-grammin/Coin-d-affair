@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetCategoriesQuery, useGetListingsQuery } from "@/redux/api/apiSlice";
+import Loader from '@/components/common/Loader';
 import { resolveImageSource } from '@/lib/utils';
 
 const formatPrice = (value?: number, currency = "EUR") => {
@@ -29,12 +30,20 @@ const CategoryListing = () => {
   const categories = categoriesData?.categories ?? [];
 
   const categoryEntity = useMemo(
-    () => categories.find((cat: any) => cat.slug === category),
+    () =>
+      categories.find((cat: any) => {
+        const slug = cat?.slug || cat?.category_slug || (cat?.name || cat?.category_name || '').toString().toLowerCase().replace(/\s+/g, '-');
+        return slug === category;
+      }),
     [categories, category]
   );
 
   const subcategoryEntity = useMemo(
-    () => categoryEntity?.subcategories?.find((sub: any) => sub.slug === subcategory),
+    () =>
+      categoryEntity?.subcategories?.find((sub: any) => {
+        const sSlug = sub?.slug || sub?.subcategory_slug || (sub?.name || sub?.subcategory_name || '').toString().toLowerCase().replace(/\s+/g, '-');
+        return sSlug === subcategory;
+      }),
     [categoryEntity, subcategory]
   );
 
@@ -48,11 +57,13 @@ const CategoryListing = () => {
     const args: Record<string, any> = {
       limit: 24,
     };
-    if (categoryEntity?.category_id) {
-      args.categoryId = categoryEntity.category_id;
+    const catId = categoryEntity?.category_id ?? categoryEntity?.id ?? categoryEntity?.categoryId ?? categoryEntity?.id;
+    if (catId) {
+      args.categoryId = catId;
     }
-    if (subcategoryEntity?.subcategory_id) {
-      args.subcategoryId = subcategoryEntity.subcategory_id;
+    const subId = subcategoryEntity?.subcategory_id ?? subcategoryEntity?.id ?? subcategoryEntity?.subcategoryId ?? subcategoryEntity?.id;
+    if (subId) {
+      args.subcategoryId = subId;
     }
     if (priceFilter.min) {
       args.minPrice = Number(priceFilter.min);
@@ -106,6 +117,12 @@ const CategoryListing = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <CategoryNav />
+
+      {categoriesLoading && (
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Loader message="Chargement des catégories..." />
+        </main>
+      )}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
@@ -214,7 +231,9 @@ const CategoryListing = () => {
         </div>
 
         {listingsLoading && (
-          <div className="text-center py-12 text-gray-500">Chargement des annonces...</div>
+          <div className="py-8">
+            <Loader message="Chargement des annonces..." />
+          </div>
         )}
 
         {isError && (
