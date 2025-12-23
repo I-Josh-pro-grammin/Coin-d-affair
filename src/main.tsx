@@ -10,6 +10,11 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
+// Safety Check for API URL
+if (!import.meta.env.VITE_API_URL) {
+  console.error("CRITICAL: VITE_API_URL is not defined! API calls may fail.");
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>

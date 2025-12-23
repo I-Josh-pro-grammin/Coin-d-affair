@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_BASE_URL =
-  'https://coin-d-affair-backend.onrender.com' || 
-  'http://localhost:5000';
+import { API_BASE_URL } from '@/lib/api';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -83,9 +81,9 @@ export const apiSlice = createApi({
       providesTags: (result) =>
         result?.listings
           ? [
-              ...result.listings.map((listing) => ({ type: 'Listings', id: listing.listings_id })),
-              { type: 'Listings', id: 'FAVORITES' },
-            ]
+            ...result.listings.map((listing) => ({ type: 'Listings', id: listing.listings_id })),
+            { type: 'Listings', id: 'FAVORITES' },
+          ]
           : [{ type: 'Listings', id: 'FAVORITES' }],
     }),
     addFavorite: builder.mutation({
