@@ -33,6 +33,7 @@ export default function ProductForm() {
 
     const { data: categories } = useGetCategoriesQuery();
     const { data: locationsData } = useGetLocationsQuery();
+    console.log(locationsData)
 
     useEffect(() => {
         if (productData?.listing) {

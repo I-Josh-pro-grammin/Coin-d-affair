@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
-type UserRole = 'buyer' | 'seller' | 'admin';
+type UserRole = 'business' | 'user' | 'admin';
 type UserStatus = 'active' | 'banned';
 
 interface AdminUser {
@@ -21,6 +21,7 @@ interface AdminUser {
     account_type: UserRole;
     is_active: boolean;
     created_at: string;
+    is_verified: boolean;
 }
 
 export default function Users() {
@@ -84,8 +85,8 @@ export default function Users() {
                     <div className="flex gap-2 overflow-x-auto">
                         {[
                             { key: 'all', label: 'Tous' },
-                            { key: 'buyer', label: 'Acheteurs' },
-                            { key: 'seller', label: 'Vendeurs' },
+                            { key: 'user', label: 'Acheteurs' },
+                            { key: 'business', label: 'Vendeurs' },
                             { key: 'admin', label: 'Admins' },
                         ].map((tab) => (
                             <button
@@ -111,7 +112,7 @@ export default function Users() {
                             <tr>
                                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Utilisateur</th>
                                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Rôle</th>
-                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Statut</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Vérifié</th>
                                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Créé le</th>
                                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Dernière activité</th>
                                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Actions</th>
@@ -138,14 +139,24 @@ export default function Users() {
                                     </td>
                                     <td className="py-4 px-6">
                                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                            {user.account_type === 'buyer' && 'Acheteur'}
-                                            {user.account_type === 'seller' && 'Vendeur'}
+                                            {user.account_type === 'user' && 'Acheteur'}
+                                            {user.account_type === 'business' && 'Vendeur'}
                                             {user.account_type === 'admin' && (
                                                 <>
                                                     <Shield size={12} />
                                                     Admin
                                                 </>
                                             )}
+                                        </span>
+                                    </td>
+                                    <td className="py-4 px-6">
+                                        <span
+                                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${user.is_active
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                                }`}
+                                        >
+                                            {user?.is_verified ? 'Ouis' : 'Non'}
                                         </span>
                                     </td>
                                     <td className="py-4 px-6">

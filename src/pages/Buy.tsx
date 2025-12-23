@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { getProductById } from '@/data/mockProducts';
+import { useGetListingQuery } from '@/redux/api/apiSlice';
 import { currencyFmt } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
 import { ArrowLeft, Package, MapPin, CreditCard, Smartphone } from 'lucide-react';
@@ -17,8 +17,10 @@ export default function Buy() {
     const [paymentMethod, setPaymentMethod] = useState('mobile-money');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const product = id ? getProductById(id) : undefined;
-
+    // const product = id ? getProductById(id) : undefined;
+    const {data} = useGetListingQuery(id); 
+    
+    const product = data?.listing;
     // Require authentication to purchase
     useEffect(() => {
         if (!user) {
@@ -39,7 +41,7 @@ export default function Buy() {
         );
     }
 
-    const subtotal = product.price * quantity;
+    const subtotal = product?.price * quantity;
     const deliveryFee = deliveryMethod === 'express' ? 15000 : 10000;
     const total = subtotal + deliveryFee;
 
@@ -88,15 +90,15 @@ export default function Buy() {
                                 <div className="flex gap-4">
                                     <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                         <img
-                                            src={product.image}
-                                            alt={product.name}
+                                            src={product?.media[0]?.url}
+                                            alt={product?.name}
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-gray-900 mb-2">{product.name}</h3>
-                                        <p className="text-sm text-gray-600 mb-2">{product.seller.name}</p>
-                                        <p className="text-lg font-bold text-[#000435]">{currencyFmt(product.price)}</p>
+                                        <h3 className="font-semibold text-gray-900 mb-2">{product?.name}</h3>
+                                        <p className="text-sm text-gray-600 mb-2">{product?.seller?.name}</p>
+                                        <p className="text-lg font-bold text-[#000435]">{currencyFmt(product?.price)}</p>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <button
@@ -109,7 +111,7 @@ export default function Buy() {
                                         <span className="font-semibold text-gray-900 w-8 text-center">{quantity}</span>
                                         <button
                                             type="button"
-                                            onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                                            onClick={() => setQuantity(Math.min(product?.stock, quantity + 1))}
                                             className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-[#000435] transition-colors"
                                         >
                                             +
