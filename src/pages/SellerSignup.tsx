@@ -34,12 +34,15 @@ const SellerSignup = () => {
     { label: "Une majuscule", valid: /[A-Z]/.test(formData.password) },
     { label: "Une minuscule", valid: /[a-z]/.test(formData.password) },
     { label: "Un chiffre", valid: /\d/.test(formData.password) },
+    { label: "Pas d'espaces", valid: !/\s/.test(formData.password) },
   ];
 
   const isPasswordValid = passwordRules.every((rule) => rule.valid);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (submitting) return; // Prevent double submission
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Les mots de passe ne correspondent pas");
@@ -63,17 +66,32 @@ const SellerSignup = () => {
         email: formData.email,
         password: formData.password,
         accountType: "business",
-        phone: formData.phone // Corrected from number -> phone
+        phone: formData.phone
       });
 
       toast.success("Compte vendeur créé avec succès");
       navigate('/seller/setup');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Signup error:", error);
-      const errorMessage = (error as any)?.data?.message || "Erreur lors de la création du compte";
+
+      let errorMessage = "Erreur lors de la création du compte";
+
+      // Handle Timeout / Network Error
+      if (error?.message === 'Aborted' || error?.status === 'FETCH_ERROR') {
+        errorMessage = "Le serveur met trop de temps à répondre. Réessayez.";
+      }
+      // Handle Backend Error Message
+      else if (error?.data?.message) {
+        errorMessage = error.data.message;
+      }
+      // Handle Generic/Unknown Object
+      else if (error?.message) {
+        errorMessage = error.message;
+      }
+
       toast.error(errorMessage);
     } finally {
-      setSubmitting(false);
+      setSubmitting(false); // ALWAYS reset loading state
     }
   };
 

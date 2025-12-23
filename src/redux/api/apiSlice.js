@@ -14,6 +14,7 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
+  timeout: 15000, // 15 seconds global timeout
 });
 
 export const apiSlice = createApi({
