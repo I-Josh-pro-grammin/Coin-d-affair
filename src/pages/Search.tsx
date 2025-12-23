@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Search as SearchIcon, Filter, SlidersHorizontal } from 'lucide-react';
 import { currencyFmt } from '@/lib/utils';
+import { useGetListingsQuery } from '@/redux/api/apiSlice'
 
 // Mock data for search results
 const MOCK_PRODUCTS = [
@@ -21,6 +22,8 @@ export default function Search() {
     const [priceRange, setPriceRange] = useState([0, 2000000]);
     const [selectedCategory, setSelectedCategory] = useState('All');
 
+    const {data} = useGetListingsQuery();
+    console.log(data);
     useEffect(() => {
         // Filter results based on query
         const filtered = MOCK_PRODUCTS.filter(p =>
