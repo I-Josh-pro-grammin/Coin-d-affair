@@ -27,12 +27,17 @@ export default function DashboardHome() {
     }
 
     // Calculate stats
-    const totalRevenue = businessProfile?.total_sales || 0;
-    const activeProducts = products?.length || 0;
-    const totalOrders = businessProfile?.total_orders || 0;
+    // Calculate stats
+    const actualProducts = products?.allProducts || [];
+    const actualOrders = orders?.orders || [];
+    const actualProfile = businessProfile?.business;
+
+    const totalRevenue = actualOrders.reduce((acc: number, order: any) => acc + (Number(order.total_amount) || 0), 0);
+    const activeProducts = actualProducts.length || 0;
+    const totalOrders = actualOrders.length || 0;
 
     // Calculate unique customers from orders
-    const uniqueCustomers = new Set(orders?.map((order: any) => order.user_id)).size;
+    const uniqueCustomers = new Set(actualOrders.map((order: any) => order.user_id)).size;
 
     const stats = [
         {
@@ -69,10 +74,10 @@ export default function DashboardHome() {
         }
     ];
 
-    const recentOrders = orders?.slice(0, 5).map((order: any) => ({
+    const recentOrders = actualOrders.slice(0, 5).map((order: any) => ({
         id: order.order_id,
         customer: order.buyer || 'Client',
-        product: order.items?.[0]?.listing_title || 'Produit', // Assuming items are joined or we need to fetch them
+        product: order.title || 'Produit',
         amount: `${order.total_amount} ${order.currency}`,
         status: order.status
     })) || [];
