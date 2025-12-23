@@ -55,7 +55,8 @@ const SellerSignup = () => {
       navigate('/seller/setup');
     } catch (error) {
       console.error("Signup error:", error);
-      toast.error("Erreur lors de la création du compte");
+      const errorMessage = (error as any)?.data?.message || "Erreur lors de la création du compte";
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
