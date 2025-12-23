@@ -6,7 +6,9 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
-    const token = getState()?.auth?.access_token;
+    // Try getting token from Redux state first, then fallback to localStorage
+    const token = getState()?.auth?.access_token || localStorage.getItem('auth_token');
+
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
