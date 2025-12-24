@@ -14,7 +14,9 @@ const getApiUrl = () => {
         );
         // Fallback allowed ONLY for development if explicitly needed, 
         // but better to force config to be correct.
-        return "https://coin-d-affair-backend.onrender.com";
+        return 
+        // "https://coin-d-affair-backend.onrender.com" ||
+        "http://localhost:5000";
     }
     return url;
 };

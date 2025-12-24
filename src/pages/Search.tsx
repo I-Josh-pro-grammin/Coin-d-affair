@@ -27,7 +27,16 @@ export default function Search() {
     const { data: categories } = useGetCategoriesQuery();
     const products = data?.listings || [];
 
-    const getId = (p: any) => String(p?.listings_id ?? p?.listing_id ?? p?.id ?? JSON.stringify(p));
+    const getId = (p: any, idx?: number) =>
+        String(
+            p?.listings_id ??
+            p?.listing_id ??
+            p?.id ??
+            p?.uuid ??
+            p?.slug ??
+            p?.external_id ??
+            `no-id-${idx ?? 'unknown'}`
+        );
 
     // Normalize categories into { key, label, value } where value is a slug string
     const rawCategories = categories?.categories ?? categories ?? [];
@@ -64,15 +73,18 @@ export default function Search() {
             return matchesQuery && matchesCategory && matchesPrice;
         });
 
-        // shallow compare by id and length
+        // shallow compare by id and length (use index-aware stable ids)
         setResults((prev) => {
-            if (prev.length === filtered.length && prev.every((it: any, i: number) => getId(it) === getId(filtered[i]))) {
+            if (
+                prev.length === filtered.length &&
+                prev.every((it: any, i: number) => getId(it, i) === getId(filtered[i], i))
+            ) {
                 return prev; // no change
             }
             return filtered;
         });
     }, [products, query, selectedCategory, priceRange]);
-      
+
 
     if (listingsLoading) {
         return (
@@ -114,7 +126,7 @@ export default function Search() {
                                                 onChange={(e) => setSelectedCategory(e.target.value)}
                                                 className="text-[#000435] focus:ring-[#000435]"
                                             />
-                                            <span className="text-sm text-gray-600">{cat.label}</span>
+                                            <span className="text-sm text-gray-600">{String(cat.label)}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -145,9 +157,9 @@ export default function Search() {
                     {/* Results */}
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6">
-                        <h1 className="text-xl font-bold text-gray-900">
-                            {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{query}"
-                        </h1>
+                            <h1 className="text-xl font-bold text-gray-900">
+                                {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{String(query)}"
+                            </h1>
 
                             <button className="flex items-center gap-2 text-gray-600 hover:text-[#000435] md:hidden">
                                 <SlidersHorizontal size={20} />
@@ -158,7 +170,7 @@ export default function Search() {
                         {results?.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {results?.map((product, idx) => {
-                                    const pid = getId(product) || `idx-${idx}`;
+                                    const pid = getId(product, idx) || `idx-${idx}`;
                                     const title = product?.title || product?.name || 'Produit';
                                     return (
                                         <Link key={String(pid)} to={`/produit/${encodeURIComponent(pid)}`} className="group">
@@ -171,7 +183,7 @@ export default function Search() {
                                                     />
                                                 </div>
                                                 <div className="p-4">
-                                                    <p className="text-xs text-gray-500 mb-1">{product?.category_name || product?.category}</p>
+                                                    <p className="text-xs text-gray-500 mb-1">{String(product?.category_name || product?.category || '')}</p>
                                                     <h3 className="font-semibold text-gray-900 mb-2 truncate">{title}</h3>
                                                     <p className="text-lg font-bold text-[#000435]">{currencyFmt(product?.price)}</p>
                                                 </div>
