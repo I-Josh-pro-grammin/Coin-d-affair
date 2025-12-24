@@ -47,13 +47,14 @@ const Signup = () => {
         email: formData.email,
         password: formData.password,
         accountType: formData.accountType as 'user' | 'business',
-        number: formData.phone,
+        phone: formData.phone,
       });
       toast.success("Compte créé avec succès");
       navigate("/");
     } catch (error) {
       console.error("Signup error:", error);
-      toast.error("Erreur lors de la création du compte");
+      const errorMessage = (error as any)?.data?.message || "Erreur lors de la création du compte";
+      toast.error(errorMessage);
     }
   };
 
