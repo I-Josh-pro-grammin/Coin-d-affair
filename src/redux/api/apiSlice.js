@@ -6,15 +6,12 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
-    // Try getting token from Redux state first, then fallback to localStorage
-    const token = getState()?.auth?.access_token || localStorage.getItem('auth_token');
-
+    const token = getState()?.auth?.access_token;
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
   },
-  timeout: 15000, // 15 seconds global timeout
 });
 
 export const apiSlice = createApi({
@@ -313,9 +310,9 @@ export const apiSlice = createApi({
       providesTags: (result) =>
         result?.length
           ? [
-              ...result.map((p) => ({ type: 'Listings', id: p.listings_id })),
-              { type: 'Listings', id: 'BUSINESS' },
-            ]
+            ...result.map((p) => ({ type: 'Listings', id: p.listings_id })),
+            { type: 'Listings', id: 'BUSINESS' },
+          ]
           : [{ type: 'Listings', id: 'BUSINESS' }],
     }),
     getBusinessTransactions: builder.query({
