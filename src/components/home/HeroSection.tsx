@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useGetBusinessesQuery } from '@/redux/api/apiSlice'
 import card1 from "@/assets/card1.jpg";
 import card2 from "@/assets/card2.jpg";
 import card3 from "@/assets/card3.jpg";
@@ -23,6 +24,8 @@ export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
   // const {cusotomerNumber}=useGetUsers();
 
+  const {data: businesses} = useGetBusinessesQuery();
+
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -31,6 +34,7 @@ export function HeroSection() {
       navigate(`/recherche?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
 
   const heroCards: HeroCard[] = [
     {
@@ -43,7 +47,7 @@ export function HeroSection() {
     {
       id: 2,
       image: card2,
-      title: "200+",
+      title: `${businesses?.businesses} +`,
       subtitle: "Vendeurs de confiance",
       position: 'bottom',
     },
@@ -77,6 +81,8 @@ export function HeroSection() {
       position: 'bottom',
     },
   ];
+
+
 
   return (
     <section className="relative bg-gray-50 -mt-24 pt-32 pb-8 md:pb-12">
