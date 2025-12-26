@@ -41,7 +41,6 @@ export default function Orders() {
     });
 
     const getTheBuyerName = (userId: any) => {
-            console.log(ordersData);
             return ordersData?.users?.find((user: any) => user.user_id === userId)?.full_name || 'Client';
         }
 

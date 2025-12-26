@@ -6,6 +6,7 @@ import { Heart } from "lucide-react";
 import { useGetFavoritesQuery, useGetListingsQuery } from '@/redux/api/apiSlice';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLocalFavorites } from '@/lib/localFavorites';
+import Loader from '@/components/common/Loader';
 
 const Favorites = () => {
   const { data: favData, isLoading: favLoading } = useGetFavoritesQuery();
@@ -26,8 +27,20 @@ const Favorites = () => {
       return favIds.includes(pid);
     });
     setGuestFavorites(matches);
-  }, [user, data]);
+  }, [user, listingsData]);
 
+  if (favLoading || listingsLoading) {
+    return (<div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <main className="max-w-3xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-2xl shadow-sm p-8 text-center">
+          <p className="text-gray-600">Chargement de vos favoris...</p>
+        </div>
+        <Loader />
+      </main>
+      <Footer />
+    </div>);
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />

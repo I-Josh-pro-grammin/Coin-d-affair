@@ -9,6 +9,7 @@ import {
     useDeleteAdminListingMutation
 } from '@/redux/api/apiSlice';
 import { toast } from 'sonner';
+import Loader from '@/components/common/Loader';
 
 interface AdminProduct {
     listings_id: string;
@@ -76,6 +77,17 @@ export default function AdminProducts() {
         // Search is handled by backend but we can do client side too for status
         return matchesStatus;
     }) || [];
+
+    if(isLoading) {
+        return (
+            <AdminLayout>
+                <div className="flex items-center justify-center h-64">
+                    <p className="text-gray-500">Chargement des produits...</p>
+                </div>
+                <Loader />
+            </AdminLayout>
+        );
+    }
 
     return (
         <AdminLayout>

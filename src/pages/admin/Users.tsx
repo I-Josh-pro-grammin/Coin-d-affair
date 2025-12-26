@@ -1,5 +1,5 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Filter, MoreVertical, Shield, UserX, UserCheck, UserPlus, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
@@ -10,6 +10,7 @@ import {
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Loader } from '@/components/common/Loader';
 
 type UserRole = 'business' | 'user' | 'admin';
 type UserStatus = 'active' | 'banned';
@@ -28,12 +29,15 @@ export default function Users() {
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState<'all' | UserRole>('all');
 
-    // Debounce search could be added here, for now passing directly
-    const { data: usersData, isLoading, refetch } = useGetAllUsersQuery({
-        q: search,
-        // Backend doesn't support role filter in getAllUsers yet, so we filter client side or need to update backend
-        // For now, client side filtering for role if not supported by backend params
-    });
+    // Fetch users once and perform client-side searching/filtering
+    const { data: usersData, isLoading, refetch } = useGetAllUsersQuery();
+
+    // keep a copy of initially fetched users to search against locally
+    const [initialUsers, setInitialUsers] = useState<AdminUser[]>([]);
+
+    useEffect(() => {
+        if (usersData?.users) setInitialUsers(usersData.users);
+    }, [usersData]);
 
     const [banUser] = useBanUserMutation();
     const [unbanUser] = useUnbanUserMutation();
@@ -53,10 +57,26 @@ export default function Users() {
         }
     };
 
-    const filteredUsers = usersData?.users?.filter((user: AdminUser) => {
-        if (roleFilter === 'all') return true;
-        return user.account_type === roleFilter;
-    }) || [];
+    const filteredUsers = (initialUsers || []).filter((user: AdminUser) => {
+        // role filter
+        if (roleFilter !== 'all' && user.account_type !== roleFilter) return false;
+
+        // search term match (email or name)
+        if (!search || search.trim() === '') return true;
+        const s = search.toLowerCase();
+        return (user.email || '').toLowerCase().includes(s) || (user.full_name || '').toLowerCase().includes(s);
+    });
+
+    if(isLoading) {
+            return (
+                <AdminLayout>
+                    <div className="flex items-center justify-center h-64">
+                        <p className="text-gray-500">Chargement des utilisateurs...</p>
+                    </div>
+                    <Loader />
+                </AdminLayout>
+            );
+        }
 
     return (
         <AdminLayout>
