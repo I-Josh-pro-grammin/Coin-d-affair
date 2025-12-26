@@ -26,15 +26,13 @@ const Login = () => {
       toast.success("Connexion réussie");
 
       // Route based on account type
+      // Route based on account type
       if (user.accountType === 'admin') {
-        navigate("/admin");
-        window.location.reload();
+        navigate("/admin", { replace: true });
       } else if (user.accountType === 'business') {
-        navigate("/dashboard");
-        window.location.reload();
+        navigate("/dashboard", { replace: true });
       } else {
-        navigate("/");
-        window.location.reload();
+        navigate("/", { replace: true });
       }
     } catch (err: any) {
       // Check if error is due to unverified email
