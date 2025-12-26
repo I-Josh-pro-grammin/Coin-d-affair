@@ -54,7 +54,7 @@ export default function EmailVerificationRequired() {
             </button>
 
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => navigate('/auth/login')}
               className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:bg-gray-50 transition-all"
             >
               J'ai vérifié mon email
