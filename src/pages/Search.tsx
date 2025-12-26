@@ -18,7 +18,7 @@ const MOCK_PRODUCTS = [
 
 export default function Search() {
     const [searchParams] = useSearchParams();
-    const query = searchParams.get('q') || '';
+    const query = (searchParams.get('q') || '').toString();
     const [results, setResults] = useState([]);
     const [priceRange, setPriceRange] = useState([0, 2000000]);
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -26,8 +26,15 @@ export default function Search() {
     const { data, isLoading: listingsLoading } = useGetListingsQuery();
     const { data: categories } = useGetCategoriesQuery();
     const products = data?.listings || [];
-
-    const getId = (p: any) => String(p?.listings_id ?? p?.listing_id ?? p?.id ?? JSON.stringify(p));
+    const getId = (p: any, idx?: number) =>
+        String(
+            p?.business_id ??
+            p?.listing_id ??
+            p?.id ??
+            p?.category_id ??
+            p?.external_id ??
+            `no-id-${idx ?? 'unknown'}`
+        );
 
     // Normalize categories into { key, label, value } where value is a slug string
     const rawCategories = categories?.categories ?? categories ?? [];
@@ -54,25 +61,29 @@ export default function Search() {
             return;
         }
 
+        const q = (query || '').toLowerCase().trim();
         const filtered = products.filter((p: any) => {
             const title = productTitle(p).toLowerCase();
-            const matchesQuery = query ? title.includes(query.toLowerCase()) : true;
             const prodSlug = productCategorySlug(p);
+            const matchesQuery = !q || title.includes(q) || prodSlug.includes(q) || String(p?.description || '').toLowerCase().includes(q);
             const matchesCategory = selectedCategory === 'all' || prodSlug === selectedCategory;
             const price = Number(p?.price ?? p?.amount ?? 0);
             const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-            return matchesQuery && matchesCategory && matchesPrice;
+            return matchesCategory && matchesPrice && matchesQuery;
         });
 
-        // shallow compare by id and length
+        // shallow compare by id and length (use index-aware stable ids)
         setResults((prev) => {
-            if (prev.length === filtered.length && prev.every((it: any, i: number) => getId(it) === getId(filtered[i]))) {
+            if (
+                prev.length === filtered.length &&
+                prev.every((it: any, i: number) => getId(it, i) === getId(filtered[i], i))
+            ) {
                 return prev; // no change
             }
             return filtered;
         });
-    }, [products, query, selectedCategory, priceRange]);
-      
+    }, [products, selectedCategory, priceRange, query]);
+
 
     if (listingsLoading) {
         return (
@@ -104,8 +115,8 @@ export default function Search() {
                             <div className="mb-8">
                                 <h3 className="font-medium text-gray-900 mb-3">Catégories</h3>
                                 <div className="space-y-2">
-                                    {normalizedCategories.map((cat) => (
-                                        <label key={cat.key} className="flex items-center gap-2 cursor-pointer">
+                                    {normalizedCategories.map((cat, i) => (
+                                        <label key={i} className="flex items-center gap-2 cursor-pointer">
                                             <input
                                                 type="radio"
                                                 name="category"
@@ -114,7 +125,7 @@ export default function Search() {
                                                 onChange={(e) => setSelectedCategory(e.target.value)}
                                                 className="text-[#000435] focus:ring-[#000435]"
                                             />
-                                            <span className="text-sm text-gray-600">{cat.label}</span>
+                                            <span className="text-sm text-gray-600">{String(cat.label)}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -145,9 +156,9 @@ export default function Search() {
                     {/* Results */}
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6">
-                        <h1 className="text-xl font-bold text-gray-900">
-                            {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{query}"
-                        </h1>
+                            <h1 className="text-xl font-bold text-gray-900">
+                                {results.length} résultat{results.length !== 1 ? 's' : ''} {query ? `pour "${String(query)}"` : ''}
+                            </h1>
 
                             <button className="flex items-center gap-2 text-gray-600 hover:text-[#000435] md:hidden">
                                 <SlidersHorizontal size={20} />
@@ -158,10 +169,10 @@ export default function Search() {
                         {results?.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {results?.map((product, idx) => {
-                                    const pid = getId(product) || `idx-${idx}`;
+                                    const pid = getId(product, idx) || `idx-${idx}`;
                                     const title = product?.title || product?.name || 'Produit';
                                     return (
-                                        <Link key={String(pid)} to={`/produit/${encodeURIComponent(pid)}`} className="group">
+                                        <Link key={String(idx)} to={`/produit/${encodeURIComponent(pid)}`} className="group">
                                             <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all">
                                                 <div className="aspect-square bg-gray-100 relative overflow-hidden">
                                                     <img
@@ -171,7 +182,7 @@ export default function Search() {
                                                     />
                                                 </div>
                                                 <div className="p-4">
-                                                    <p className="text-xs text-gray-500 mb-1">{product?.category_name || product?.category}</p>
+                                                    <p className="text-xs text-gray-500 mb-1">{String(product?.category_name || product?.category || '')}</p>
                                                     <h3 className="font-semibold text-gray-900 mb-2 truncate">{title}</h3>
                                                     <p className="text-lg font-bold text-[#000435]">{currencyFmt(product?.price)}</p>
                                                 </div>

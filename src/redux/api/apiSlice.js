@@ -1,26 +1,23 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { API_BASE_URL } from '@/lib/api';
+const API_BASE_URL = "https://coin-d-affair-backend.onrender.com" || "http://localhost:5000";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
-    // Try getting token from Redux state first, then fallback to localStorage
-    const token = getState()?.auth?.access_token || localStorage.getItem('auth_token');
-
+    const token = getState()?.auth?.access_token;
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
   },
-  timeout: 15000, // 15 seconds global timeout
 });
 
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: ['Auth', 'Listings', 'Categories'],
+  tagTypes: ['Auth', 'Listings', 'Categories', 'Orders', 'Business', 'Locations', 'Favorites'],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -267,6 +264,7 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: data,
       }),
+      invalidatesTags: ['Business'],
     }),
     addProduct: builder.mutation({
       query: (formData) => ({
@@ -302,12 +300,20 @@ export const apiSlice = createApi({
         url: '/api/business/business-profile',
         method: 'GET',
       }),
+      providesTags: ['Business'],
     }),
     getBusinessProducts: builder.query({
       query: () => ({
         url: '/api/business/business-products-post',
         method: 'GET',
       }),
+      providesTags: (result) =>
+        result?.length
+          ? [
+            ...result.map((p) => ({ type: 'Listings', id: p.listings_id })),
+            { type: 'Listings', id: 'BUSINESS' },
+          ]
+          : [{ type: 'Listings', id: 'BUSINESS' }],
     }),
     getBusinessTransactions: builder.query({
       query: () => ({
@@ -320,6 +326,7 @@ export const apiSlice = createApi({
         url: '/api/business/business-orders',
         method: 'GET',
       }),
+      providesTags: ['Orders'],
     }),
     getLocations: builder.query({
       query: () => ({

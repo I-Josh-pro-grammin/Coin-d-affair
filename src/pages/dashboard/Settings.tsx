@@ -13,15 +13,17 @@ import {
     EyeOff
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { useUpdateProfileMutation, useUpdateBusinessMutation } from '@/redux/api/apiSlice';
+import { useUpdateProfileMutation, useUpdateBusinessMutation, useGetBusinessProfileQuery, useGetCurrentUserQuery } from '@/redux/api/apiSlice';
 import { toast } from 'sonner';
 
 export default function Settings() {
     const [activeTab, setActiveTab] = useState('shop');
     const [showPassword, setShowPassword] = useState(false);
-    const { user } = useSelector((state: any) => state.auth);
     const [updateProfile, { isLoading: isProfileLoading }] = useUpdateProfileMutation();
     const [updateBusiness, { isLoading: isBusinessLoading }] = useUpdateBusinessMutation();
+    const { data: user } = useGetCurrentUserQuery();
+    const { data: business } = useGetBusinessProfileQuery();
+    console.log(user);
 
     const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -104,7 +106,7 @@ export default function Settings() {
                         <div className="bg-white rounded-2xl shadow-sm p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-6">Informations de la boutique</h2>
 
-                            <form className="space-y-6">
+                            <form className="space-y-6" onSubmit={handleBusinessUpdate}>
                                 {/* Shop Logo */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -132,7 +134,7 @@ export default function Settings() {
                                     <input
                                         type="text"
                                         name="businessName"
-                                        defaultValue={user?.shop?.name}
+                                        defaultValue={business?.business?.business_name}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                     />
                                 </div>
@@ -157,7 +159,7 @@ export default function Settings() {
                                         </label>
                                         <input
                                             type="email"
-                                            defaultValue="contact@maboutique.com"
+                                            defaultValue={user?.user?.email}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
@@ -169,7 +171,7 @@ export default function Settings() {
                                             type="tel"
                                             required
                                             placeholder="+257 XXX XXX XXX"
-                                            defaultValue="+257 71 123 456"
+                                            defaultValue={user?.user?.phone}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">
@@ -207,7 +209,7 @@ export default function Settings() {
                         <div className="bg-white rounded-2xl shadow-sm p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-6">Informations personnelles</h2>
 
-                            <form className="space-y-6">
+                            <form className="space-y-6" onSubmit={handleProfileUpdate}>
                                 {/* Profile Photo */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -236,7 +238,7 @@ export default function Settings() {
                                         <input
                                             type="text"
                                             name="fullName"
-                                            defaultValue={user?.name}
+                                            defaultValue={user?.user?.full_name}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
@@ -251,7 +253,7 @@ export default function Settings() {
                                         <input
                                             type="email"
                                             disabled
-                                            defaultValue={user?.email}
+                                            defaultValue={user?.user?.email}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
@@ -262,7 +264,7 @@ export default function Settings() {
                                         <input
                                             type="tel"
                                             name="phone"
-                                            defaultValue={user?.phone}
+                                            defaultValue={user?.user?.phone}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
@@ -419,7 +421,7 @@ export default function Settings() {
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Numéro de téléphone</label>
                                             <input
                                                 type="tel"
-                                                defaultValue="+257 71 123 456"
+                                                defaultValue={"+257 " + user?.user?.phone?.slice(1)}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent"
                                             />
                                         </div>

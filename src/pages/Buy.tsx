@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { getProductById } from '@/data/mockProducts';
 import { currencyFmt } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
-import { ArrowLeft, Package, MapPin, CreditCard, Smartphone, Loader2 } from 'lucide-react';
+import { ArrowLeft, Package, MapPin, CreditCard, Smartphone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGetListingQuery } from '@/redux/api/apiSlice';
 
 export default function Buy() {
     const { id } = useParams<{ id: string }>();
@@ -17,25 +17,16 @@ export default function Buy() {
     const [paymentMethod, setPaymentMethod] = useState('mobile-money');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { data: listingData, isLoading, error } = useGetListingQuery(id);
-    const product = listingData?.listing;
+    const product = id ? getProductById(id) : undefined;
 
     // Require authentication to purchase
     useEffect(() => {
-        if (!user && !isLoading) {
-            navigate(`/login?redirect=/acheter/${id}`);
+        if (!user) {
+            navigate('/login');
         }
-    }, [user, navigate, isLoading, id]);
+    }, [user, navigate]);
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-[#000435]" />
-            </div>
-        );
-    }
-
-    if (error || !product) {
+    if (!product) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center">
                 <div className="text-center">
@@ -48,7 +39,7 @@ export default function Buy() {
         );
     }
 
-    const subtotal = Number(product.price) * quantity;
+    const subtotal = product.price * quantity;
     const deliveryFee = deliveryMethod === 'express' ? 15000 : 10000;
     const total = subtotal + deliveryFee;
 
@@ -56,8 +47,7 @@ export default function Buy() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate payment processing for now
-        // TODO: Integrate real payment gateway
+        // Simulate payment processing
         setTimeout(() => {
             setIsSubmitting(false);
             toast({
@@ -67,12 +57,10 @@ export default function Buy() {
 
             // Navigate to orders or back to product
             setTimeout(() => {
-                navigate('/dashboard/orders');
+                navigate('/');
             }, 2000);
         }, 2000);
     };
-
-    const productImage = product.media && product.media.length > 0 ? product.media[0].url : '/placeholder-image.jpg';
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -100,14 +88,14 @@ export default function Buy() {
                                 <div className="flex gap-4">
                                     <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                         <img
-                                            src={productImage}
-                                            alt={product.title}
+                                            src={product.image}
+                                            alt={product.name}
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-gray-900 mb-2">{product.title}</h3>
-                                        <p className="text-sm text-gray-600 mb-2">Vendeur: {product.seller_name}</p>
+                                        <h3 className="font-semibold text-gray-900 mb-2">{product.name}</h3>
+                                        <p className="text-sm text-gray-600 mb-2">{product.seller.name}</p>
                                         <p className="text-lg font-bold text-[#000435]">{currencyFmt(product.price)}</p>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -121,7 +109,7 @@ export default function Buy() {
                                         <span className="font-semibold text-gray-900 w-8 text-center">{quantity}</span>
                                         <button
                                             type="button"
-                                            onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
+                                            onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                                             className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-[#000435] transition-colors"
                                         >
                                             +
@@ -185,7 +173,6 @@ export default function Buy() {
                                             <input
                                                 type="text"
                                                 required
-                                                defaultValue={user?.name?.split(' ')[0] || ''}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                             />
                                         </div>
@@ -196,7 +183,6 @@ export default function Buy() {
                                             <input
                                                 type="text"
                                                 required
-                                                defaultValue={user?.name?.split(' ').slice(1).join(' ') || ''}
                                                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                             />
                                         </div>
@@ -208,7 +194,6 @@ export default function Buy() {
                                         <input
                                             type="tel"
                                             required
-                                            defaultValue={user?.phone || ''}
                                             placeholder="+250 788 123 456"
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />

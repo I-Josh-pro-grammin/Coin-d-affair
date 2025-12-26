@@ -11,7 +11,7 @@ export default function Orders() {
     const [statusFilter, setStatusFilter] = useState('all');
     const { data: ordersData, isLoading } = useGetBusinessOrdersQuery({});
 
-    const orders = ordersData || [];
+    const orders = ordersData?.orders || [];
 
     const statusConfig: any = {
         pending: { label: 'En attente', color: 'bg-yellow-100 text-yellow-800', icon: Package },
@@ -22,12 +22,12 @@ export default function Orders() {
     };
 
     const statusCounts = {
-        all: orders.length,
-        pending: orders.filter((o: any) => o.status === 'pending').length,
-        processing: orders.filter((o: any) => o.status === 'processing').length,
-        shipped: orders.filter((o: any) => o.status === 'shipped').length,
-        delivered: orders.filter((o: any) => o.status === 'delivered').length,
-        cancelled: orders.filter((o: any) => o.status === 'cancelled').length,
+        all: orders?.length,
+        pending: orders?.filter((o: any) => o.status === 'pending').length,
+        processing: orders?.filter((o: any) => o.status === 'processing').length,
+        shipped: orders?.filter((o: any) => o.status === 'shipped').length,
+        delivered: orders?.filter((o: any) => o.status === 'delivered').length,
+        cancelled: orders?.filter((o: any) => o.status === 'cancelled').length,
     };
 
     if (isLoading) return <RouteFallback />;
@@ -39,6 +39,10 @@ export default function Orders() {
             (order.buyer && order.buyer.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesStatus && matchesSearch;
     });
+
+    const getTheBuyerName = (userId: any) => {
+            return ordersData?.users?.find((user: any) => user.user_id === userId)?.full_name || 'Client';
+        }
 
     return (
         <DashboardLayout>
@@ -126,14 +130,14 @@ export default function Orders() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {filteredOrders.map((order: any) => {
+                            {filteredOrders?.map((order: any) => {
                                 const statusInfo = statusConfig[order.status] || statusConfig.pending;
                                 const StatusIcon = statusInfo.icon;
                                 const firstItem = order.items?.[0];
                                 const otherItemsCount = (order.items?.length || 0) - 1;
-                                const productName = firstItem ? firstItem.listing_title : 'Produit inconnu';
+                                const productName = order?.title;
                                 const displayProduct = otherItemsCount > 0 ? `${productName} +${otherItemsCount}` : productName;
-                                const quantity = order.items?.reduce((acc: number, item: any) => acc + item.quantity, 0) || 0;
+                                const quantity = order?.quantity || 0;
 
                                 return (
                                     <tr key={order.order_id} className="hover:bg-gray-50 transition-colors">
@@ -142,7 +146,7 @@ export default function Orders() {
                                         </td>
                                         <td className="py-4 px-6">
                                             <div>
-                                                <p className="font-medium text-gray-900">{order.buyer || 'Client'}</p>
+                                                <p className="font-medium text-gray-900">{getTheBuyerName(order.user_id)}</p>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">

@@ -93,16 +93,16 @@ const App = () => (
           <Route path="/auth/verify-required" element={<Page title="Vérification requise"><EmailVerificationRequired /></Page>} />
           <Route path="/seller/setup" element={<Page title="Configuration boutique"><SellerSetup /></Page>} />
 
-          <Route path="/tableau-de-bord" element={<ProtectedRoute><Page title="Tableau de bord"><DashboardHome /></Page></ProtectedRoute>} />
+          <Route path="/tableau-de-bord" element={<ProtectedRoute requiredRole="business"><Page title="Tableau de bord"><DashboardHome /></Page></ProtectedRoute>} />
           {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><Page title="Dashboard"><DashboardHome /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/products" element={<ProtectedRoute><Page title="Produits"><Products /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/products/new" element={<ProtectedRoute><Page title="Nouveau produit"><ProductForm /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/products/:id/edit" element={<ProtectedRoute><Page title="Modifier produit"><ProductForm /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/orders" element={<ProtectedRoute><Page title="Commandes"><Orders /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/orders/:id" element={<ProtectedRoute><Page title="Détails commande"><OrderDetails /></Page></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute requiredRole="business"><Page title="Dashboard"><DashboardHome /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/products" element={<ProtectedRoute requiredRole="business"><Page title="Produits"><Products /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/products/new" element={<ProtectedRoute requiredRole="business"><Page title="Nouveau produit"><ProductForm /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/products/:id/edit" element={<ProtectedRoute requiredRole="business"><Page title="Modifier produit"><ProductForm /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/orders" element={<ProtectedRoute requiredRole="business"><Page title="Commandes"><Orders /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/orders/:id" element={<ProtectedRoute requiredRole="business"><Page title="Détails commande"><OrderDetails /></Page></ProtectedRoute>} />
 
-          <Route path="/dashboard/settings" element={<ProtectedRoute><Page title="Paramètres"><Settings /></Page></ProtectedRoute>} />
+          <Route path="/dashboard/settings" element={<ProtectedRoute requiredRole="business"><Page title="Paramètres"><Settings /></Page></ProtectedRoute>} />
 
           {/* Product & Shopping Routes */}
           <Route path="/produit/:id" element={<Page title="Détails du produit"><ProductDetail /></Page>} />

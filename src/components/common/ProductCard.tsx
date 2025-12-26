@@ -3,7 +3,8 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAddFavoriteMutation, useRemoveFavoriteMutation } from '@/redux/api/apiSlice';
+import { /* useAddFavoriteMutation, useRemoveFavoriteMutation */ } from '@/redux/api/apiSlice';
+import { getLocalFavorites, addLocalFavorite, removeLocalFavorite } from '@/lib/localFavorites';
 import { currencyFmt } from '@/lib/utils';
 
 export interface Media {
@@ -40,8 +41,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     const { addToCart } = useCart();
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [addFavorite] = useAddFavoriteMutation();
-    const [removeFavorite] = useRemoveFavoriteMutation();
+    // Favorites are persisted in localStorage only
     const [isFavorite, setIsFavorite] = React.useState(false);
     // Normalize data
     const rawId = product?.listings_id || product.id;
@@ -99,6 +99,25 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         navigate(`/acheter/${id}`);
     };
 
+    // initialize favorite state from localStorage and listen for changes
+    React.useEffect(() => {
+        if (!id) return;
+        const update = () => {
+            const favs = getLocalFavorites();
+            setIsFavorite(favs.includes(String(id)));
+        };
+        update();
+        window.addEventListener('cdf:favoritesChanged', update);
+        const storageHandler = (ev: StorageEvent) => {
+            if (ev.key === null || ev.key === 'cdf_favorites_v1') update();
+        };
+        window.addEventListener('storage', storageHandler);
+        return () => {
+            window.removeEventListener('cdf:favoritesChanged', update);
+            window.removeEventListener('storage', storageHandler);
+        };
+    }, [id]);
+
     return (
         <Link
             to={`/produit/${id}`}
@@ -140,28 +159,20 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        if (!user) {
-                            navigate('/login');
-                            return;
-                        }
-                                                // Toggle favorite (optimistic)
+                                                // Toggle favorite in localStorage only
                                                 const listingId = id;
                                                 if (!listingId) return;
                                                 if (!isFavorite) {
-                                                        addFavorite({ listing_id: listingId })
-                                                            .unwrap()
-                                                            .then(() => setIsFavorite(true))
-                                                            .catch(() => {
-                                                                // ignore errors for now
-                                                            });
+                                                    addLocalFavorite(listingId);
+                                                    setIsFavorite(true);
                                                 } else {
-                                                        removeFavorite(listingId)
-                                                            .unwrap()
-                                                            .then(() => setIsFavorite(false))
-                                                            .catch(() => {
-                                                                // ignore errors for now
-                                                            });
+                                                    removeLocalFavorite(listingId);
+                                                    setIsFavorite(false);
                                                 }
+                                                try {
+                                                    // notify other tabs/components that favorites changed
+                                                    window.dispatchEvent(new CustomEvent('cdf:favoritesChanged'));
+                                                } catch (e) {}
                     }}
                     className="absolute bottom-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
                     aria-label="Ajouter aux favoris"

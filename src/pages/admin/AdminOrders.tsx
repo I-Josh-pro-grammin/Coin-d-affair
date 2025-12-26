@@ -6,6 +6,7 @@ import { Search, Filter, Eye, MoreVertical, Package, Truck, CheckCircle, XCircle
 import {
     useGetAdminOrdersQuery
 } from '@/redux/api/apiSlice';
+import Loader from '@/components/common/Loader';
 
 export default function AdminOrders() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -43,6 +44,17 @@ export default function AdminOrders() {
             (order.seller_name || '').toLowerCase().includes(term);
         return matchesSearch;
     });
+
+    if (isLoading) {
+        return (
+            <AdminLayout>
+                <div className="flex items-center justify-center h-64">
+                    <p className="text-gray-500">Chargement des commandes...</p>
+                </div>
+                <Loader />
+            </AdminLayout>
+        );
+    }
 
     return (
         <AdminLayout>
