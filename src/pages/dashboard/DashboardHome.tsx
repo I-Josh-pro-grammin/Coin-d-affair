@@ -74,9 +74,13 @@ export default function DashboardHome() {
         }
     ];
 
+    const getTheBuyerName = (userId: any) => {
+        return orders?.users?.find((user: any) => user.user_id === userId)?.full_name || 'Client';
+    }
+
     const recentOrders = actualOrders.slice(0, 5).map((order: any) => ({
         id: order.order_id,
-        customer: order.buyer || 'Client',
+        customer: getTheBuyerName(order.user_id),
         product: order.title || 'Produit',
         amount: `${order.total_amount} ${order.currency}`,
         status: order.status
