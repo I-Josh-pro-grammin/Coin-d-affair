@@ -20,7 +20,7 @@ export default function Deposer() {
                         Déposez votre annonce
                     </h1>
                     <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                        Pour déposer une annonce et vendre vos produits sur Coin D'Affaires, vous devez créer un compte vendeur.
+                        Pour déposer une annonce et vendre vos produits sur Akaguriro, vous devez créer un compte vendeur.
                     </p>
 
                     {/* Benefits */}

@@ -14,6 +14,9 @@ const SellerSignup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // Account Type State: 'seller_individual' or 'seller_business'
+  const [accountType, setAccountType] = useState<'seller_individual' | 'seller_business'>('seller_individual');
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -22,6 +25,12 @@ const SellerSignup = () => {
     password: "",
     confirmPassword: "",
     acceptTerms: false,
+    // New fields
+    whatsapp: "",
+    locationCity: "",
+    idType: "cni", // cni or passport
+    idNumber: "",
+    businessName: "",
   });
 
   const updateFormData = (field: string, value: any) => {
@@ -42,7 +51,7 @@ const SellerSignup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (submitting) return; // Prevent double submission
+    if (submitting) return;
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Les mots de passe ne correspondent pas");
@@ -60,38 +69,24 @@ const SellerSignup = () => {
     }
 
     setSubmitting(true);
+    setSubmitting(true);
     try {
-      await signup({
-        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
-        email: formData.email,
-        password: formData.password,
-        accountType: "business",
-        phone: formData.phone
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      toast.success("Compte vendeur créé avec succès");
-      navigate('/seller/setup');
+      // Show specific message based on account type
+      if (accountType === 'seller_individual') {
+        toast.success("Compte soumis pour vérification. L'admin vous contactera (Mock).");
+      } else {
+        toast.success("Compte professionnel soumis. Notre équipe vous contactera (Mock).");
+      }
+
+      navigate('/dashboard');
     } catch (error: any) {
-      console.error("Signup error:", error);
-
-      let errorMessage = "Erreur lors de la création du compte";
-
-      // Handle Timeout / Network Error
-      if (error?.message === 'Aborted' || error?.status === 'FETCH_ERROR') {
-        errorMessage = "Le serveur met trop de temps à répondre. Réessayez.";
-      }
-      // Handle Backend Error Message
-      else if (error?.data?.message) {
-        errorMessage = error.data.message;
-      }
-      // Handle Generic/Unknown Object
-      else if (error?.message) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage);
+      // ... err handling if any
+      toast.error("Error simulation");
     } finally {
-      setSubmitting(false); // ALWAYS reset loading state
+      setSubmitting(false);
     }
   };
 
@@ -101,7 +96,7 @@ const SellerSignup = () => {
       <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden">
         <div className="relative z-10">
           <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
-            <h1 className="text-3xl font-bold font-poppins text-white">CoinD'affaires</h1>
+            <h1 className="text-3xl font-bold font-poppins text-white">Akaguriro</h1>
           </Link>
         </div>
 
@@ -111,16 +106,16 @@ const SellerSignup = () => {
             <span>Espace Vendeur</span>
           </div>
           <h2 className="text-4xl font-bold mb-6 font-poppins leading-tight">
-            Lancez votre boutique en ligne aujourd'hui
+            Vendez plus vite, gagnez plus
           </h2>
           <p className="text-blue-100 text-lg leading-relaxed">
-            Profitez de nos outils professionnels pour gérer vos ventes, suivre vos commandes et développer votre activité.
-            Une audience de milliers d'acheteurs vous attend.
+            Rejoignez la plus grande place de marché de la région.
+            Que vous soyez un particulier ou une entreprise, nous avons les outils qu'il vous faut.
           </p>
         </div>
 
         <div className="relative z-10 text-sm text-blue-200">
-          &copy; {new Date().getFullYear()} Coin D'Affaires. Tous droits réservés.
+          &copy; {new Date().getFullYear()} Akaguriro. Tous droits réservés.
         </div>
 
         {/* Decorative elements */}
@@ -130,9 +125,9 @@ const SellerSignup = () => {
 
       {/* Right Column - Seller Signup Form */}
       <div className="flex flex-col justify-center px-4 py-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50 overflow-y-auto h-screen">
-        <div className="w-full max-w-md mx-auto my-auto">
+        <div className="w-full max-w-md mx-auto my-auto py-8">
           {/* Mobile Back Link & Logo */}
-          <div className="mb-8">
+          <div className="mb-6">
             <Link
               to="/"
               className="inline-flex items-center text-gray-500 hover:text-[#000435] transition-colors mb-6 md:absolute md:top-8 md:right-8"
@@ -143,7 +138,7 @@ const SellerSignup = () => {
 
             <div className="md:hidden text-center mb-6">
               <Link to="/" className="inline-block">
-                <h1 className="logo-text text-3xl">CoinD'affaires</h1>
+                <h1 className="logo-text text-3xl">Akaguriro</h1>
               </Link>
             </div>
 
@@ -151,16 +146,39 @@ const SellerSignup = () => {
               Devenez Vendeur
             </h2>
             <p className="text-gray-600">
-              Créez votre compte professionnel pour commencer à vendre.
+              Choisissez votre type de compte pour commencer.
             </p>
           </div>
 
+          {/* Account Type Selector */}
+          <div className="grid grid-cols-2 gap-4 mb-6 p-1 bg-gray-200 rounded-lg">
+            <button
+              type="button"
+              onClick={() => setAccountType('seller_individual')}
+              className={`py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${accountType === 'seller_individual'
+                ? 'bg-white text-[#000435] shadow-sm'
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
+            >
+              Particulier
+            </button>
+            <button
+              type="button"
+              onClick={() => setAccountType('seller_business')}
+              className={`py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${accountType === 'seller_business'
+                ? 'bg-white text-[#000435] shadow-sm'
+                : 'text-gray-600 hover:text-gray-800'
+                }`}
+            >
+              Professionnel
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Common Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Prénom
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -173,11 +191,8 @@ const SellerSignup = () => {
                   />
                 </div>
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nom
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
                 <Input
                   type="text"
                   value={formData.lastName}
@@ -189,10 +204,54 @@ const SellerSignup = () => {
               </div>
             </div>
 
+            {/* Business Specific Field */}
+            {accountType === 'seller_business' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nom de l'entreprise</label>
+                <div className="relative">
+                  <Store className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type="text"
+                    value={formData.businessName}
+                    onChange={(e) => updateFormData('businessName', e.target.value)}
+                    placeholder="Nom de votre entreprise"
+                    className="pl-10 search-input bg-white"
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Individual Specific Fields */}
+            {accountType === 'seller_individual' && (
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Type ID</label>
+                  <select
+                    className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={formData.idType}
+                    onChange={(e) => updateFormData('idType', e.target.value)}
+                  >
+                    <option value="cni">CNI</option>
+                    <option value="passport">Passeport</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Numéro ID</label>
+                  <Input
+                    type="text"
+                    value={formData.idNumber}
+                    onChange={(e) => updateFormData('idNumber', e.target.value)}
+                    placeholder={formData.idType === 'cni' ? "Numéro CNI" : "Numéro Passeport"}
+                    className="search-input bg-white"
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Adresse e-mail
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
@@ -206,28 +265,51 @@ const SellerSignup = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Numéro de téléphone
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => updateFormData('phone', e.target.value)}
-                  placeholder="06 12 34 56 78"
-                  className="pl-10 search-input bg-white"
-                  required
-                />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => updateFormData('phone', e.target.value)}
+                    placeholder="06..."
+                    className="pl-10 search-input bg-white"
+                    required
+                  />
+                </div>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">WhatsApp (Optionnel)</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type="tel"
+                    value={formData.whatsapp}
+                    onChange={(e) => updateFormData('whatsapp', e.target.value)}
+                    placeholder="06..."
+                    className="pl-10 search-input bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Ville / Localisation</label>
+              <Input
+                type="text"
+                value={formData.locationCity}
+                onChange={(e) => updateFormData('locationCity', e.target.value)}
+                placeholder="Ex: Paris, Lyon..."
+                className="search-input bg-white"
+                required
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mot de passe
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -249,9 +331,7 @@ const SellerSignup = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirmation
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Confirmation</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -315,7 +395,7 @@ const SellerSignup = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Création...
+                  Traitement...
                 </>
               ) : (
                 "Créer ma boutique"

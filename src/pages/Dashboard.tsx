@@ -1,19 +1,26 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { CategoryNav } from "@/components/layout/CategoryNav";
 import { Footer } from "@/components/layout/Footer";
-import { Plus, Eye, MessageCircle, Heart, TrendingUp, MapPin, Tag, Calendar } from "lucide-react";
+import { Plus, Eye, MessageCircle, Heart, TrendingUp, MapPin, Tag, Calendar, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useGetCurrentUserQuery, useGetListingsQuery, useGetOrderStatsQuery } from "@/redux/api/apiSlice";
 
 const Dashboard = () => {
-  const { data: userData } = useGetCurrentUserQuery({});
-  const { data: listingsData, isLoading: isLoadingListings } = useGetListingsQuery({});
-  const { data: orderStats } = useGetOrderStatsQuery({});
+  // const { data: userData } = useGetCurrentUserQuery({});
+  // const { data: listingsData, isLoading: isLoadingListings } = useGetListingsQuery({});
+  // const { data: orderStats } = useGetOrderStatsQuery({});
+  const isLoadingListings = false;
 
-  const user = userData?.user;
+  const user = {
+    username: 'Jean Dupont',
+    id: '1',
+    accountType: 'seller_individual',
+    verificationStatus: 'pending' // Change to 'approved' or 'rejected' to test other states
+  };
 
   // Derived stats
+  const listingsData = { listings: [] };
   const userStats = {
     activeAds: listingsData?.listings?.filter((l: any) => l.seller_id === user?.id).length || 0,
     totalViews: listingsData?.listings?.filter((l: any) => l.seller_id === user?.id).reduce((acc: number, curr: any) => acc + (curr.views || 0), 0) || 0,
@@ -38,6 +45,41 @@ const Dashboard = () => {
             Bienvenue sur votre espace personnel, {user?.username || 'Utilisateur'}. Gérez vos annonces et suivez votre activité.
           </p>
         </div>
+
+        {/* Verification Status Banners */}
+        {user?.accountType?.startsWith('seller_') && user?.verificationStatus === 'pending' && (
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-yellow-700">
+                  <span className="font-bold">Compte en attente de validation.</span>
+                  {" "}Votre compte vendeur est actuellement en cours d'examen. Vous ne pourrez pas publier d'annonces tant qu'il n'aura pas été approuvé.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {user?.accountType?.startsWith('seller_') && user?.verificationStatus === 'rejected' && (
+          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-8">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <X className="h-5 w-5 text-red-400" />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">
+                  <span className="font-bold">Compte refusé.</span>
+                  {" "}Votre demande de compte vendeur a été refusée. Veuillez contacter le support pour plus d'informations.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

@@ -4,8 +4,8 @@ import { Save, Globe, Shield, CreditCard, Bell } from 'lucide-react';
 
 export default function AdminSettings() {
     const [settings, setSettings] = useState({
-        platformName: "Coin D'Affaires",
-        supportEmail: 'support@coindaffaires.com',
+        platformName: "Akaguriro",
+        supportEmail: 'support@akaguriro.com',
         maintenanceMode: false,
         autoModeration: true,
         reportThreshold: 5,

@@ -1,53 +1,36 @@
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import {
-    DollarSign,
     Package,
-    ShoppingCart,
-    Users,
     ArrowUp,
     ArrowDown,
     Plus,
-    Eye
+    Eye,
+    MessageCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
     useGetBusinessProfileQuery,
-    useGetBusinessProductsQuery,
-    useGetBusinessOrdersQuery
+    useGetBusinessProductsQuery
 } from '@/redux/api/apiSlice';
 import { RouteFallback } from '@/components/common/RouteFallback';
 
 export default function DashboardHome() {
     const { data: businessProfile, isLoading: profileLoading } = useGetBusinessProfileQuery({});
     const { data: products, isLoading: productsLoading } = useGetBusinessProductsQuery({});
-    const { data: orders, isLoading: ordersLoading } = useGetBusinessOrdersQuery({});
 
-    if (profileLoading || productsLoading || ordersLoading) {
+    if (profileLoading || productsLoading) {
         return <RouteFallback />;
     }
 
     // Calculate stats
-    // Calculate stats
     const actualProducts = products?.allProducts || [];
-    const actualOrders = orders?.orders || [];
-    const actualProfile = businessProfile?.business;
 
-    const totalRevenue = actualOrders.reduce((acc: number, order: any) => acc + (Number(order.total_amount) || 0), 0);
+    // Placeholder stats for non-commerce metrics
     const activeProducts = actualProducts.length || 0;
-    const totalOrders = actualOrders.length || 0;
-
-    // Calculate unique customers from orders
-    const uniqueCustomers = new Set(actualOrders.map((order: any) => order.user_id)).size;
+    const totalViews = 0; // To be implemented with analytics
+    const contactsCount = 0; // To be implemented with message/click tracking
 
     const stats = [
-        {
-            title: 'Revenus totaux',
-            value: `${totalRevenue} BIF`,
-            change: '+0%', // Placeholder as we don't have historical data yet
-            trend: 'up',
-            icon: DollarSign,
-            color: 'bg-green-100 text-green-600'
-        },
         {
             title: 'Produits actifs',
             value: activeProducts.toString(),
@@ -57,34 +40,24 @@ export default function DashboardHome() {
             color: 'bg-blue-100 text-blue-600'
         },
         {
-            title: 'Commandes',
-            value: totalOrders.toString(),
-            change: '+0%',
+            title: 'Vues totales',
+            value: totalViews.toString(),
+            change: '+0', // Placeholder
             trend: 'up',
-            icon: ShoppingCart,
+            icon: Eye,
             color: 'bg-purple-100 text-purple-600'
         },
         {
-            title: 'Clients',
-            value: uniqueCustomers.toString(),
-            change: '+0%',
+            title: 'Contacts générés',
+            value: contactsCount.toString(),
+            change: '+0',
             trend: 'up',
-            icon: Users,
-            color: 'bg-orange-100 text-orange-600'
+            icon: MessageCircle,
+            color: 'bg-green-100 text-green-600'
         }
     ];
 
-    const getTheBuyerName = (userId: any) => {
-        return orders?.users?.find((user: any) => user.user_id === userId)?.full_name || 'Client';
-    }
-
-    const recentOrders = actualOrders.slice(0, 5).map((order: any) => ({
-        id: order.order_id,
-        customer: getTheBuyerName(order.user_id),
-        product: order.title || 'Produit',
-        amount: `${order.total_amount} ${order.currency}`,
-        status: order.status
-    })) || [];
+    const recentProducts = actualProducts.slice(0, 5) || [];
 
     return (
         <DashboardLayout>
@@ -95,7 +68,7 @@ export default function DashboardHome() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {stats.map((stat, index) => {
                     const Icon = stat.icon;
                     return (
@@ -118,40 +91,30 @@ export default function DashboardHome() {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <Link
                     to="/dashboard/products/new"
-                    className="bg-[#000435] text-white rounded-2xl shadow-sm p-6 hover:bg-[#000435]/90 transition-all hover:shadow-md"
+                    className="bg-[#000435] text-white rounded-2xl shadow-sm p-6 hover:bg-[#000435]/90 transition-all hover:shadow-md flex flex-col items-start"
                 >
                     <Plus size={24} className="mb-3" />
                     <h3 className="text-lg font-bold mb-1">Ajouter un produit</h3>
-                    <p className="text-sm text-white/80">Créez un nouveau produit</p>
+                    <p className="text-sm text-white/80">Créez une nouvelle annonce</p>
                 </Link>
 
-                <Link
-                    to="/dashboard/orders"
-                    className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all border-2 border-[#000435]"
-                >
-                    <ShoppingCart size={24} className="mb-3 text-[#000435]" />
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">Voir les commandes</h3>
-                    <p className="text-sm text-gray-600">Gérez vos commandes</p>
-                </Link>
-
-                <Link
-                    to="/dashboard/messages"
-                    className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all border-2 border-gray-200"
-                >
-                    <Eye size={24} className="mb-3 text-gray-700" />
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">Messages</h3>
-                    <p className="text-sm text-gray-600">3 nouveaux messages</p>
-                </Link>
+                <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-center">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Conseil pour vendre plus</h3>
+                    <p className="text-sm text-gray-600">
+                        Ajoutez des photos de haute qualité et une description détaillée pour attirer plus d'acheteurs potentiels.
+                        Assurez-vous que vos informations de contact (WhatsApp, Téléphone) sont à jour dans les paramètres.
+                    </p>
+                </div>
             </div>
 
-            {/* Recent Orders */}
+            {/* Recent Products */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-gray-900">Commandes récentes</h2>
-                    <Link to="/dashboard/orders" className="text-[#000435] hover:underline text-sm font-medium">
+                    <h2 className="text-xl font-bold text-gray-900">Vos produits récents</h2>
+                    <Link to="/dashboard/products" className="text-[#000435] hover:underline text-sm font-medium">
                         Voir tout →
                     </Link>
                 </div>
@@ -160,30 +123,38 @@ export default function DashboardHome() {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-gray-200">
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Commande</th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Client</th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Produit</th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Montant</th>
+                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Image</th>
+                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Titre</th>
+                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Prix</th>
+                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Catégorie</th>
                                 <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Statut</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {recentOrders.map((order: any) => (
-                                <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                    <td className="py-4 px-4 text-sm font-medium text-gray-900">#{order.id}</td>
-                                    <td className="py-4 px-4 text-sm text-gray-700">{order.customer}</td>
-                                    <td className="py-4 px-4 text-sm text-gray-700">{order.product}</td>
-                                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{order.amount}</td>
+                            {recentProducts.length > 0 ? recentProducts.map((product: any) => (
+                                <tr key={product.listings_id} className="border-b border-gray-100 hover:bg-gray-50">
                                     <td className="py-4 px-4">
-                                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                                                'bg-green-100 text-green-800'
-                                            }`}>
-                                            {order.status}
+                                        <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden">
+                                            {/* Image placeholder or component */}
+                                            <Package className="w-full h-full p-2 text-gray-400" />
+                                        </div>
+                                    </td>
+                                    <td className="py-4 px-4 text-sm font-medium text-gray-900">{product.title}</td>
+                                    <td className="py-4 px-4 text-sm text-gray-700">{product.price} {product.currency}</td>
+                                    <td className="py-4 px-4 text-sm text-gray-700">{product.category_name}</td>
+                                    <td className="py-4 px-4">
+                                        <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Actif
                                         </span>
                                     </td>
                                 </tr>
-                            ))}
+                            )) : (
+                                <tr>
+                                    <td colSpan={5} className="py-8 text-center text-gray-500">
+                                        Aucun produit trouvé. Commencez par en ajouter un !
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

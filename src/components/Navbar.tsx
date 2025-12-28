@@ -15,9 +15,9 @@ const Navbar: React.FC = () => {
       <div className="flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
-          <img 
-            src={logo} 
-            alt="Coin d'Affaires" 
+          <img
+            src={logo}
+            alt="Akaguriro"
             className="h-12 w-auto object-contain"
           />
         </Link>
@@ -33,14 +33,14 @@ const Navbar: React.FC = () => {
 
         {/* Center Navigation (Desktop) */}
         <div className="hidden lg:flex items-center gap-8">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="text-gray-700 hover:text-[#000435] font-medium transition-colors"
           >
             Accueil
           </Link>
-          <Link 
-            to="/boutique" 
+          <Link
+            to="/boutique"
             className="text-gray-700 hover:text-[#000435] font-medium transition-colors"
           >
             Boutique
@@ -52,21 +52,21 @@ const Navbar: React.FC = () => {
 
         {/* Right Icons (Desktop) */}
         <div className="hidden lg:flex items-center gap-6">
-          <Link 
-            to="/favoris" 
+          <Link
+            to="/favoris"
             className="text-gray-700 hover:text-[#000435] transition-colors"
             aria-label="Favoris"
           >
             <Heart size={24} />
           </Link>
-          <Link 
-            to="/panier" 
+          <Link
+            to="/panier"
             className="text-gray-700 hover:text-[#000435] transition-colors"
             aria-label="Panier"
           >
             <ShoppingBag size={24} />
           </Link>
-          <Link 
+          <Link
             to="/auth/role-selection"
             className="inline-block"
           >
@@ -86,15 +86,15 @@ const Navbar: React.FC = () => {
       {isMenuOpen && (
         <div className="lg:hidden mt-4 pt-4 border-t border-gray-200">
           <div className="flex flex-col gap-4">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="text-gray-700 hover:text-[#000435] font-medium transition-colors py-2"
               onClick={toggleMenu}
             >
               Accueil
             </Link>
-            <Link 
-              to="/boutique" 
+            <Link
+              to="/boutique"
               className="text-gray-700 hover:text-[#000435] font-medium transition-colors py-2"
               onClick={toggleMenu}
             >
@@ -103,19 +103,19 @@ const Navbar: React.FC = () => {
             <button className="bg-[#000435] hover:bg-[#020657] text-white font-bold px-6 py-3 rounded-full transition-colors w-full">
               Déposer une annonce
             </button>
-            
+
             {/* Mobile Icons */}
             <div className="flex items-center justify-around pt-4 border-t border-gray-200">
-              <Link 
-                to="/favoris" 
+              <Link
+                to="/favoris"
                 className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors"
                 onClick={toggleMenu}
               >
                 <Heart size={24} />
                 <span className="text-xs">Favoris</span>
               </Link>
-              <Link 
-                to="/panier" 
+              <Link
+                to="/panier"
                 className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#000435] transition-colors"
                 onClick={toggleMenu}
               >

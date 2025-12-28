@@ -12,7 +12,7 @@ export default function Press() {
                     <h1 className="text-3xl font-bold text-gray-900 mb-6">Espace Presse</h1>
                     <div className="prose prose-lg text-gray-600 mb-8">
                         <p className="mb-4">
-                            Bienvenue dans l'espace presse de Coin D'Affaires. Vous trouverez ici nos derniers communiqués, notre kit média ainsi que les contacts pour toutes demandes journalistiques.
+                            Bienvenue dans l'espace presse de Akaguriro. Vous trouverez ici nos derniers communiqués, notre kit média ainsi que les contacts pour toutes demandes journalistiques.
                         </p>
                     </div>
 
@@ -34,7 +34,7 @@ export default function Press() {
                             </p>
                             <Button className="w-full bg-[#000435] hover:bg-[#000435]/90">
                                 <Mail className="w-4 h-4 mr-2" />
-                                press@coindaffaires.bi
+                                press@akaguriro.com
                             </Button>
                         </div>
                     </div>
@@ -43,11 +43,11 @@ export default function Press() {
                     <div className="space-y-4">
                         <div className="border-l-4 border-[#000435] pl-4 py-2">
                             <span className="text-sm text-gray-500 block mb-1">20 Décembre 2024</span>
-                            <h3 className="font-semibold text-gray-900">Lancement officiel de la plateforme Coin D'Affaires au Burundi</h3>
+                            <h3 className="font-semibold text-gray-900">Lancement officiel de la plateforme Akaguriro au Burundi</h3>
                         </div>
                         <div className="border-l-4 border-gray-200 pl-4 py-2">
                             <span className="text-sm text-gray-500 block mb-1">15 Novembre 2024</span>
-                            <h3 className="font-semibold text-gray-900">Levée de fonds de série A : Coin D'Affaires accélère son expansion</h3>
+                            <h3 className="font-semibold text-gray-900">Levée de fonds de série A : Akaguriro accélère son expansion</h3>
                         </div>
                     </div>
                 </div>

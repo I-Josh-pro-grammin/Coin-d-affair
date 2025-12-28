@@ -7,10 +7,10 @@ export default function About() {
             <Navbar />
             <main className="max-w-4xl mx-auto px-4 py-12">
                 <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-6">À propos de Coin D'Affaires</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-6">À propos de Akaguriro</h1>
                     <div className="prose prose-lg text-gray-600">
                         <p className="mb-4">
-                            Coin D'Affaires est la première plateforme de commerce électronique au Burundi, connectant les acheteurs et les vendeurs dans un environnement sécurisé et convivial.
+                            Akaguriro est la première plateforme de commerce électronique au Burundi, connectant les acheteurs et les vendeurs dans un environnement sécurisé et convivial.
                         </p>
                         <p className="mb-4">
                             Notre mission est de simplifier le commerce en ligne en Afrique, en offrant des outils puissants aux vendeurs pour développer leur activité et une expérience d'achat exceptionnelle aux consommateurs.

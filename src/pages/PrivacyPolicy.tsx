@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
                     {/* Introduction */}
                     <div className="border-b border-gray-100 pb-8">
                         <p className="text-gray-700 leading-relaxed text-lg">
-                            Chez Coin D'Affaires, la confidentialité de vos données est une priorité. Cette politique détaille les informations que nous collectons, comment nous les utilisons et vos droits concernant ces données.
+                            Chez Akaguriro, la confidentialité de vos données est une priorité. Cette politique détaille les informations que nous collectons, comment nous les utilisons et vos droits concernant ces données.
                         </p>
                     </div>
 

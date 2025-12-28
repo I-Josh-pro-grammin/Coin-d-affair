@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     Package,
-    ShoppingCart,
     Settings,
     MessageSquare,
     Menu,
@@ -28,7 +27,6 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     const menuItems = [
         { icon: LayoutDashboard, label: 'Tableau de Bord', path: '/dashboard' },
         { icon: Package, label: 'Produits', path: '/dashboard/products' },
-        { icon: ShoppingCart, label: 'Commandes', path: '/dashboard/orders' },
         { icon: Settings, label: 'Paramètres', path: '/dashboard/settings' },
     ];
 

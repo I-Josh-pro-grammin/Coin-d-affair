@@ -14,7 +14,8 @@ import {
     X,
     Bell,
     LogOut,
-    ChevronDown
+    ChevronDown,
+    UserCheck
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -31,6 +32,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         { icon: LayoutDashboard, label: 'Tableau de Bord', path: '/admin' },
         { icon: FolderTree, label: 'Catégories', path: '/admin/categories' },
         { icon: Users, label: 'Utilisateurs', path: '/admin/users' },
+        { icon: UserCheck, label: 'Vérifications', path: '/admin/verification' }, // Added
         { icon: Package, label: 'Produits', path: '/admin/products' },
         { icon: ShoppingCart, label: 'Commandes', path: '/admin/orders' },
         { icon: BarChart3, label: 'Analyses', path: '/admin/analytics' },
