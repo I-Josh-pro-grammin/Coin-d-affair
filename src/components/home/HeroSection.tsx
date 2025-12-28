@@ -127,8 +127,8 @@ export function HeroSection() {
           </form>
         </div>
 
-        {/* Carousel Layout */}
-        <div className="w-full">
+        {/* Mobile View: Carousel Layout */}
+        <div className="block md:hidden w-full">
           <Carousel
             opts={{
               align: "start",
@@ -143,10 +143,10 @@ export function HeroSection() {
           >
             <CarouselContent>
               {heroCards.map((card) => (
-                <CarouselItem key={card.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                <CarouselItem key={card.id} className="pl-4">
                   {card.link ? (
                     <Link to={card.link} className="block w-full h-full">
-                      <div className={`rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-64 md:h-80 w-full ${card.bgColor || 'bg-gray-200'} flex items-center justify-center`}>
+                      <div className={`rounded-xl overflow-hidden relative group cursor-pointer h-64 w-full ${card.bgColor || 'bg-gray-200'} flex items-center justify-center`}>
                         {card.image && (
                           <>
                             <img
@@ -158,13 +158,13 @@ export function HeroSection() {
                           </>
                         )}
 
-                        <div className={`absolute ${card.position === 'center' ? 'inset-0 flex items-center justify-center text-center' : 'bottom-0 left-0 right-0'} p-4 md:p-6 ${card.textColor || 'text-white'}`}>
+                        <div className={`absolute ${card.position === 'center' ? 'inset-0 flex items-center justify-center text-center' : 'bottom-0 left-0 right-0'} p-4 ${card.textColor || 'text-white'}`}>
                           <div>
-                            <h3 className={`font-bold ${card.position === 'center' ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl'}`}>
+                            <h3 className={`font-bold ${card.position === 'center' ? 'text-2xl' : 'text-lg'}`}>
                               {card.title}
                             </h3>
                             {card.subtitle && (
-                              <p className={`mt-1 ${card.position === 'center' ? 'text-sm md:text-base' : 'text-xs md:text-sm'}`}>
+                              <p className={`mt-1 ${card.position === 'center' ? 'text-sm' : 'text-xs'}`}>
                                 {card.subtitle}
                               </p>
                             )}
@@ -173,7 +173,7 @@ export function HeroSection() {
                       </div>
                     </Link>
                   ) : (
-                    <div className={`rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-64 md:h-80 w-full ${card.bgColor || 'bg-gray-200'} flex items-center justify-center`}>
+                    <div className={`rounded-xl overflow-hidden relative group cursor-pointer h-64 w-full ${card.bgColor || 'bg-gray-200'} flex items-center justify-center`}>
                       {card.image && (
                         <>
                           <img
@@ -185,13 +185,13 @@ export function HeroSection() {
                         </>
                       )}
 
-                      <div className={`absolute ${card.position === 'center' ? 'inset-0 flex items-center justify-center text-center' : 'bottom-0 left-0 right-0'} p-4 md:p-6 ${card.textColor || 'text-white'}`}>
+                      <div className={`absolute ${card.position === 'center' ? 'inset-0 flex items-center justify-center text-center' : 'bottom-0 left-0 right-0'} p-4 ${card.textColor || 'text-white'}`}>
                         <div>
-                          <h3 className={`font-bold ${card.position === 'center' ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl'}`}>
+                          <h3 className={`font-bold ${card.position === 'center' ? 'text-2xl' : 'text-lg'}`}>
                             {card.title}
                           </h3>
                           {card.subtitle && (
-                            <p className={`mt-1 ${card.position === 'center' ? 'text-sm md:text-base' : 'text-xs md:text-sm'}`}>
+                            <p className={`mt-1 ${card.position === 'center' ? 'text-sm' : 'text-xs'}`}>
                               {card.subtitle}
                             </p>
                           )}
@@ -202,11 +202,185 @@ export function HeroSection() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="hidden md:block">
-              <CarouselPrevious className="-left-4" />
-              <CarouselNext className="-right-4" />
-            </div>
           </Carousel>
+        </div>
+
+        {/* Desktop View: Grid Layout */}
+        <div className="hidden md:grid md:grid-cols-3 md:grid-rows-2 gap-4 h-[350px] lg:h-[420px] xl:h-[480px]">
+          {/* Column 1 - Left Side (2 stacked cards) */}
+          <div className="col-start-1 row-start-1 row-span-1">
+            {/* Card 1 */}
+            <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+              <img
+                src={heroCards[0].image}
+                alt={heroCards[0].title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                <h3 className="font-bold text-lg">{heroCards[0].title}</h3>
+                <p className="text-sm">{heroCards[0].subtitle}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-start-1 row-start-2 row-span-1">
+            {/* Card 4 - Stats Card */}
+            {heroCards[3].link ? (
+              <Link to={heroCards[3].link} className="block w-full h-full">
+                <div className={`rounded-2xl overflow-hidden relative group cursor-pointer h-full ${heroCards[3].bgColor} flex items-center justify-center p-6`}>
+                  <div className="text-center text-white">
+                    <h3 className="font-bold text-4xl lg:text-5xl mb-2">{heroCards[3].title}</h3>
+                    <p className="text-sm">{heroCards[3].subtitle}</p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className={`rounded-2xl overflow-hidden relative group cursor-pointer h-full ${heroCards[3].bgColor} flex items-center justify-center p-6`}>
+                <div className="text-center text-white">
+                  <h3 className="font-bold text-4xl lg:text-5xl mb-2">{heroCards[3].title}</h3>
+                  <p className="text-sm">{heroCards[3].subtitle}</p>
+                </div>
+              </div>
+            )}
+
+          </div>
+
+          {/* Column 2 - Center Tall Card (spans 2 rows) */}
+          <div className="col-start-2 row-start-1 row-span-2">
+            {heroCards[1].link ? (
+              <Link to={heroCards[1].link} className="block w-full h-full">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[1].image}
+                    alt={heroCards[1].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-white">
+                    <h3 className="font-bold text-2xl lg:text-3xl">{heroCards[1].title}</h3>
+                    <p className="text-base">{heroCards[1].subtitle}</p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                <img
+                  src={heroCards[1].image}
+                  alt={heroCards[1].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-white">
+                  <h3 className="font-bold text-2xl lg:text-3xl">{heroCards[1].title}</h3>
+                  <p className="text-base">{heroCards[1].subtitle}</p>
+                </div>
+              </div>
+            )}
+
+          </div>
+
+          {/* Column 3 - Right Side (3 stacked cards using flex) */}
+          <div className="col-start-3 row-start-1 row-span-2 flex flex-col gap-4">
+            {/* Card 3 */}
+            {heroCards[2].link ? (
+              <Link to={heroCards[2].link} className="block flex-1 w-full">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[2].image}
+                    alt={heroCards[2].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/40"></div>
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
+                    <div>
+                      <h3 className="font-bold text-lg">{heroCards[2].title}</h3>
+                      <p className="text-sm mt-1">{heroCards[2].subtitle}</p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1">
+                <img
+                  src={heroCards[2].image}
+                  alt={heroCards[2].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/40"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
+                  <div>
+                    <h3 className="font-bold text-lg">{heroCards[2].title}</h3>
+                    <p className="text-sm mt-1">{heroCards[2].subtitle}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+
+            {/* Card 5 */}
+            {heroCards[4].link ? (
+              <Link to={heroCards[4].link} className="block flex-1 w-full">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[4].image}
+                    alt={heroCards[4].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="font-bold text-base">{heroCards[4].title}</h3>
+                    <p className="text-xs">{heroCards[4].subtitle}</p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1">
+                <img
+                  src={heroCards[4].image}
+                  alt={heroCards[4].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="font-bold text-base">{heroCards[4].title}</h3>
+                  <p className="text-xs">{heroCards[4].subtitle}</p>
+                </div>
+              </div>
+            )}
+
+
+            {/* Card 6 */}
+            {heroCards[5].link ? (
+              <Link to={heroCards[5].link} className="block flex-1 w-full">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[5].image}
+                    alt={heroCards[5].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="font-bold text-base">{heroCards[5].title}</h3>
+                    <p className="text-xs">{heroCards[5].subtitle}</p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1">
+                <img
+                  src={heroCards[5].image}
+                  alt={heroCards[5].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="font-bold text-base">{heroCards[5].title}</h3>
+                  <p className="text-xs">{heroCards[5].subtitle}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
