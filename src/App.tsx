@@ -68,9 +68,11 @@ const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
 
 
 const App = () => (
-  <CartProvider>
+  <>
     <Toaster />
     <Sonner />
+
+    <CartProvider>
     <ScrollToTop />
     <ErrorBoundary>
       <Suspense fallback={<RouteFallback />}>
@@ -158,6 +160,8 @@ const App = () => (
       </Suspense>
     </ErrorBoundary>
   </CartProvider>
+  </>
+  
 );
 
 export default App;

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { Media } from '@/components/common/ProductCard';
 
@@ -23,8 +23,13 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children }: { children: React.ReactNode }) {
     const [cart, setCart] = useState<CartItem[]>([]);
+        useEffect(() => {
+        const saved = localStorage.getItem('cart');
+        if (saved) setCart(JSON.parse(saved));
+    }, []);
+
 
     // Load cart from localStorage on mount
     useEffect(() => {

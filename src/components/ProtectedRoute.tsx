@@ -21,7 +21,7 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   }
 
   // Strict Role Check if requiredRole is provided
-  if (requiredRole && user.accountType !== requiredRole && user.accountType !== 'admin') {
+  if (requiredRole && user.account_type !== requiredRole && user.account_type !== 'admin') {
     // Allow admin to access everything, otherwise restrict.
     // Redirect to home or reasonable default if role mismatch.
     return <Navigate to="/" replace />;

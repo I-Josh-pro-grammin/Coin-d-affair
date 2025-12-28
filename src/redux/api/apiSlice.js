@@ -200,6 +200,13 @@ export const apiSlice = createApi({
       }),
     }),
 
+    getCustomers: builder.query({
+      query: () => ({
+        url: '/users/customers',
+        method: 'GET',
+      })
+    }),
+
     getBusinesses: builder.query({
       query: () => ({
         url: '/users/number',
@@ -515,6 +522,7 @@ export const {
   useCreateAdminNotificationMutation,
   useMarkNotificationReadMutation,
   useGetLocationsQuery,
+  useGetCustomersQuery,
   useGetBusinessesQuery,
   // Favorites
   useGetFavoritesQuery,

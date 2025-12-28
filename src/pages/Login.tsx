@@ -28,15 +28,15 @@ const Login = () => {
       // Route based on account type
       // Route based on account type
       // Route based on account type (Safe Reload ensures fresh state)
-      if (user.accountType === 'admin') {
+      if (user.account_type === 'admin') {
         navigate("/admin", { replace: true });
-        window.location.reload();
-      } else if (user.accountType === 'business') {
+        // window.location.reload();
+      } else if (user.account_type === 'business') {
         navigate("/dashboard", { replace: true });
-        window.location.reload();
+        // window.location.reload();
       } else {
         navigate("/", { replace: true });
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (err: any) {
       // Check if error is due to unverified email

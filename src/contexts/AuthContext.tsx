@@ -12,7 +12,7 @@ interface User {
   name: string;
   email: string;
   phone?: string;
-  accountType?: 'user' | 'business' | 'admin';
+  account_type?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
 }
 

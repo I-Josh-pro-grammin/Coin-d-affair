@@ -75,7 +75,7 @@ export function Navbar({
 
   const handlePostAdClick = () => {
     // Check if user is logged in and is a seller
-    if (user?.accountType === 'business') {
+    if (user?.account_type === 'business') {
       navigate("/dashboard/products/new");
     } else {
       navigate("/deposer");
@@ -171,12 +171,12 @@ export function Navbar({
                   <div className="relative group">
                     <button className="flex items-center gap-2 text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100">
                       <User size={20} />
-                      <span className="hidden sm:inline font-medium">
+                      <span className="hidden sm:inline w-full font-medium">
                         {user.name ?? "Mon compte"}
                       </span>
                     </button>
 
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div className="absolute right-0 w-98 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="font-medium text-gray-900">{user.name}</p>
                         {user.email && (

@@ -2,8 +2,8 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useGetBusinessesQuery } from '@/redux/api/apiSlice'
+import { Link, useNavigate } from 'react-router-dom';
+import { useGetBusinessesQuery, useGetCustomersQuery } from '@/redux/api/apiSlice'
 import card1 from "@/assets/card1.jpg";
 import card2 from "@/assets/card2.jpg";
 import card3 from "@/assets/card3.jpg";
@@ -18,6 +18,7 @@ interface HeroCard {
   position: 'bottom' | 'center';
   bgColor?: string;
   textColor?: string;
+  link?: string;
 }
 
 export function HeroSection() {
@@ -25,7 +26,7 @@ export function HeroSection() {
   // const {cusotomerNumber}=useGetUsers();
 
   const {data: businesses} = useGetBusinessesQuery();
-
+  const {data: customers} = useGetCustomersQuery();
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -54,9 +55,10 @@ export function HeroSection() {
     {
       id: 3,
       image: card3,
-      title: "Rejoignez 1000+",
+      title: `Rejoignez ${customers != undefined ? customers?.customers : ''}+`,
       subtitle: "acheteurs satisfaits",
       position: 'center',
+      link: '/auth/signup/seller',
     },
     {
       id: 4,
@@ -65,6 +67,7 @@ export function HeroSection() {
       position: 'center',
       bgColor: 'bg-[#000435]',
       textColor: 'text-white',
+      link: '/auth/signup/customer',
     },
     {
       id: 5,
@@ -72,6 +75,7 @@ export function HeroSection() {
       title: "Inspirez-vous",
       subtitle: "de nos collections",
       position: 'bottom',
+      link: '/boutique',
     },
     {
       id: 6,
@@ -79,13 +83,14 @@ export function HeroSection() {
       title: "Offrez le plaisir",
       subtitle: "du shopping",
       position: 'bottom',
+      link: '/boutique',
     },
   ];
 
 
 
   return (
-    <section className="relative bg-gray-50 -mt-24 pt-32 pb-8 md:pb-12">
+    <section className="relative bg-gray-50  md:w-full -mt-24 pt-32 pb-8 md:pb-12">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-6">
@@ -124,7 +129,7 @@ export function HeroSection() {
           {/* Column 1 - Left Side (2 stacked cards) */}
           <div className="md:col-start-1 md:row-start-1 md:row-span-1">
             {/* Card 1 */}
-            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full">
+              <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full">
               <img
                 src={heroCards[0].image}
                 alt={heroCards[0].title}
@@ -140,7 +145,7 @@ export function HeroSection() {
 
           <div className="md:col-start-1 md:row-start-2 md:row-span-1">
             {/* Card 4 - Stats Card */}
-            <div className={`rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full ${heroCards[3].bgColor} flex items-center justify-center p-4 md:p-6`}>
+              <div className={`rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full ${heroCards[3].bgColor} flex items-center justify-center p-4 md:p-6`}>
               <div className="text-center text-white">
                 <h3 className="font-bold text-3xl md:text-4xl lg:text-5xl mb-1 md:mb-2">{heroCards[3].title}</h3>
                 <p className="text-xs md:text-sm">{heroCards[3].subtitle}</p>
@@ -150,7 +155,8 @@ export function HeroSection() {
 
           {/* Column 2 - Center Tall Card (spans 2 rows) */}
           <div className="md:col-start-2 md:row-start-1 md:row-span-2">
-            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-64 md:h-full">
+              <Link to={heroCards[2].link}>
+              <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-64 md:h-full">
               <img
                 src={heroCards[1].image}
                 alt={heroCards[1].title}
@@ -162,11 +168,13 @@ export function HeroSection() {
                 <p className="text-sm md:text-base">{heroCards[1].subtitle}</p>
               </div>
             </div>
+            </Link>
           </div>
 
           {/* Column 3 - Right Side (3 stacked cards using flex) */}
           <div className="md:col-start-3 md:row-start-1 md:row-span-2 flex flex-col gap-3 md:gap-4">
             {/* Card 3 */}
+            <Link to={heroCards[3].link}>
             <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
               <img
                 src={heroCards[2].image}
@@ -181,9 +189,11 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
+            </Link>
 
             {/* Card 5 */}
             <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
+              <Link to={heroCards[4].link}>
               <img
                 src={heroCards[4].image}
                 alt={heroCards[4].title}
@@ -194,10 +204,12 @@ export function HeroSection() {
                 <h3 className="font-bold text-sm md:text-base">{heroCards[4].title}</h3>
                 <p className="text-xs">{heroCards[4].subtitle}</p>
               </div>
+              </Link>
             </div>
 
             {/* Card 6 */}
             <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
+              <Link to={heroCards[5].link}>
               <img
                 src={heroCards[5].image}
                 alt={heroCards[5].title}
@@ -208,6 +220,7 @@ export function HeroSection() {
                 <h3 className="font-bold text-sm md:text-base">{heroCards[5].title}</h3>
                 <p className="text-xs">{heroCards[5].subtitle}</p>
               </div>
+              </Link>
             </div>
           </div>
         </div>
