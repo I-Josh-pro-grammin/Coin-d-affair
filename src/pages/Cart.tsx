@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2, ShoppingBag, Phone, Mail, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
+import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import Loader from '@/components/common/Loader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';

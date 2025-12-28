@@ -9,6 +9,14 @@ import card2 from "@/assets/card2.jpg";
 import card3 from "@/assets/card3.jpg";
 import card5 from "@/assets/card5.jpg";
 import card6 from "@/assets/card6.jpg";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 interface HeroCard {
   id: number;
@@ -23,9 +31,8 @@ interface HeroCard {
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
-  // const {cusotomerNumber}=useGetUsers();
-  const {data: businesses} = useGetBusinessesQuery();
-  const {data: customers} = useGetCustomersQuery();
+  const { data: businesses } = useGetBusinessesQuery();
+  const { data: customers } = useGetCustomersQuery();
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -34,7 +41,6 @@ export function HeroSection() {
       navigate(`/recherche?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-
 
   const heroCards: HeroCard[] = [
     {
@@ -47,14 +53,14 @@ export function HeroSection() {
     {
       id: 2,
       image: card2,
-      title: businesses != undefined ? `${businesses?.businesses} +` : '',
+      title: businesses != undefined ? `${businesses?.businesses} +` : '100+',
       subtitle: "Vendeurs de confiance",
       position: 'bottom',
     },
     {
       id: 3,
       image: card3,
-      title: `Rejoignez ${customers != undefined ? customers?.customers : ''}+`,
+      title: `Rejoignez ${customers != undefined ? customers?.customers : '1000'}+`,
       subtitle: "acheteurs satisfaits",
       position: 'center',
       link: '/auth/signup/seller',
@@ -85,8 +91,6 @@ export function HeroSection() {
       link: '/boutique',
     },
   ];
-
-
 
   return (
     <section className="relative bg-gray-50  md:w-full -mt-24 pt-32 pb-8 md:pb-12">
@@ -123,104 +127,259 @@ export function HeroSection() {
           </form>
         </div>
 
-        {/* Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-3 md:gap-4 h-auto md:h-[350px] lg:h-[420px] xl:h-[480px]">
+        {/* Mobile View: Carousel Layout */}
+        <div className="block md:hidden w-full">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 4000,
+              }),
+            ]}
+            className="w-full"
+          >
+            <CarouselContent>
+              {heroCards.map((card) => (
+                <CarouselItem key={card.id} className="pl-4">
+                  {card.link ? (
+                    <Link to={card.link} className="block w-full h-full">
+                      <div className={`rounded-xl overflow-hidden relative group cursor-pointer h-64 w-full ${card.bgColor || 'bg-gray-200'} flex items-center justify-center`}>
+                        {card.image && (
+                          <>
+                            <img
+                              src={card.image}
+                              alt={card.title}
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                          </>
+                        )}
+
+                        <div className={`absolute ${card.position === 'center' ? 'inset-0 flex items-center justify-center text-center' : 'bottom-0 left-0 right-0'} p-4 ${card.textColor || 'text-white'}`}>
+                          <div>
+                            <h3 className={`font-bold ${card.position === 'center' ? 'text-2xl' : 'text-lg'}`}>
+                              {card.title}
+                            </h3>
+                            {card.subtitle && (
+                              <p className={`mt-1 ${card.position === 'center' ? 'text-sm' : 'text-xs'}`}>
+                                {card.subtitle}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className={`rounded-xl overflow-hidden relative group cursor-pointer h-64 w-full ${card.bgColor || 'bg-gray-200'} flex items-center justify-center`}>
+                      {card.image && (
+                        <>
+                          <img
+                            src={card.image}
+                            alt={card.title}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        </>
+                      )}
+
+                      <div className={`absolute ${card.position === 'center' ? 'inset-0 flex items-center justify-center text-center' : 'bottom-0 left-0 right-0'} p-4 ${card.textColor || 'text-white'}`}>
+                        <div>
+                          <h3 className={`font-bold ${card.position === 'center' ? 'text-2xl' : 'text-lg'}`}>
+                            {card.title}
+                          </h3>
+                          {card.subtitle && (
+                            <p className={`mt-1 ${card.position === 'center' ? 'text-sm' : 'text-xs'}`}>
+                              {card.subtitle}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
+
+        {/* Desktop View: Grid Layout */}
+        <div className="hidden md:grid md:grid-cols-3 md:grid-rows-2 gap-4 h-[350px] lg:h-[420px] xl:h-[480px]">
           {/* Column 1 - Left Side (2 stacked cards) */}
-          <div className="md:col-start-1 md:row-start-1 md:row-span-1">
+          <div className="col-start-1 row-start-1 row-span-1">
             {/* Card 1 */}
-              <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full">
+            <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
               <img
                 src={heroCards[0].image}
                 alt={heroCards[0].title}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
-                <h3 className="font-bold text-base md:text-lg">{heroCards[0].title}</h3>
-                <p className="text-xs md:text-sm">{heroCards[0].subtitle}</p>
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                <h3 className="font-bold text-lg">{heroCards[0].title}</h3>
+                <p className="text-sm">{heroCards[0].subtitle}</p>
               </div>
             </div>
           </div>
 
-          <div className="md:col-start-1 md:row-start-2 md:row-span-1">
+          <div className="col-start-1 row-start-2 row-span-1">
             {/* Card 4 - Stats Card */}
-              <div className={`rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full ${heroCards[3].bgColor} flex items-center justify-center p-4 md:p-6`}>
-              <div className="text-center text-white">
-                <h3 className="font-bold text-3xl md:text-4xl lg:text-5xl mb-1 md:mb-2">{heroCards[3].title}</h3>
-                <p className="text-xs md:text-sm">{heroCards[3].subtitle}</p>
+            {heroCards[3].link ? (
+              <Link to={heroCards[3].link} className="block w-full h-full">
+                <div className={`rounded-2xl overflow-hidden relative group cursor-pointer h-full ${heroCards[3].bgColor} flex items-center justify-center p-6`}>
+                  <div className="text-center text-white">
+                    <h3 className="font-bold text-4xl lg:text-5xl mb-2">{heroCards[3].title}</h3>
+                    <p className="text-sm">{heroCards[3].subtitle}</p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className={`rounded-2xl overflow-hidden relative group cursor-pointer h-full ${heroCards[3].bgColor} flex items-center justify-center p-6`}>
+                <div className="text-center text-white">
+                  <h3 className="font-bold text-4xl lg:text-5xl mb-2">{heroCards[3].title}</h3>
+                  <p className="text-sm">{heroCards[3].subtitle}</p>
+                </div>
               </div>
-            </div>
+            )}
+
           </div>
 
           {/* Column 2 - Center Tall Card (spans 2 rows) */}
-          <div className="md:col-start-2 md:row-start-1 md:row-span-2">
-              <Link to={heroCards[2].link}>
-              <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-64 md:h-full">
-              <img
-                src={heroCards[1].image}
-                alt={heroCards[1].title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 lg:p-6 text-white">
-                <h3 className="font-bold text-xl md:text-2xl lg:text-3xl">{heroCards[1].title}</h3>
-                <p className="text-sm md:text-base">{heroCards[1].subtitle}</p>
+          <div className="col-start-2 row-start-1 row-span-2">
+            {heroCards[1].link ? (
+              <Link to={heroCards[1].link} className="block w-full h-full">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[1].image}
+                    alt={heroCards[1].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-white">
+                    <h3 className="font-bold text-2xl lg:text-3xl">{heroCards[1].title}</h3>
+                    <p className="text-base">{heroCards[1].subtitle}</p>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                <img
+                  src={heroCards[1].image}
+                  alt={heroCards[1].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-white">
+                  <h3 className="font-bold text-2xl lg:text-3xl">{heroCards[1].title}</h3>
+                  <p className="text-base">{heroCards[1].subtitle}</p>
+                </div>
               </div>
-            </div>
-            </Link>
+            )}
+
           </div>
 
           {/* Column 3 - Right Side (3 stacked cards using flex) */}
-          <div className="md:col-start-3 md:row-start-1 md:row-span-2 flex flex-col gap-3 md:gap-4">
+          <div className="col-start-3 row-start-1 row-span-2 flex flex-col gap-4 min-h-0">
             {/* Card 3 */}
-            <Link to={heroCards[3].link}>
-            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
-              <img
-                src={heroCards[2].image}
-                alt={heroCards[2].title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-black/40"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-white text-center p-3 md:p-4">
-                <div>
-                  <h3 className="font-bold text-base md:text-lg">{heroCards[2].title}</h3>
-                  <p className="text-xs md:text-sm mt-1">{heroCards[2].subtitle}</p>
+            {heroCards[2].link ? (
+              <Link to={heroCards[2].link} className="block flex-1 w-full min-h-0">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[2].image}
+                    alt={heroCards[2].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/40"></div>
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
+                    <div>
+                      <h3 className="font-bold text-lg">{heroCards[2].title}</h3>
+                      <p className="text-sm mt-1">{heroCards[2].subtitle}</p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1 min-h-0">
+                <img
+                  src={heroCards[2].image}
+                  alt={heroCards[2].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/40"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-white text-center p-4">
+                  <div>
+                    <h3 className="font-bold text-lg">{heroCards[2].title}</h3>
+                    <p className="text-sm mt-1">{heroCards[2].subtitle}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            </Link>
+            )}
+
 
             {/* Card 5 */}
-            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
-              <Link to={heroCards[4].link}>
-              <img
-                src={heroCards[4].image}
-                alt={heroCards[4].title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
-                <h3 className="font-bold text-sm md:text-base">{heroCards[4].title}</h3>
-                <p className="text-xs">{heroCards[4].subtitle}</p>
-              </div>
+            {heroCards[4].link ? (
+              <Link to={heroCards[4].link} className="block flex-1 w-full min-h-0">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[4].image}
+                    alt={heroCards[4].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="font-bold text-base">{heroCards[4].title}</h3>
+                    <p className="text-xs">{heroCards[4].subtitle}</p>
+                  </div>
+                </div>
               </Link>
-            </div>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1 min-h-0">
+                <img
+                  src={heroCards[4].image}
+                  alt={heroCards[4].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="font-bold text-base">{heroCards[4].title}</h3>
+                  <p className="text-xs">{heroCards[4].subtitle}</p>
+                </div>
+              </div>
+            )}
+
 
             {/* Card 6 */}
-            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
-              <Link to={heroCards[5].link}>
-              <img
-                src={heroCards[5].image}
-                alt={heroCards[5].title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
-                <h3 className="font-bold text-sm md:text-base">{heroCards[5].title}</h3>
-                <p className="text-xs">{heroCards[5].subtitle}</p>
-              </div>
+            {heroCards[5].link ? (
+              <Link to={heroCards[5].link} className="block flex-1 w-full min-h-0">
+                <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
+                  <img
+                    src={heroCards[5].image}
+                    alt={heroCards[5].title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="font-bold text-base">{heroCards[5].title}</h3>
+                    <p className="text-xs">{heroCards[5].subtitle}</p>
+                  </div>
+                </div>
               </Link>
-            </div>
+            ) : (
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1 min-h-0">
+                <img
+                  src={heroCards[5].image}
+                  alt={heroCards[5].title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="font-bold text-base">{heroCards[5].title}</h3>
+                  <p className="text-xs">{heroCards[5].subtitle}</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

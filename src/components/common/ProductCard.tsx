@@ -151,9 +151,9 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             </div>
 
             {/* Card Content */}
-            <div className="p-5">
+            <div className="p-3 md:p-5">
                 {/* Product Title */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
+                <h3 className="text-sm md:text-lg font-semibold text-gray-900 mb-1 md:mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
                     {title}
                 </h3>
 
@@ -163,12 +163,12 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 )}
 
                 {/* Price */}
-                <div className="mb-4">
-                    <p className="text-2xl font-bold text-[#000435]">{currencyFmt(product.price)}</p>
+                <div className="mb-2 md:mb-4">
+                    <p className="text-lg md:text-2xl font-bold text-[#000435]">{currencyFmt(product.price)}</p>
                 </div>
 
                 {/* Buttons */}
-                <div className="w-full py-2.5 px-4 bg-[#000435]/5 text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 flex items-center justify-center">
+                <div className="hidden md:flex w-full py-2.5 px-4 bg-[#000435]/5 text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 items-center justify-center">
                     Voir les détails
                 </div>
             </div>
