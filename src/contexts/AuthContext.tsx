@@ -87,7 +87,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async ({ email, password }: { email: string; password: string }) => {
     const response = await loginMutation({ email, password }).unwrap();
     persist(response.token, response.user);
-    console.log(response.user);
     return response.user;
   };
 

@@ -29,10 +29,13 @@ const Login = () => {
       // Route based on account type
       if (user.accountType === 'admin') {
         navigate("/admin", { replace: true });
+        window.location.reload();
       } else if (user.accountType === 'business') {
         navigate("/dashboard", { replace: true });
+        window.location.reload();
       } else {
         navigate("/", { replace: true });
+        window.location.reload();
       }
     } catch (err: any) {
       // Check if error is due to unverified email

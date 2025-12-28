@@ -47,7 +47,7 @@ export function HeroSection() {
     {
       id: 2,
       image: card2,
-      title: `${businesses?.businesses} +`,
+      title: businesses != undefined ? `${businesses?.businesses} +` : '',
       subtitle: "Vendeurs de confiance",
       position: 'bottom',
     },
