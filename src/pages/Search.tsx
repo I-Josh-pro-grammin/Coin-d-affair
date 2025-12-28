@@ -17,8 +17,8 @@ const MOCK_PRODUCTS = [
 ];
 
 export default function Search() {
-    const [searchParams] = useSearchParams();
-    const query = (searchParams.get('q') || '').toString();
+    // const [searchParams] = useSearchParams();
+    // const query = searchParams.get('q') || '';
     const [results, setResults] = useState([]);
     const [priceRange, setPriceRange] = useState([0, 2000000]);
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -61,15 +61,14 @@ export default function Search() {
             return;
         }
 
-        const q = (query || '').toLowerCase().trim();
         const filtered = products.filter((p: any) => {
             const title = productTitle(p).toLowerCase();
+            // const matchesQuery = query ? title.includes(query.toLowerCase()) : true;
             const prodSlug = productCategorySlug(p);
-            const matchesQuery = !q || title.includes(q) || prodSlug.includes(q) || String(p?.description || '').toLowerCase().includes(q);
             const matchesCategory = selectedCategory === 'all' || prodSlug === selectedCategory;
             const price = Number(p?.price ?? p?.amount ?? 0);
             const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-            return matchesCategory && matchesPrice && matchesQuery;
+            return matchesCategory && matchesPrice;
         });
 
         // shallow compare by id and length (use index-aware stable ids)
@@ -82,7 +81,7 @@ export default function Search() {
             }
             return filtered;
         });
-    }, [products, selectedCategory, priceRange, query]);
+    }, [products, selectedCategory, priceRange]);
 
 
     if (listingsLoading) {
@@ -157,7 +156,7 @@ export default function Search() {
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6">
                             <h1 className="text-xl font-bold text-gray-900">
-                                {results.length} résultat{results.length !== 1 ? 's' : ''} {query ? `pour "${String(query)}"` : ''}
+                                {/* {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{String(query)}" */}
                             </h1>
 
                             <button className="flex items-center gap-2 text-gray-600 hover:text-[#000435] md:hidden">
