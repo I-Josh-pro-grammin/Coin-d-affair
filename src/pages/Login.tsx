@@ -27,6 +27,7 @@ const Login = () => {
 
       // Route based on account type
       // Route based on account type
+      // Route based on account type (Safe Reload ensures fresh state)
       if (user.accountType === 'admin') {
         navigate("/admin", { replace: true });
         window.location.reload();
