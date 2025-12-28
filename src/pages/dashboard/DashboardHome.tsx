@@ -21,12 +21,11 @@ export default function DashboardHome() {
     if (profileLoading || productsLoading) {
         return <RouteFallback />;
     }
-
     // Calculate stats
     const actualProducts = products?.allProducts || [];
 
     // Placeholder stats for non-commerce metrics
-    const activeProducts = actualProducts.length || 0;
+    const activeProducts = actualProducts?.length || 0;
     const totalViews = 0; // To be implemented with analytics
     const contactsCount = 0; // To be implemented with message/click tracking
 
@@ -57,7 +56,7 @@ export default function DashboardHome() {
         }
     ];
 
-    const recentProducts = actualProducts.slice(0, 5) || [];
+    const recentProducts = actualProducts?.rows?.slice(0, 5) || [];
 
     return (
         <DashboardLayout>
@@ -131,7 +130,7 @@ export default function DashboardHome() {
                             </tr>
                         </thead>
                         <tbody>
-                            {recentProducts.length > 0 ? recentProducts.map((product: any) => (
+                            {recentProducts?.length > 0 ? recentProducts?.map((product: any) => (
                                 <tr key={product.listings_id} className="border-b border-gray-100 hover:bg-gray-50">
                                     <td className="py-4 px-4">
                                         <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden">

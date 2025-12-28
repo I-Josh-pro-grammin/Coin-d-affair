@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
@@ -14,9 +14,11 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
+  const {user} = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
+  console.log("Current user in Login page:", user);
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
