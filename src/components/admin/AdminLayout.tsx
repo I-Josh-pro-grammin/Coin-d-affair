@@ -12,7 +12,7 @@ import {
     Shield,
     Menu,
     X,
-    Bell,
+    // Bell removed
     LogOut,
     ChevronDown,
     UserCheck
@@ -72,11 +72,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                             Voir le site
                         </Link>
 
-                        {/* Notifications */}
-                        <Link to="/admin/notifications" className="relative p-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-full transition-colors">
-                            <Bell size={20} />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                        </Link>
+
 
                         {/* Profile Dropdown */}
                         <div className="relative">

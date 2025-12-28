@@ -4,7 +4,7 @@ import {
   X,
   Heart,
   User,
-  Bell,
+  // Bell removed
   LogOut,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -134,14 +134,7 @@ export function Navbar({
               {user ? (
                 <div className="flex items-center gap-4">
 
-                  <Link
-                    to="/notifications"
-                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
-                    title="Notifications"
-                    aria-label="Notifications"
-                  >
-                    <Bell size={20} />
-                  </Link>
+
                   <Link
                     to="/favoris"
                     className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
@@ -198,13 +191,7 @@ export function Navbar({
                 </div>
               ) : (
                 <>
-                  <Link
-                    to="/notifications"
-                    className="text-gray-700 hover:text-[#000435] transition-colors"
-                    aria-label="Notifications"
-                  >
-                    <Bell size={24} />
-                  </Link>
+
                   <Link
                     to="/favoris"
                     className="text-gray-700 hover:text-[#000435] transition-colors"
@@ -289,14 +276,7 @@ export function Navbar({
                 <hr className="my-4" />
 
                 <div className="grid grid-cols-2 gap-4 pt-4">
-                  <Link
-                    to="/notifications"
-                    onClick={closeMenu}
-                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <Bell size={24} />
-                    <span className="text-xs">Notifications</span>
-                  </Link>
+
                   <Link
                     to="/favoris"
                     onClick={closeMenu}

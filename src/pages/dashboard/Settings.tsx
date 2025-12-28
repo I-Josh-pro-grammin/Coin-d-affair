@@ -4,7 +4,7 @@ import {
     Store,
     User,
     Lock,
-    Bell,
+    // Bell removed
     Save,
     Upload,
     Eye,
@@ -62,7 +62,7 @@ export default function Settings() {
         { id: 'shop', label: 'Ma Boutique', icon: Store },
         { id: 'profile', label: 'Profil', icon: User },
         { id: 'security', label: 'Sécurité', icon: Lock },
-        { id: 'notifications', label: 'Notifications', icon: Bell },
+
     ];
 
     return (
@@ -371,41 +371,7 @@ export default function Settings() {
                         </div>
                     )}
 
-                    {/* Notifications */}
-                    {activeTab === 'notifications' && (
-                        <div className="bg-white rounded-2xl shadow-sm p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-6">Préférences de notifications</h2>
 
-                            <div className="space-y-6">
-                                {[
-                                    { id: 'orders', label: 'Nouvelles commandes', description: 'Recevoir une notification pour chaque nouvelle commande' },
-                                    { id: 'messages', label: 'Messages clients', description: 'Notification quand un client vous envoie un message' },
-                                    { id: 'reviews', label: 'Nouveaux avis', description: 'Notification quand vous recevez un nouvel avis' },
-                                    { id: 'stock', label: 'Stock faible', description: 'Alerte quand un produit est en rupture de stock' },
-                                    { id: 'promotions', label: 'Promotions et actualités', description: 'Recevoir des informations sur les nouvelles fonctionnalités' },
-                                ].map((notif) => (
-                                    <div key={notif.id} className="flex items-start justify-between pb-6 border-b border-gray-100 last:border-0">
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-gray-900 mb-1">{notif.label}</h3>
-                                            <p className="text-sm text-gray-600">{notif.description}</p>
-                                        </div>
-                                        <label className="relative inline-flex items-center cursor-pointer ml-4">
-                                            <input type="checkbox" defaultChecked className="sr-only peer" />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#000435]"></div>
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all mt-6"
-                            >
-                                <Save size={20} />
-                                Enregistrer les préférences
-                            </button>
-                        </div>
-                    )}
 
 
                 </div>

@@ -25,7 +25,7 @@ const EmailVerificationRequired = lazy(() => import("./pages/auth/EmailVerificat
 // const Dashboard = lazy(() => import("./pages/Dashboard"));
 // const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
-const Notifications = lazy(() => import("./pages/Notifications"));
+
 const CategoryListing = lazy(() => import("./pages/CategoryListing"));
 const PlaceholderPage = lazy(() => import("./pages/PlaceholderPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -37,6 +37,7 @@ const ProductForm = lazy(() => import("./pages/dashboard/ProductForm"));
 const Settings = lazy(() => import("./pages/dashboard/Settings"));
 // New Pages
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const Cart = lazy(() => import("./pages/Cart"));
 
 const Deposer = lazy(() => import("./pages/Deposer"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -101,7 +102,7 @@ const App = () => (
           <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
 
           <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
-          <Route path="/notifications" element={<Page title="Notifications"><Notifications /></Page>} />
+
 
           {/* Category routes */}
           <Route path="/categorie/:category/:subcategory" element={<Page title="Catégorie"><CategoryListing /></Page>} />
@@ -137,6 +138,9 @@ const App = () => (
           <Route path="/admin/products" element={<RequireAdmin><Page title="Modération Produits"><AdminProducts /></Page></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><Page title="Analyses"><AdminAnalytics /></Page></RequireAdmin>} />
           <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
+
+          <Route path="/cart" element={<Page title="Votre Panier"><Cart /></Page>} />
+          <Route path="/panier" element={<Page title="Votre Panier"><Cart /></Page>} />
 
           {/* Catch-all */}
           <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
