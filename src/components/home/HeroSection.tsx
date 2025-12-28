@@ -281,10 +281,10 @@ export function HeroSection() {
           </div>
 
           {/* Column 3 - Right Side (3 stacked cards using flex) */}
-          <div className="col-start-3 row-start-1 row-span-2 flex flex-col gap-4">
+          <div className="col-start-3 row-start-1 row-span-2 flex flex-col gap-4 min-h-0">
             {/* Card 3 */}
             {heroCards[2].link ? (
-              <Link to={heroCards[2].link} className="block flex-1 w-full">
+              <Link to={heroCards[2].link} className="block flex-1 w-full min-h-0">
                 <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
                   <img
                     src={heroCards[2].image}
@@ -301,7 +301,7 @@ export function HeroSection() {
                 </div>
               </Link>
             ) : (
-              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1">
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1 min-h-0">
                 <img
                   src={heroCards[2].image}
                   alt={heroCards[2].title}
@@ -320,7 +320,7 @@ export function HeroSection() {
 
             {/* Card 5 */}
             {heroCards[4].link ? (
-              <Link to={heroCards[4].link} className="block flex-1 w-full">
+              <Link to={heroCards[4].link} className="block flex-1 w-full min-h-0">
                 <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
                   <img
                     src={heroCards[4].image}
@@ -335,7 +335,7 @@ export function HeroSection() {
                 </div>
               </Link>
             ) : (
-              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1">
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1 min-h-0">
                 <img
                   src={heroCards[4].image}
                   alt={heroCards[4].title}
@@ -352,7 +352,7 @@ export function HeroSection() {
 
             {/* Card 6 */}
             {heroCards[5].link ? (
-              <Link to={heroCards[5].link} className="block flex-1 w-full">
+              <Link to={heroCards[5].link} className="block flex-1 w-full min-h-0">
                 <div className="rounded-2xl overflow-hidden relative group cursor-pointer h-full">
                   <img
                     src={heroCards[5].image}
@@ -367,7 +367,7 @@ export function HeroSection() {
                 </div>
               </Link>
             ) : (
-              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1">
+              <div className="rounded-2xl overflow-hidden relative group cursor-pointer flex-1 min-h-0">
                 <img
                   src={heroCards[5].image}
                   alt={heroCards[5].title}
