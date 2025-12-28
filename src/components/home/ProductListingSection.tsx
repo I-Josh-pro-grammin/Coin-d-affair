@@ -120,9 +120,9 @@ export function ProductListingSection() {
   }
 
   return (
-    <section className="py-12 bg-white">
+    <section className="py-8 md:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-24">
@@ -196,7 +196,7 @@ export function ProductListingSection() {
                   </div>
 
                   {trendingProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                       {trendingProducts.map((product: any, idx: number) => (
                         <ProductCard key={idx} product={product} />
                       ))}
@@ -222,7 +222,7 @@ export function ProductListingSection() {
                   </div>
 
                   {latestProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                       {latestProducts.map((product: any) => (
                         <ProductCard key={product.listings_id} product={product} />
                       ))}
@@ -254,7 +254,7 @@ export function ProductListingSection() {
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               {listings.map((listing: any) => (
                 <ProductCard key={listing.listings_id || listing.listing_id} product={listing} />
               ))}
