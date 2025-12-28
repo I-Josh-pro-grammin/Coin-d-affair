@@ -2,8 +2,8 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useGetBusinessesQuery } from '@/redux/api/apiSlice'
+import { Link, useNavigate } from 'react-router-dom';
+import { useGetBusinessesQuery, useGetCustomersQuery } from '@/redux/api/apiSlice'
 import card1 from "@/assets/card1.jpg";
 import card2 from "@/assets/card2.jpg";
 import card3 from "@/assets/card3.jpg";
@@ -26,11 +26,18 @@ interface HeroCard {
   position: 'bottom' | 'center';
   bgColor?: string;
   textColor?: string;
+  link?: string;
 }
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
+<<<<<<< HEAD
   const { data: businesses } = useGetBusinessesQuery();
+=======
+  // const {cusotomerNumber}=useGetUsers();
+  const {data: businesses} = useGetBusinessesQuery();
+  const {data: customers} = useGetCustomersQuery();
+>>>>>>> 550a0d000e1dbc190042131f2ba0ff78a7d0713a
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -58,9 +65,10 @@ export function HeroSection() {
     {
       id: 3,
       image: card3,
-      title: "Rejoignez 1000+",
+      title: `Rejoignez ${customers != undefined ? customers?.customers : ''}+`,
       subtitle: "acheteurs satisfaits",
       position: 'center',
+      link: '/auth/signup/seller',
     },
     {
       id: 4,
@@ -69,6 +77,7 @@ export function HeroSection() {
       position: 'center',
       bgColor: 'bg-[#000435]',
       textColor: 'text-white',
+      link: '/auth/signup/customer',
     },
     {
       id: 5,
@@ -76,6 +85,7 @@ export function HeroSection() {
       title: "Inspirez-vous",
       subtitle: "de nos collections",
       position: 'bottom',
+      link: '/boutique',
     },
     {
       id: 6,
@@ -83,11 +93,12 @@ export function HeroSection() {
       title: "Offrez le plaisir",
       subtitle: "du shopping",
       position: 'bottom',
+      link: '/boutique',
     },
   ];
 
   return (
-    <section className="relative bg-gray-50 -mt-24 pt-32 pb-8 md:pb-12">
+    <section className="relative bg-gray-50  md:w-full -mt-24 pt-32 pb-8 md:pb-12">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-6">
@@ -121,6 +132,7 @@ export function HeroSection() {
           </form>
         </div>
 
+<<<<<<< HEAD
         {/* Carousel Layout */}
         <div className="w-full">
           <Carousel
@@ -171,6 +183,107 @@ export function HeroSection() {
               <CarouselNext className="-right-4" />
             </div>
           </Carousel>
+=======
+        {/* Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-3 md:gap-4 h-auto md:h-[350px] lg:h-[420px] xl:h-[480px]">
+          {/* Column 1 - Left Side (2 stacked cards) */}
+          <div className="md:col-start-1 md:row-start-1 md:row-span-1">
+            {/* Card 1 */}
+              <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full">
+              <img
+                src={heroCards[0].image}
+                alt={heroCards[0].title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
+                <h3 className="font-bold text-base md:text-lg">{heroCards[0].title}</h3>
+                <p className="text-xs md:text-sm">{heroCards[0].subtitle}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="md:col-start-1 md:row-start-2 md:row-span-1">
+            {/* Card 4 - Stats Card */}
+              <div className={`rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:h-full ${heroCards[3].bgColor} flex items-center justify-center p-4 md:p-6`}>
+              <div className="text-center text-white">
+                <h3 className="font-bold text-3xl md:text-4xl lg:text-5xl mb-1 md:mb-2">{heroCards[3].title}</h3>
+                <p className="text-xs md:text-sm">{heroCards[3].subtitle}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 2 - Center Tall Card (spans 2 rows) */}
+          <div className="md:col-start-2 md:row-start-1 md:row-span-2">
+              <Link to={heroCards[2].link}>
+              <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-64 md:h-full">
+              <img
+                src={heroCards[1].image}
+                alt={heroCards[1].title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 lg:p-6 text-white">
+                <h3 className="font-bold text-xl md:text-2xl lg:text-3xl">{heroCards[1].title}</h3>
+                <p className="text-sm md:text-base">{heroCards[1].subtitle}</p>
+              </div>
+            </div>
+            </Link>
+          </div>
+
+          {/* Column 3 - Right Side (3 stacked cards using flex) */}
+          <div className="md:col-start-3 md:row-start-1 md:row-span-2 flex flex-col gap-3 md:gap-4">
+            {/* Card 3 */}
+            <Link to={heroCards[3].link}>
+            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
+              <img
+                src={heroCards[2].image}
+                alt={heroCards[2].title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/40"></div>
+              <div className="absolute inset-0 flex items-center justify-center text-white text-center p-3 md:p-4">
+                <div>
+                  <h3 className="font-bold text-base md:text-lg">{heroCards[2].title}</h3>
+                  <p className="text-xs md:text-sm mt-1">{heroCards[2].subtitle}</p>
+                </div>
+              </div>
+            </div>
+            </Link>
+
+            {/* Card 5 */}
+            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
+              <Link to={heroCards[4].link}>
+              <img
+                src={heroCards[4].image}
+                alt={heroCards[4].title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
+                <h3 className="font-bold text-sm md:text-base">{heroCards[4].title}</h3>
+                <p className="text-xs">{heroCards[4].subtitle}</p>
+              </div>
+              </Link>
+            </div>
+
+            {/* Card 6 */}
+            <div className="rounded-xl md:rounded-2xl overflow-hidden relative group cursor-pointer h-48 md:flex-1">
+              <Link to={heroCards[5].link}>
+              <img
+                src={heroCards[5].image}
+                alt={heroCards[5].title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white">
+                <h3 className="font-bold text-sm md:text-base">{heroCards[5].title}</h3>
+                <p className="text-xs">{heroCards[5].subtitle}</p>
+              </div>
+              </Link>
+            </div>
+          </div>
+>>>>>>> 550a0d000e1dbc190042131f2ba0ff78a7d0713a
         </div>
       </div>
     </section>

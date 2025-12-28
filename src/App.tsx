@@ -6,7 +6,7 @@ import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { RouteFallback } from "@/components/common/RouteFallback";
 import { Page } from "@/components/common/Page";
-
+import { CartProvider } from "@/contexts/CartContext";
 
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RequireAdmin } from "./components/admin/RequireAdmin";
@@ -64,6 +64,8 @@ const App = () => (
   <>
     <Toaster />
     <Sonner />
+
+    <CartProvider>
     <ScrollToTop />
     <ErrorBoundary>
       <Suspense fallback={<RouteFallback />}>
@@ -147,6 +149,8 @@ const App = () => (
         </Routes>
       </Suspense>
     </ErrorBoundary>
+    </CartProvider>
+
   </>
 );
 

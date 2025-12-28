@@ -13,7 +13,7 @@ interface User {
   name: string;
   email: string;
   phone?: string;
-  accountType?: 'user' | 'business' | 'admin' | 'seller_individual' | 'seller_business';
+  account_type?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
   verificationStatus?: 'pending' | 'approved' | 'rejected';
 }

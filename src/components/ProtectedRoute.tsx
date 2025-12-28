@@ -20,6 +20,7 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   //   return <Navigate to="/connexion" state={{ from: location }} replace />;
   // }
 
+
   // // Strict Role Check if requiredRole is provided
   // if (requiredRole && user.accountType !== requiredRole && user.accountType !== 'admin') {
   //   // Allow admin to access everything, otherwise restrict.
