@@ -8,9 +8,9 @@ export default function Blog() {
     const posts = [
         {
             title: "Lancement officiel au Burundi",
-            excerpt: "Découvrez comment Coin D'Affaires transforme le paysage du commerce électronique à Bujumbura et au-delà.",
+            excerpt: "Découvrez comment Akaguriro transforme le paysage du commerce électronique à Bujumbura et au-delà.",
             date: "20 Déc 2024",
-            author: "Équipe Coin D'Affaires",
+            author: "Équipe Akaguriro",
             category: "Actualités"
         },
         {
@@ -36,7 +36,7 @@ export default function Blog() {
                 <div className="text-center mb-12">
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">Le Blog</h1>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Actualités, conseils et insights pour réussir sur Coin D'Affaires.
+                        Actualités, conseils et insights pour réussir sur Akaguriro.
                     </p>
                 </div>
 

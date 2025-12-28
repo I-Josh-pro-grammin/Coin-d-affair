@@ -1,7 +1,7 @@
 import React from 'react';
-import { Heart, ShoppingCart } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '@/contexts/CartContext';
+import { Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { /* useAddFavoriteMutation, useRemoveFavoriteMutation */ } from '@/redux/api/apiSlice';
 import { getLocalFavorites, addLocalFavorite, removeLocalFavorite } from '@/lib/localFavorites';
@@ -38,8 +38,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
-    const { addToCart } = useCart();
-    const navigate = useNavigate();
     const { user } = useAuth();
     // Favorites are persisted in localStorage only
     const [isFavorite, setIsFavorite] = React.useState(false);
@@ -69,35 +67,6 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
     }
     const image = imageUrl;
     const category = product?.category_name || product?.category;
-
-    const handleAddToCart = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!user) {
-            navigate('/auth/login');
-            return;
-        }
-            if (id && title) {
-            addToCart({
-                id: id,
-                name: title,
-                price: product?.price,
-                quantity: 1,
-                image: image, // pass resolved image URL string
-                seller: 'Coin d\'affaire' // Default or fetch from product if available
-            });
-        }
-    };
-
-    const handleBuyNow = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!user) {
-            navigate('/auth/login');
-            return;
-        }
-        navigate(`/acheter/${id}`);
-    };
 
     // initialize favorite state from localStorage and listen for changes
     React.useEffect(() => {
@@ -159,25 +128,25 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                                                // Toggle favorite in localStorage only
-                                                const listingId = id;
-                                                if (!listingId) return;
-                                                if (!isFavorite) {
-                                                    addLocalFavorite(listingId);
-                                                    setIsFavorite(true);
-                                                } else {
-                                                    removeLocalFavorite(listingId);
-                                                    setIsFavorite(false);
-                                                }
-                                                try {
-                                                    // notify other tabs/components that favorites changed
-                                                    window.dispatchEvent(new CustomEvent('cdf:favoritesChanged'));
-                                                } catch (e) {}
+                        // Toggle favorite in localStorage only
+                        const listingId = id;
+                        if (!listingId) return;
+                        if (!isFavorite) {
+                            addLocalFavorite(listingId);
+                            setIsFavorite(true);
+                        } else {
+                            removeLocalFavorite(listingId);
+                            setIsFavorite(false);
+                        }
+                        try {
+                            // notify other tabs/components that favorites changed
+                            window.dispatchEvent(new CustomEvent('cdf:favoritesChanged'));
+                        } catch (e) { }
                     }}
                     className="absolute bottom-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
                     aria-label="Ajouter aux favoris"
                 >
-                                        <Heart className={`w-5 h-5 transition-colors ${isFavorite ? 'text-red-500' : 'text-gray-600 hover:text-red-500'}`} />
+                    <Heart className={`w-5 h-5 transition-colors ${isFavorite ? 'text-red-500' : 'text-gray-600 hover:text-red-500'}`} />
                 </button>
             </div>
 
@@ -199,24 +168,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex flex-col gap-2">
-                    {/* Add to Cart - Ghost/Outline Button */}
-                    <button
-                        onClick={handleAddToCart}
-                        className="w-full py-2.5 px-4 border-2 border-[#000435] text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 bg-transparent flex items-center justify-center gap-2"
-                        aria-label="Ajouter au panier"
-                    >
-                        <ShoppingCart size={18} />
-                        Ajouter au panier
-                    </button>
-
-                    {/* Buy Now - Solid Button */}
-                    <button
-                        onClick={handleBuyNow}
-                        className="w-full py-2.5 px-4 bg-[#000435] text-white font-medium rounded-full hover:bg-[#000435]/90 transition-all duration-300"
-                    >
-                        Acheter maintenant
-                    </button>
+                <div className="w-full py-2.5 px-4 bg-[#000435]/5 text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 flex items-center justify-center">
+                    Voir les détails
                 </div>
             </div>
         </Link>

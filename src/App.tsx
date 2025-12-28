@@ -6,8 +6,8 @@ import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { RouteFallback } from "@/components/common/RouteFallback";
 import { Page } from "@/components/common/Page";
+import { CartProvider } from "@/contexts/CartContext";
 
-import { CartProvider } from "./contexts/CartContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { RequireAdmin } from "./components/admin/RequireAdmin";
 
@@ -25,7 +25,7 @@ const EmailVerificationRequired = lazy(() => import("./pages/auth/EmailVerificat
 // const Dashboard = lazy(() => import("./pages/Dashboard"));
 // const Messages = lazy(() => import("./pages/Messages"));
 const Favorites = lazy(() => import("./pages/Favorites"));
-const Notifications = lazy(() => import("./pages/Notifications"));
+
 const CategoryListing = lazy(() => import("./pages/CategoryListing"));
 const PlaceholderPage = lazy(() => import("./pages/PlaceholderPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -34,17 +34,10 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const DashboardHome = lazy(() => import("./pages/dashboard/DashboardHome"));
 const Products = lazy(() => import("./pages/dashboard/Products"));
 const ProductForm = lazy(() => import("./pages/dashboard/ProductForm"));
-const Orders = lazy(() => import("./pages/dashboard/Orders"));
-const OrderDetails = lazy(() => import("./pages/dashboard/OrderDetails"));
-
 const Settings = lazy(() => import("./pages/dashboard/Settings"));
-
 // New Pages
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
-const Buy = lazy(() => import("./pages/Buy"));
 const Cart = lazy(() => import("./pages/Cart"));
-const Checkout = lazy(() => import("./pages/Checkout"));
-const MobileMoneySimulate = lazy(() => import("./pages/MobileMoneySimulate"));
 
 const Deposer = lazy(() => import("./pages/Deposer"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -60,8 +53,8 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminCategories = lazy(() => import('./pages/admin/Categories'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const SellerVerification = lazy(() => import('./pages/admin/SellerVerification'));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
-const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
 const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
 
@@ -101,23 +94,17 @@ const App = () => (
           <Route path="/dashboard/products" element={<ProtectedRoute requiredRole="business"><Page title="Produits"><Products /></Page></ProtectedRoute>} />
           <Route path="/dashboard/products/new" element={<ProtectedRoute requiredRole="business"><Page title="Nouveau produit"><ProductForm /></Page></ProtectedRoute>} />
           <Route path="/dashboard/products/:id/edit" element={<ProtectedRoute requiredRole="business"><Page title="Modifier produit"><ProductForm /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/orders" element={<ProtectedRoute requiredRole="business"><Page title="Commandes"><Orders /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/orders/:id" element={<ProtectedRoute requiredRole="business"><Page title="Détails commande"><OrderDetails /></Page></ProtectedRoute>} />
 
           <Route path="/dashboard/settings" element={<ProtectedRoute requiredRole="business"><Page title="Paramètres"><Settings /></Page></ProtectedRoute>} />
 
           {/* Product & Shopping Routes */}
           <Route path="/produit/:id" element={<Page title="Détails du produit"><ProductDetail /></Page>} />
-          <Route path="/acheter/:id" element={<Page title="Finaliser l'achat"><Buy /></Page>} />
-          <Route path="/panier" element={<Page title="Mon panier"><Cart /></Page>} />
-          <Route path="/checkout" element={<Page title="Paiement"><Checkout /></Page>} />
-          <Route path="/mobile-money/simulate" element={<Page title="Paiement Mobile (Simulation)"><MobileMoneySimulate /></Page>} />
 
           <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
           <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
 
           <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
-          <Route path="/notifications" element={<Page title="Notifications"><Notifications /></Page>} />
+
 
           {/* Category routes */}
           <Route path="/categorie/:category/:subcategory" element={<Page title="Catégorie"><CategoryListing /></Page>} />
@@ -149,19 +136,22 @@ const App = () => (
           <Route path="/admin" element={<RequireAdmin><Page title="Admin Dashboard"><AdminDashboard /></Page></RequireAdmin>} />
           <Route path="/admin/categories" element={<RequireAdmin><Page title="Gestion Catégories"><AdminCategories /></Page></RequireAdmin>} />
           <Route path="/admin/users" element={<RequireAdmin><Page title="Gestion Utilisateurs"><AdminUsers /></Page></RequireAdmin>} />
+          <Route path="/admin/verification" element={<RequireAdmin><Page title="Vérification Vendeurs"><SellerVerification /></Page></RequireAdmin>} />
           <Route path="/admin/products" element={<RequireAdmin><Page title="Modération Produits"><AdminProducts /></Page></RequireAdmin>} />
-          <Route path="/admin/orders" element={<RequireAdmin><Page title="Toutes les Commandes"><AdminOrders /></Page></RequireAdmin>} />
           <Route path="/admin/analytics" element={<RequireAdmin><Page title="Analyses"><AdminAnalytics /></Page></RequireAdmin>} />
           <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
+
+          <Route path="/cart" element={<Page title="Votre Panier"><Cart /></Page>} />
+          <Route path="/panier" element={<Page title="Votre Panier"><Cart /></Page>} />
 
           {/* Catch-all */}
           <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
         </Routes>
       </Suspense>
     </ErrorBoundary>
-  </CartProvider>
+    </CartProvider>
+
   </>
-  
 );
 
 export default App;

@@ -8,9 +8,9 @@ type Props = {
 export function Page({ title, children }: Props) {
   useEffect(() => {
     if (title) {
-      document.title = `${title} • CoinD'affaires`;
+      document.title = `${title} • Akaguriro`;
     } else {
-      document.title = "CoinD'affaires - Petites Annonces";
+      document.title = "Akaguriro - Petites Annonces";
     }
   }, [title]);
 

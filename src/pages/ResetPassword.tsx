@@ -10,13 +10,13 @@ const ResetPassword = () => {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(()=>{ setLoading(false); setDone(true); }, 800);
+    setTimeout(() => { setLoading(false); setDone(true); }, 800);
   };
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Coin D'Affaires</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Akaguriro</h1>
         </div>
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="flex justify-center mb-6">
@@ -41,12 +41,12 @@ const ResetPassword = () => {
           <form onSubmit={submit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Nouveau mot de passe</label>
-              <input value={pwd} onChange={(e)=>setPwd(e.target.value)} type="password" placeholder="••••••••" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+              <input value={pwd} onChange={(e) => setPwd(e.target.value)} type="password" placeholder="••••••••" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
               <p className="text-xs text-gray-500 mt-1">Au moins 8 caractères</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le nouveau mot de passe</label>
-              <input value={confirm} onChange={(e)=>setConfirm(e.target.value)} type="password" placeholder="••••••••" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+              <input value={confirm} onChange={(e) => setConfirm(e.target.value)} type="password" placeholder="••••••••" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
             </div>
             <div className="bg-gray-50 rounded-xl p-4">
               <p className="text-sm font-medium text-gray-700 mb-2">Le mot de passe doit contenir:</p>

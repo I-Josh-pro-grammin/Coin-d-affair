@@ -30,10 +30,10 @@ export default function Careers() {
             <Navbar />
             <main className="max-w-4xl mx-auto px-4 py-12">
                 <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12 mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-6">Carrières chez Coin D'Affaires</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-6">Carrières chez Akaguriro</h1>
                     <div className="prose prose-lg text-gray-600 mb-8">
                         <p className="mb-4">
-                            Rejoignez l'équipe qui transforme le commerce en ligne au Burundi. Chez Coin D'Affaires, nous sommes passionnés par la création d'opportunités économiques et l'innovation technologique.
+                            Rejoignez l'équipe qui transforme le commerce en ligne au Burundi. Chez Akaguriro, nous sommes passionnés par la création d'opportunités économiques et l'innovation technologique.
                         </p>
                         <p className="mb-4">
                             Nous recherchons des personnes talentueuses, motivées et créatives pour nous aider à bâtir l'avenir du e-commerce en Afrique.
@@ -82,7 +82,7 @@ export default function Careers() {
 
                 <div className="text-center text-gray-500">
                     <p>Vous ne trouvez pas le poste idéal ?</p>
-                    <a href="mailto:jobs@coindaffaires.bi" className="text-[#000435] font-medium hover:underline">
+                    <a href="mailto:jobs@akaguriro.com" className="text-[#000435] font-medium hover:underline">
                         Envoyez-nous une candidature spontanée
                     </a>
                 </div>

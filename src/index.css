@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CoinD'affaires Design System - French Classified Ads Platform
+/* Akaguriro Design System - French Classified Ads Platform
 Primary: White, Secondary: Blue with gradients, Clean & Modern
 */
 
@@ -39,23 +39,23 @@ Primary: White, Secondary: Blue with gradients, Clean & Modern
     --input: 217 20% 95%;
     --ring: 217 91% 60%;
 
-    /* CoinD'affaires Custom Colors */
+    /* Akaguriro Custom Colors */
     --blue-50: 217 100% 97%;
     --blue-100: 217 95% 90%;
     --blue-500: 217 91% 60%;
     --blue-600: 217 91% 55%;
     --blue-700: 217 91% 50%;
-    
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(217, 91%, 50%));
     --gradient-subtle: linear-gradient(135deg, hsl(217, 100%, 97%), hsl(217, 95%, 90%));
     --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%), hsl(217, 33%, 97%));
-    
+
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(217, 91%, 60%, 0.1);
     --shadow-card: 0 4px 16px -4px hsl(217, 91%, 60%, 0.15);
     --shadow-hover: 0 8px 24px -6px hsl(217, 91%, 60%, 0.2);
-    
+
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -101,85 +101,118 @@ Primary: White, Secondary: Blue with gradients, Clean & Modern
     @apply bg-background text-foreground font-inter;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-poppins font-semibold;
   }
 }
 
 @layer components {
-  /* CoinD'affaires Custom Components */
+
+  /* Akaguriro Custom Components */
   .logo-text {
     @apply font-poppins font-bold text-2xl bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent;
   }
-  
+
   .card-elevated {
     @apply bg-white rounded-xl shadow-soft hover:shadow-card transition-all duration-300 hover:-translate-y-1;
   }
-  
+
   .btn-primary {
     @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-soft hover:shadow-card;
   }
-  
+
   .btn-secondary {
     @apply bg-white border-2 border-blue-500 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transform hover:scale-105 transition-all duration-200;
   }
-  
+
   .search-input {
     @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
   }
-  
+
   .nav-link {
     @apply text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-all duration-200 font-medium relative;
   }
+
   .nav-link::after {
     content: "";
     @apply absolute left-4 right-4 bottom-1 h-[2px] bg-blue-600 rounded-full opacity-0 scale-x-0 transform transition-all duration-200;
   }
-  .nav-link:hover::after { opacity: 1; transform: scaleX(1); }
-  
+
+  .nav-link:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
   .category-card {
     @apply relative overflow-hidden rounded-xl h-48 bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-soft hover:shadow-card;
   }
-  
+
   .ad-card {
     @apply bg-white rounded-lg overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer;
   }
 
   /* Glassy navbar and animated dropdowns */
   .glass-nav {
-    @apply bg-white/70 backdrop-blur-md border-b border-gray-200/60 shadow-[0_8px_20px_-12px_rgba(30,64,175,0.15)];
+    @apply bg-white/70 backdrop-blur-md border-b border-gray-200/60 shadow-[0_8px_20px_-12px_rgba(30, 64, 175, 0.15)];
   }
+
   .dropdown-panel {
     @apply bg-white rounded-xl shadow-card border border-gray-100/80 py-2 will-change-transform;
     animation: slideDown 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+
   @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
+
   .icon-btn {
     @apply p-2 rounded-full text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors;
   }
+
   .search-rounded {
     @apply pl-10 pr-4 py-3 rounded-full border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow;
   }
+
   .cta-strong {
     @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-full font-medium shadow-soft hover:shadow-hover hover:from-blue-700 hover:to-blue-800 transition-all;
   }
 
   /* Extra animations & effects */
   .animated-gradient {
-    background: radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,0.15), transparent),
-                radial-gradient(1000px 500px at 110% 10%, rgba(29,78,216,0.12), transparent),
-                linear-gradient(135deg, rgba(248,250,252,1), rgba(239,246,255,1));
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(59, 130, 246, 0.15), transparent),
+      radial-gradient(1000px 500px at 110% 10%, rgba(29, 78, 216, 0.12), transparent),
+      linear-gradient(135deg, rgba(248, 250, 252, 1), rgba(239, 246, 255, 1));
   }
+
   .float-in {
     animation: floatIn 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
+
   @keyframes floatIn {
-    from { opacity: 0; transform: translateY(8px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
+
   .shine-overlay::before {
     content: "";
     position: absolute;
@@ -187,10 +220,13 @@ Primary: White, Secondary: Blue with gradients, Clean & Modern
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(60deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+    background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%);
     transform: translateX(-100%) rotate(8deg);
     transition: transform .6s ease;
     pointer-events: none;
   }
-  .shine-overlay:hover::before { transform: translateX(0) rotate(8deg); }
+
+  .shine-overlay:hover::before {
+    transform: translateX(0) rotate(8deg);
+  }
 }

@@ -24,7 +24,6 @@ interface HeroCard {
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
   // const {cusotomerNumber}=useGetUsers();
-
   const {data: businesses} = useGetBusinessesQuery();
   const {data: customers} = useGetCustomersQuery();
   const navigate = useNavigate();
@@ -98,10 +97,10 @@ export function HeroSection() {
             Trouvez les meilleures affaires - Achetez malin
           </h1>
           <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto mb-6">
-            Votre plateforme vous offre des produits de qualité à prix imbattables. 
+            Votre plateforme vous offre des produits de qualité à prix imbattables.
             Ensemble, nous rendons le shopping accessible à tous.
           </p>
-          
+
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-lg md:max-w-xl mx-auto mb-6 md:mb-8">
             <div className="relative">
@@ -112,9 +111,9 @@ export function HeroSection() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-11 pr-4 h-12 md:h-14 text-sm md:text-base rounded-full border-gray-300 focus:ring-2 focus:ring-[#000435] focus:border-transparent"
-                aria-label="Rechercher sur Coin D'Affaires"
+                aria-label="Rechercher sur Akaguriro"
               />
-              <Button 
+              <Button
                 type="submit"
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full px-4 md:px-6 text-sm"
               >

@@ -115,7 +115,7 @@ export function ProductListingSection() {
   const trendingProducts = trendingData?.listings || [];
   const latestProducts = latestData?.listings || [];
 
-  if(isLoadingTrends) {
+  if (isLoadingTrends) {
     return <Loader />;
   }
 
@@ -211,7 +211,7 @@ export function ProductListingSection() {
                 {/* Dernières sur CoinD'affaires Section */}
                 <div className="mb-16">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-3xl font-bold text-gray-900">Dernières sur CoinD'affaires</h2>
+                    <h2 className="text-3xl font-bold text-gray-900">Dernières sur Akaguriro</h2>
                     <Link
                       to="/boutique?section=dernieres"
                       className="flex items-center gap-2 text-[#000435] font-medium hover:gap-3 transition-all"

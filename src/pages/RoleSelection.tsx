@@ -6,7 +6,7 @@ const RoleSelection = () => {
       <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Bienvenue sur Coin D'Affaires
+            Bienvenue sur Akaguriro
           </h1>
           <p className="text-lg text-gray-600">
             Choisissez comment vous souhaitez utiliser notre plateforme
@@ -28,7 +28,7 @@ const RoleSelection = () => {
                 Découvrez des milliers de produits et faites des achats en toute sécurité
               </p>
               <ul className="space-y-3 mb-6">
-                {["Accès à des milliers de produits","Paiement sécurisé","Support client 24/7"].map((feature) => (
+                {["Accès à des milliers de produits", "Paiement sécurisé", "Support client 24/7"].map((feature) => (
                   <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
                     <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -60,7 +60,7 @@ const RoleSelection = () => {
                 Créez votre boutique en ligne et vendez vos produits à des milliers d'acheteurs
               </p>
               <ul className="space-y-3 mb-6">
-                {["Création de boutique gratuite","Tableau de bord vendeur","Paiements sécurisés"].map((feature) => (
+                {["Création de boutique gratuite", "Tableau de bord vendeur", "Paiements sécurisés"].map((feature) => (
                   <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
                     <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />

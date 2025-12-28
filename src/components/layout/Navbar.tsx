@@ -3,15 +3,13 @@ import {
   Menu,
   X,
   Heart,
-  ShoppingBag,
   User,
-
-  Bell,
+  // Bell removed
   LogOut,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCart } from "@/contexts/CartContext";
+
 import { Logo } from "@/components/common/Logo";
 
 type NavbarProps = {
@@ -35,8 +33,7 @@ export function Navbar({
   // Auth context (optional). If you prefer props-based auth, pass isLoggedIn prop.
   const { user, logout } = useAuth();
 
-  // Cart context
-  const { cartCount } = useCart();
+
 
   const isLoggedIn = !!user;
 
@@ -137,14 +134,7 @@ export function Navbar({
               {user ? (
                 <div className="flex items-center gap-4">
 
-                  <Link
-                    to="/notifications"
-                    className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
-                    title="Notifications"
-                    aria-label="Notifications"
-                  >
-                    <Bell size={20} />
-                  </Link>
+
                   <Link
                     to="/favoris"
                     className="text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
@@ -153,19 +143,7 @@ export function Navbar({
                   >
                     <Heart size={20} />
                   </Link>
-                  <Link
-                    to="/panier"
-                    className="relative text-gray-700 hover:text-[#000435] transition-colors p-2 rounded-full hover:bg-gray-100"
-                    title="Panier"
-                    aria-label="Panier"
-                  >
-                    <ShoppingBag size={20} />
-                    {/* {totalItems > 0 && (
-                      <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
-                        {totalItems}
-                      </span>
-                    )} */}
-                  </Link>
+                  {/* Cart removed as part of marketplace conversion */}
 
                   {/* User dropdown */}
                   <div className="relative group">
@@ -213,13 +191,7 @@ export function Navbar({
                 </div>
               ) : (
                 <>
-                  <Link
-                    to="/notifications"
-                    className="text-gray-700 hover:text-[#000435] transition-colors"
-                    aria-label="Notifications"
-                  >
-                    <Bell size={24} />
-                  </Link>
+
                   <Link
                     to="/favoris"
                     className="text-gray-700 hover:text-[#000435] transition-colors"
@@ -228,18 +200,7 @@ export function Navbar({
                     <Heart size={24} />
                   </Link>
 
-                  <Link
-                    to="/panier"
-                    className="relative text-gray-700 hover:text-[#000435] transition-colors"
-                    aria-label="Panier"
-                  >
-                    <ShoppingBag size={24} />
-                    {/* {totalItems > 0 && (
-                      <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
-                        {totalItems}
-                      </span>
-                    )} */}
-                  </Link>
+                  {/* Cart removed */}
 
                   <div>
                     <button
@@ -315,14 +276,7 @@ export function Navbar({
                 <hr className="my-4" />
 
                 <div className="grid grid-cols-2 gap-4 pt-4">
-                  <Link
-                    to="/notifications"
-                    onClick={closeMenu}
-                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <Bell size={24} />
-                    <span className="text-xs">Notifications</span>
-                  </Link>
+
                   <Link
                     to="/favoris"
                     onClick={closeMenu}
@@ -332,19 +286,7 @@ export function Navbar({
                     <span className="text-xs">Favoris</span>
                   </Link>
 
-                  <Link
-                    to="/panier"
-                    onClick={closeMenu}
-                    className="flex flex-col items-center gap-2 p-3 text-gray-700 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors relative"
-                  >
-                    <ShoppingBag size={24} />
-                    {/* {totalItems > 0 && (
-                      <span className="absolute top-2 right-6 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-red-600 text-white">
-                        {totalItems}
-                      </span>
-                    )} */}
-                    <span className="text-xs">Panier</span>
-                  </Link>
+                  {/* Cart removed */}
                 </div>
 
                 {isLoggedIn ? (

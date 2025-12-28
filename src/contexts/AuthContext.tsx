@@ -7,6 +7,7 @@ import {
   useLazyGetCurrentUserQuery,
 } from '@/redux/api/apiSlice';
 
+
 interface User {
   userId: string;
   name: string;
@@ -14,14 +15,20 @@ interface User {
   phone?: string;
   account_type?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
+  verificationStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 interface SignupPayload {
   fullName: string;
   email: string;
   password: string;
-  accountType: 'user' | 'business';
+  accountType: 'user' | 'business' | 'seller_individual' | 'seller_business';
   phone?: string;
+  whatsapp?: string;
+  locationCity?: string;
+  idType?: string;
+  idNumber?: string;
+  businessName?: string;
 }
 
 interface AuthContextType {

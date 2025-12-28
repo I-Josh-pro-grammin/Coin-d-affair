@@ -14,7 +14,7 @@ const ForgotPassword = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Coin D'Affaires</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Akaguriro</h1>
         </div>
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="flex justify-center mb-6">
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
           <form onSubmit={submit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Adresse email</label>
-              <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="vous@email.com" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="vous@email.com" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all" />
             </div>
             <button type="submit" disabled={loading} className="w-full bg-[#000435] text-white py-3 px-4 rounded-full font-medium hover:bg-[#000435]/90 transition-all duration-300 disabled:opacity-50">
               {loading ? "Envoi..." : "Envoyer le lien de réinitialisation"}

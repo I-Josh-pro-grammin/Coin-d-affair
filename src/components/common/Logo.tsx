@@ -19,7 +19,7 @@ export function Logo({ withText = true, to = '/', className = '' }: LogoProps) {
             {!imgFailed ? (
                 <img
                     src="/logo.png"
-                    alt="Coin D'Affaires"
+                    alt="Akaguriro"
                     className="h-10 sm:h-12 w-auto object-contain"
                     onError={() => setImgFailed(true)}
                 />
@@ -30,7 +30,7 @@ export function Logo({ withText = true, to = '/', className = '' }: LogoProps) {
             )}
             {withText && (
                 <span className="text-lg sm:text-xl font-bold text-[#000435]">
-                    Coin D'Affaires
+                    Akaguriro
                 </span>
             )}
         </Link>

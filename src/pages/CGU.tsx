@@ -65,7 +65,7 @@ export default function CGU() {
                             </h2>
 
                             <p className="text-gray-700 mb-6 leading-relaxed">
-                                Il est strictement interdit de publier ou de vendre les articles suivants sur Coin D'Affaires.
+                                Il est strictement interdit de publier ou de vendre les articles suivants sur Akaguriro.
                                 Tout manquement à ces règles entraînera une suspension immédiate du compte.
                             </p>
 
@@ -116,7 +116,7 @@ export default function CGU() {
                             </h2>
                             <div className="space-y-4 text-gray-700 leading-relaxed">
                                 <p>
-                                    Coin D'affaires agit en tant qu'intermédiaire technique. Les transactions se déroulent directement entre l'acheteur et le vendeur.
+                                    Akaguriro agit en tant qu'intermédiaire technique. Les transactions se déroulent directement entre l'acheteur et le vendeur.
                                 </p>
                                 <ul className="list-disc pl-5 space-y-2 text-gray-600">
                                     <li>Les prix sont indiqués en devises locales et incluent les taxes applicables.</li>
@@ -133,10 +133,10 @@ export default function CGU() {
                                 8. Propriété Intellectuelle
                             </h2>
                             <p className="text-gray-700 mb-4 leading-relaxed">
-                                Tout le contenu présent sur Coin D'Affaires (logos, textes, images, design) est la propriété exclusive de l'entreprise ou de ses partenaires.
+                                Tout le contenu présent sur Akaguriro (logos, textes, images, design) est la propriété exclusive de l'entreprise ou de ses partenaires.
                             </p>
                             <p className="text-gray-700 leading-relaxed">
-                                Les utilisateurs conservent les droits sur les contenus qu'ils publient (photos d'annonces) mais accordent à Coin D'Affaires une licence d'utilisation pour la promotion du service.
+                                Les utilisateurs conservent les droits sur les contenus qu'ils publient (photos d'annonces) mais accordent à Akaguriro une licence d'utilisation pour la promotion du service.
                             </p>
                         </div>
 
@@ -147,7 +147,7 @@ export default function CGU() {
                                 9. Limitation de Responsabilité
                             </h2>
                             <p className="text-gray-700 leading-relaxed">
-                                Coin D'Affaires ne saurait être tenu responsable des litiges intervenant entre acheteurs et vendeurs, ni de la qualité, de la sûreté ou de la légalité des objets mis en vente. Nous nous efforçons de maintenir un environnement sûr, mais nous ne pouvons garantir l'exactitude des annonces.
+                                Akaguriro ne saurait être tenu responsable des litiges intervenant entre acheteurs et vendeurs, ni de la qualité, de la sûreté ou de la légalité des objets mis en vente. Nous nous efforçons de maintenir un environnement sûr, mais nous ne pouvons garantir l'exactitude des annonces.
                             </p>
                         </div>
 
@@ -169,7 +169,7 @@ export default function CGU() {
                                 11. Droit Applicable et Litiges
                             </h2>
                             <p className="text-gray-700 leading-relaxed">
-                                Les présentes conditions sont régies par le droit local. En cas de litige, une solution amiable sera recherchée avant toute action judiciaire. À défaut d'accord, les tribunaux compétents seront ceux du siège social de Coin D'Affaires.
+                                Les présentes conditions sont régies par le droit local. En cas de litige, une solution amiable sera recherchée avant toute action judiciaire. À défaut d'accord, les tribunaux compétents seront ceux du siège social de Akaguriro.
                             </p>
                         </div>
 
@@ -180,7 +180,7 @@ export default function CGU() {
                                 12. Dispositions Diverses
                             </h2>
                             <p className="text-gray-700 leading-relaxed">
-                                Si une disposition des présentes CGU est jugée invalide, les autres dispositions resteront en vigueur. Coin D'Affaires se réserve le droit de modifier ces conditions à tout moment. Les utilisateurs seront informés des mises à jour majeures.
+                                Si une disposition des présentes CGU est jugée invalide, les autres dispositions resteront en vigueur. Akaguriro se réserve le droit de modifier ces conditions à tout moment. Les utilisateurs seront informés des mises à jour majeures.
                             </p>
                         </div>
 
@@ -198,11 +198,11 @@ export default function CGU() {
                                 </div>
                                 <div className="flex flex-col gap-3 w-full md:w-auto">
                                     <a
-                                        href="mailto:legal@coindaffaires.com"
+                                        href="mailto:legal@akaguriro.com"
                                         className="flex items-center justify-center gap-2 bg-white text-[#000435] px-6 py-3 rounded-full font-medium hover:bg-blue-100 transition-all shadow-sm border border-blue-100"
                                     >
                                         <Mail size={18} />
-                                        legal@coindaffaires.com
+                                        legal@akaguriro.com
                                     </a>
                                     <a
                                         href="tel:+250700000000"

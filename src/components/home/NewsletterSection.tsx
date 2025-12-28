@@ -11,7 +11,7 @@ export function NewsletterSection() {
             <br />
             Nos Nouvelles Offres ?
           </h2>
-          
+
           <div className="flex gap-2 max-w-md mt-8">
             <Input
               type="email"
@@ -25,10 +25,10 @@ export function NewsletterSection() {
 
           <div className="mt-8 text-sm text-gray-400">
             <p className="font-semibold text-white mb-2">
-              CoinD'affaires pour Particuliers et Professionnels
+              Akaguriro pour Particuliers et Professionnels
             </p>
             <p>
-              Nous aidons nos utilisateurs à identifier, simplifier et développer leurs annonces, 
+              Nous aidons nos utilisateurs à identifier, simplifier et développer leurs annonces,
               et nous créons une solution EV intelligente qui convient à tous.
             </p>
           </div>

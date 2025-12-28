@@ -11,7 +11,7 @@ export default function LegalMentions() {
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-[#000435] mb-4">Mentions Légales</h1>
                     <p className="text-lg text-gray-600">
-                        Informations légales relatives à Coin D'Affaires
+                        Informations légales relatives à Akaguriro
                     </p>
                 </div>
 
@@ -25,7 +25,7 @@ export default function LegalMentions() {
                             </h2>
                             <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
                                 <p className="text-gray-700 leading-relaxed">
-                                    <strong>Dénomination :</strong> Coin D'Affaires SAS<br />
+                                    <strong>Dénomination :</strong> Akaguriro SAS<br />
                                     <strong>Siège social :</strong> 123 Avenue du Commerce, Kigali, Rwanda<br />
                                     <strong>Capital social :</strong> 1 000 000 BIF<br />
                                     <strong>RCS :</strong> Kigali B 123 456 789<br />
@@ -60,7 +60,7 @@ export default function LegalMentions() {
                                 Pour toute question ou réclamation concernant le site ou son contenu, vous pouvez nous contacter :
                             </p>
                             <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                                <li>Par email : <a href="mailto:contact@coindaffaires.com" className="text-blue-600 hover:underline">contact@coindaffaires.com</a></li>
+                                <li>Par email : <a href="mailto:contact@akaguriro.com" className="text-blue-600 hover:underline">contact@akaguriro.com</a></li>
                                 <li>Par téléphone : +250 700 000 000</li>
                                 <li>Via notre formulaire de contact</li>
                             </ul>

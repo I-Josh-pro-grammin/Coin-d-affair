@@ -64,7 +64,7 @@ const Signup = () => {
       <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden">
         <div className="relative z-10">
           <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
-            <h1 className="text-3xl font-bold font-poppins text-white">CoinD'affaires</h1>
+            <h1 className="text-3xl font-bold font-poppins text-white">Akaguriro</h1>
           </Link>
         </div>
 
@@ -79,7 +79,7 @@ const Signup = () => {
         </div>
 
         <div className="relative z-10 text-sm text-blue-200">
-          &copy; {new Date().getFullYear()} Coin D'Affaires. Tous droits réservés.
+          &copy; {new Date().getFullYear()} Akaguriro. Tous droits réservés.
         </div>
 
         {/* Decorative elements */}
@@ -102,7 +102,7 @@ const Signup = () => {
 
             <div className="md:hidden text-center mb-6">
               <Link to="/" className="inline-block">
-                <h1 className="logo-text text-3xl">CoinD'affaires</h1>
+                <h1 className="logo-text text-3xl">Akaguriro</h1>
               </Link>
             </div>
 

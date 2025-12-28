@@ -62,8 +62,8 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         <p className="text-white/60 text-sm mb-1">Email</p>
-                                        <a href="mailto:support@coindaffaires.com" className="hover:text-amber-400 transition-colors font-medium">
-                                            support@coindaffaires.com
+                                        <a href="mailto:support@akaguriro.com" className="hover:text-amber-400 transition-colors font-medium">
+                                            support@akaguriro.com
                                         </a>
                                     </div>
                                 </div>

@@ -64,7 +64,7 @@ const Login = () => {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Coin D'Affaires</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Akaguriro</h1>
           <p className="text-gray-600 mt-2">Bienvenue! Connectez-vous à votre compte</p>
         </div>
 
@@ -87,8 +87,8 @@ const Login = () => {
                 }}
                 placeholder="votre@email.com"
                 className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent transition-all ${errors.email
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-gray-300 focus:ring-[#000435]"
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-[#000435]"
                   }`}
                 required
               />
@@ -121,8 +121,8 @@ const Login = () => {
                   }}
                   placeholder="••••••••"
                   className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:border-transparent transition-all ${errors.password
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-[#000435]"
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-[#000435]"
                     }`}
                   required
                 />

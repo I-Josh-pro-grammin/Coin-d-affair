@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_BASE_URL = 
-"https://coin-d-affair-backend.onrender.com" || 
-"http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://coin-d-affair-backend.onrender.com";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -222,26 +220,7 @@ export const apiSlice = createApi({
         params,
       }),
     }),
-    getAdminNotifications: builder.query({
-      query: (params) => ({
-        url: '/api/admin/notifications',
-        method: 'GET',
-        params,
-      }),
-    }),
-    createAdminNotification: builder.mutation({
-      query: (data) => ({
-        url: '/api/admin/notifications',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-    markNotificationRead: builder.mutation({
-      query: (notificationId) => ({
-        url: `/api/admin/notification/${notificationId}/read`,
-        method: 'POST',
-      }),
-    }),
+    // Notifications removed
 
     // Auth Endpoints (Verify Email)
     verifyEmail: builder.query({
@@ -518,9 +497,7 @@ export const {
   useGetSubscriptionStatsQuery,
   useGetSubscriptionsListQuery,
   useGetAdminLogsQuery,
-  useGetAdminNotificationsQuery,
-  useCreateAdminNotificationMutation,
-  useMarkNotificationReadMutation,
+
   useGetLocationsQuery,
   useGetCustomersQuery,
   useGetBusinessesQuery,

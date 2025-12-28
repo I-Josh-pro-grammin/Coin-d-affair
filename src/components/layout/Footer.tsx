@@ -19,7 +19,7 @@ export function Footer() {
       <div className="relative z-10 text-center py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-secondary-foreground">
-            Coin D'Affaires
+            Akaguriro
           </h2>
           <p className="text-xl md:text-2xl text-secondary-foreground/80 mb-8 leading-relaxed">
             Votre prochaine grande trouvaille n'est qu'à un clic
@@ -48,12 +48,12 @@ export function Footer() {
               <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center mr-4 p-1">
                 <img
                   src="/logo.png"
-                  alt="Coin D'Affaires"
+                  alt="Akaguriro"
                   className="h-10 w-10 object-contain"
                 />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-secondary-foreground">Coin D'Affaires</h3>
+                <h3 className="text-2xl font-bold text-secondary-foreground">Akaguriro</h3>
                 <p className="text-secondary-foreground/60 text-sm">Marketplace de confiance</p>
               </div>
             </div>
@@ -70,7 +70,7 @@ export function Footer() {
               </div>
               <div className="flex items-center text-secondary-foreground/80">
                 <Mail className="h-5 w-5 mr-3 text-secondary-foreground" />
-                <span>contact@coindaffaires.fr</span>
+                <span>contact@akaguriro.com</span>
               </div>
               <div className="flex items-center text-secondary-foreground/80">
                 <Phone className="h-5 w-5 mr-3 text-secondary-foreground" />
@@ -139,7 +139,7 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm text-secondary-foreground/60">
-            <p>© {currentYear} Coin D'Affaires. Tous droits réservés.</p>
+            <p>© {currentYear} Akaguriro. Tous droits réservés.</p>
             <div className="flex space-x-6">
               <Link to="/cgu" className="hover:text-secondary-foreground transition-colors">Conditions</Link>
               <Link to="/politique-confidentialite" className="hover:text-secondary-foreground transition-colors">Confidentialité</Link>
