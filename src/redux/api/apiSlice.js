@@ -222,6 +222,38 @@ export const apiSlice = createApi({
     }),
     // Notifications removed
 
+    // Verification Endpoints
+    submitVerification: builder.mutation({
+      query: (formData) => ({
+        url: '/api/verification/submit',
+        method: 'POST',
+        body: formData,
+      }),
+      invalidatesTags: ['Users', 'Auth'],
+    }),
+    getVerificationStatus: builder.query({
+      query: () => ({
+        url: '/api/verification/status',
+        method: 'GET',
+      }),
+      providesTags: ['Auth'],
+    }),
+    getAdminVerifications: builder.query({
+      query: (params) => ({
+        url: '/api/admin/verifications',
+        method: 'GET',
+        params,
+      }),
+    }),
+    updateVerificationAction: builder.mutation({
+      query: ({ id, action, reason }) => ({
+        url: `/api/admin/verification/${id}/action`,
+        method: 'POST',
+        body: { action, reason },
+      }),
+      invalidatesTags: ['Users'],
+    }),
+
     // Auth Endpoints (Verify Email)
     verifyEmail: builder.query({
       query: (token) => ({
@@ -505,4 +537,13 @@ export const {
   useGetFavoritesQuery,
   useAddFavoriteMutation,
   useRemoveFavoriteMutation,
+  useGetFavoritesQuery,
+  useAddFavoriteMutation,
+  useRemoveFavoriteMutation,
+
+  // Verification
+  useSubmitVerificationMutation,
+  useGetVerificationStatusQuery,
+  useGetAdminVerificationsQuery,
+  useUpdateVerificationActionMutation,
 } = apiSlice;
