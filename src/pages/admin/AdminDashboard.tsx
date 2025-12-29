@@ -64,11 +64,14 @@ export default function AdminDashboard() {
         }
     ];
 
-    const recentActivities = logsData?.logs?.map((log: any) => ({
-        type: 'system',
-        message: `${log.action} - ${log.details?.resourceType || 'System'}`,
-        time: formatDistanceToNow(new Date(log.created_at), { addSuffix: true, locale: fr })
-    })) || [];
+    const recentActivities = logsData?.logs
+        ?.filter((log: any) => !['view', 'list', 'get'].some(prefix => log.action.startsWith(prefix)))
+        ?.slice(0, 5)
+        ?.map((log: any) => ({
+            type: 'system',
+            message: `${log.action} - ${log.details?.resourceType || 'System'}`,
+            time: formatDistanceToNow(new Date(log.created_at), { addSuffix: true, locale: fr })
+        })) || [];
 
     // Sort businesses by total_orders to get top sellers if backend doesn't sort
     const topSellers = businessesData?.businesses
