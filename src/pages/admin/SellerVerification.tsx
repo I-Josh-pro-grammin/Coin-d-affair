@@ -175,8 +175,8 @@ const SellerVerification = () => {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="outline" className={req.account_type === 'business' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-50 text-gray-700'}>
-                                                {req.account_type === 'business' ? 'Professionnel' : 'Particulier'}
+                                            <Badge variant="outline" className={!req.id_type ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-50 text-gray-700'}>
+                                                {!req.id_type ? 'Professionnel' : 'Particulier'}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>

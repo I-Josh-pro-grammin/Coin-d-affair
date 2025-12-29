@@ -69,22 +69,35 @@ const SellerSignup = () => {
     }
 
     setSubmitting(true);
-    setSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const payload = {
+        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        // Map both seller types to 'business' to ensure dashboard access
+        accountType: 'business' as const,
+        whatsapp: formData.whatsapp,
+        locationCity: formData.locationCity,
+        // Include ID info only for individuals
+        ...(accountType === 'seller_individual' ? {
+          idType: formData.idType,
+          idNumber: formData.idNumber
+        } : {
+          // Include business name only for businesses
+          businessName: formData.businessName
+        })
+      };
 
-      // Show specific message based on account type
-      if (accountType === 'seller_individual') {
-        toast.success("Compte soumis pour vérification. L'admin vous contactera (Mock).");
-      } else {
-        toast.success("Compte professionnel soumis. Notre équipe vous contactera (Mock).");
-      }
+      await signup(payload);
 
-      navigate('/dashboard');
+      toast.success("Compte créé avec succès. Veuillez vérifier vos emails.");
+      navigate('/auth/verify-required', { state: { email: formData.email } });
+
     } catch (error: any) {
-      // ... err handling if any
-      toast.error("Error simulation");
+      console.error(error);
+      const message = error?.data?.message || "Une erreur est survenue lors de l'inscription";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
