@@ -14,7 +14,7 @@ interface User {
   name: string;
   email: string;
   phone?: string;
-  account_type?: 'user' | 'business' | 'admin';
+  accountType?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
   verification_status?: 'pending' | 'approved' | 'rejected';
 }

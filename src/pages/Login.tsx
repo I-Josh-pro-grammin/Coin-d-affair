@@ -27,9 +27,9 @@ const Login = () => {
       toast.success("Connexion réussie");
 
       // Important: Navigate and don't update state here to avoid DOM mismatches during unmount
-      if (user.account_type === 'admin') {
+      if (user.accountType === 'admin') {
         navigate("/admin", { replace: true });
-      } else if (user.account_type === 'business') {
+      } else if (user.accountType === 'business') {
         navigate("/dashboard", { replace: true });
       } else {
         navigate("/", { replace: true });

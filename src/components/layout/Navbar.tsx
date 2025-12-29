@@ -72,7 +72,7 @@ export function Navbar({
     }
   };
 
-  console.log(getDashboardRoute(user?.account_type));
+  console.log(getDashboardRoute(user?.accountType));
   const handleLogout = () => {
     if (logout) logout();
     navigate("/");
@@ -84,7 +84,7 @@ export function Navbar({
 
   const handlePostAdClick = () => {
     // Check if user is logged in and is a seller
-    if (user?.account_type === 'business') {
+    if (user?.accountType === 'business') {
       navigate("/dashboard/products/new");
     } else {
       navigate("/deposer");
@@ -174,14 +174,14 @@ export function Navbar({
                         )}
                       </div>
                       <Link
-                        to={getDashboardRoute(user.account_type)}
+                        to={getDashboardRoute(user.accountType)}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
                         Tableau de bord
                       </Link>
                       <Link
                         to={
-                          user.account_type === "business" ? "/dashboard/profil" : "/profil"
+                          user.accountType === "business" ? "/dashboard/profil" : "/profil"
                         }
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
@@ -306,7 +306,7 @@ export function Navbar({
                 {isLoggedIn ? (
                   <div className="pt-4 border-t border-gray-200 space-y-2">
                     <Link
-                      to={getDashboardRoute(user?.account_type)}
+                      to={getDashboardRoute(user?.accountType)}
                       onClick={closeMenu}
                       className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100"
                     >
