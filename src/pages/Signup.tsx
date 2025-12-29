@@ -49,8 +49,8 @@ const Signup = () => {
         accountType: formData.accountType as 'user' | 'business',
         phone: formData.phone,
       });
-      toast.success("Compte créé avec succès");
-      navigate("/");
+      toast.success("Compte créé avec succès. Veuillez vérifier votre email.");
+      navigate("/auth/verify-required", { state: { email: formData.email } });
     } catch (error) {
       console.error("Signup error:", error);
       const errorMessage = (error as any)?.data?.message || "Erreur lors de la création du compte";

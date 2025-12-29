@@ -5,7 +5,9 @@ import {
     ArrowDown,
     Plus,
     Eye,
-    MessageCircle
+    MessageCircle,
+    Info,
+    AlertCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
@@ -13,10 +15,17 @@ import {
     useGetBusinessProductsQuery
 } from '@/redux/api/apiSlice';
 import { RouteFallback } from '@/components/common/RouteFallback';
+import { useAuth } from '@/contexts/AuthContext';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function DashboardHome() {
+    const { user } = useAuth();
     const { data: businessProfile, isLoading: profileLoading } = useGetBusinessProfileQuery({});
     const { data: products, isLoading: productsLoading } = useGetBusinessProductsQuery({});
+
+    const isVerified = user?.verification_status === 'approved';
+    const isPending = user?.verification_status === 'pending';
+    const isRejected = user?.verification_status === 'rejected';
 
     if (profileLoading || productsLoading) {
         return <RouteFallback />;
@@ -66,6 +75,28 @@ export default function DashboardHome() {
                 <p className="text-gray-600">Bienvenue dans votre espace vendeur</p>
             </div>
 
+            {/* Verification Status Banner */}
+            {isPending && (
+                <Alert className="mb-6 bg-yellow-50 border-yellow-200 text-yellow-800">
+                    <Info className="h-4 w-4 text-yellow-800" />
+                    <AlertTitle>Vérification en cours</AlertTitle>
+                    <AlertDescription>
+                        Votre compte est actuellement en cours de vérification par notre équipe.
+                        Vous ne pourrez pas publier d'annonces tant que votre compte n'aura pas été validé.
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            {isRejected && (
+                <Alert className="mb-6 bg-red-50 border-red-200 text-red-800">
+                    <AlertCircle className="h-4 w-4 text-red-800" />
+                    <AlertTitle>Vérification refusée</AlertTitle>
+                    <AlertDescription>
+                        Votre demande de vérification a été refusée. Veuillez contacter le support pour plus d'informations.
+                    </AlertDescription>
+                </Alert>
+            )}
+
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {stats.map((stat, index) => {
@@ -91,14 +122,22 @@ export default function DashboardHome() {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <Link
-                    to="/dashboard/products/new"
-                    className="bg-[#000435] text-white rounded-2xl shadow-sm p-6 hover:bg-[#000435]/90 transition-all hover:shadow-md flex flex-col items-start"
-                >
-                    <Plus size={24} className="mb-3" />
-                    <h3 className="text-lg font-bold mb-1">Ajouter un produit</h3>
-                    <p className="text-sm text-white/80">Créez une nouvelle annonce</p>
-                </Link>
+                {isVerified ? (
+                    <Link
+                        to="/dashboard/products/new"
+                        className="bg-[#000435] text-white rounded-2xl shadow-sm p-6 hover:bg-[#000435]/90 transition-all hover:shadow-md flex flex-col items-start"
+                    >
+                        <Plus size={24} className="mb-3" />
+                        <h3 className="text-lg font-bold mb-1">Ajouter un produit</h3>
+                        <p className="text-sm text-white/80">Créez une nouvelle annonce</p>
+                    </Link>
+                ) : (
+                    <div className="bg-gray-100 text-gray-400 rounded-2xl shadow-sm p-6 flex flex-col items-start cursor-not-allowed opacity-75">
+                        <Plus size={24} className="mb-3" />
+                        <h3 className="text-lg font-bold mb-1">Ajouter un produit</h3>
+                        <p className="text-sm">Vérification requise pour publier</p>
+                    </div>
+                )}
 
                 <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-center">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Conseil pour vendre plus</h3>
