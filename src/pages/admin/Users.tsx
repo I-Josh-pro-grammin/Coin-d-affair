@@ -1,6 +1,6 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useState, useEffect } from 'react';
-import { Search, Filter, MoreVertical, Shield, UserX, UserCheck, UserPlus, Eye, Trash2, X } from 'lucide-react';
+import { Search, Filter, MoreVertical, Shield, UserX, UserCheck, UserPlus, Eye, Trash2, X, CheckSquare, Square } from 'lucide-react';
 import {
     useGetAllUsersQuery,
     useBanUserMutation,
@@ -13,6 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Loader } from '@/components/common/Loader';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type UserRole = 'business' | 'user' | 'admin';
 
@@ -96,6 +97,7 @@ export default function Users() {
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState<'all' | UserRole>('all');
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+    const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
     // Fetch users
     const { data: usersData, isLoading, refetch } = useGetAllUsersQuery();
@@ -144,13 +146,93 @@ export default function Users() {
         return (user.email || '').toLowerCase().includes(s) || (user.full_name || '').toLowerCase().includes(s);
     });
 
+    // Multi-selection logic
+    const toggleSelectAll = () => {
+        if (selectedUsers.size === filteredUsers.length) {
+            setSelectedUsers(new Set());
+        } else {
+            setSelectedUsers(new Set(filteredUsers.map(u => u.user_id)));
+        }
+    };
+
+    const toggleSelectUser = (id: string) => {
+        const newSelected = new Set(selectedUsers);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedUsers(newSelected);
+    };
+
+    const handleBulkDelete = async () => {
+        if (!selectedUsers.size) return;
+        if (!window.confirm(`Supprimer définitivement ${selectedUsers.size} utilisateurs ?`)) return;
+
+        let successCount = 0;
+        try {
+            await Promise.all(
+                Array.from(selectedUsers).map(async (id) => {
+                    await deleteUser(id).unwrap();
+                    successCount++;
+                })
+            );
+            toast.success(`${successCount} utilisateurs supprimés`);
+            setSelectedUsers(new Set());
+            refetch();
+        } catch (error) {
+            toast.error("Certaines suppressions ont échoué");
+        }
+    };
+
+    const handleBulkBan = async (action: 'ban' | 'unban') => {
+        if (!selectedUsers.size) return;
+        if (!window.confirm(`${action === 'ban' ? 'Bannir' : 'Réactiver'} ${selectedUsers.size} utilisateurs ?`)) return;
+
+        let successCount = 0;
+        try {
+            await Promise.all(
+                Array.from(selectedUsers).map(async (id) => {
+                    if (action === 'ban') await banUser(id).unwrap();
+                    else await unbanUser(id).unwrap();
+                    successCount++;
+                })
+            );
+            toast.success(`${successCount} utilisateurs mis à jour`);
+            setSelectedUsers(new Set());
+            refetch();
+        } catch (error) {
+            toast.error("Certaines actions ont échoué");
+        }
+    };
+
     if (isLoading) return <AdminLayout><Loader /></AdminLayout>;
 
     return (
         <AdminLayout>
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Utilisateurs</h1>
-                <p className="text-gray-600">{filteredUsers.length} comptes trouvés</p>
+            <div className="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Utilisateurs</h1>
+                    <p className="text-gray-600">{filteredUsers.length} comptes trouvés</p>
+                </div>
+                {selectedUsers.size > 0 && (
+                    <div className="flex items-center gap-3 bg-[#000435] text-white px-4 py-2 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-4">
+                        <span className="text-sm font-medium">{selectedUsers.size} sélectionné(s)</span>
+                        <div className="h-4 w-px bg-white/20" />
+                        <button onClick={() => handleBulkBan('ban')} className="p-1 hover:bg-white/10 rounded" title="Bannir la sélection">
+                            <UserX size={18} />
+                        </button>
+                        <button onClick={() => handleBulkBan('unban')} className="p-1 hover:bg-white/10 rounded" title="Réactiver la sélection">
+                            <UserCheck size={18} />
+                        </button>
+                        <button onClick={handleBulkDelete} className="p-1 hover:bg-red-500 rounded text-red-200 hover:text-white transition-colors" title="Supprimer la sélection">
+                            <Trash2 size={18} />
+                        </button>
+                        <button onClick={() => setSelectedUsers(new Set())} className="ml-2">
+                            <X size={16} />
+                        </button>
+                    </div>
+                )}
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm p-4 mb-6">
@@ -184,7 +266,14 @@ export default function Users() {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
-                                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500">Utilisateur</th>
+                                <th className="w-12 px-6 py-4">
+                                    <Checkbox
+                                        checked={filteredUsers.length > 0 && selectedUsers.size === filteredUsers.length}
+                                        onCheckedChange={toggleSelectAll}
+                                        aria-label="Select all"
+                                    />
+                                </th>
+                                <th className="text-left py-4 px-2 text-sm font-medium text-gray-500">Utilisateur</th>
                                 <th className="text-left py-4 px-6 text-sm font-medium text-gray-500">Rôle</th>
                                 <th className="text-left py-4 px-6 text-sm font-medium text-gray-500">Statut</th>
                                 <th className="text-left py-4 px-6 text-sm font-medium text-gray-500">Date</th>
@@ -193,8 +282,15 @@ export default function Users() {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {filteredUsers.map((user) => (
-                                <tr key={user.user_id} className="hover:bg-gray-50/80 transition-colors">
-                                    <td className="py-4 px-6">
+                                <tr key={user.user_id} className={`transition-colors ${selectedUsers.has(user.user_id) ? 'bg-blue-50/50' : 'hover:bg-gray-50/80'}`}>
+                                    <td className="px-6 py-4">
+                                        <Checkbox
+                                            checked={selectedUsers.has(user.user_id)}
+                                            onCheckedChange={() => toggleSelectUser(user.user_id)}
+                                            aria-label={`Select ${user.full_name}`}
+                                        />
+                                    </td>
+                                    <td className="py-4 px-2">
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-[#000435]/5 flex items-center justify-center text-xs font-bold text-[#000435]">
                                                 {user.full_name?.substring(0, 2).toUpperCase()}
@@ -255,7 +351,7 @@ export default function Users() {
                                 </tr>
                             ))}
                             {filteredUsers.length === 0 && (
-                                <tr><td colSpan={5} className="py-8 text-center text-gray-500">Aucun utilisateur trouvé</td></tr>
+                                <tr><td colSpan={6} className="py-8 text-center text-gray-500">Aucun utilisateur trouvé</td></tr>
                             )}
                         </tbody>
                     </table>
