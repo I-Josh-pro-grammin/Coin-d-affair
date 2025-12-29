@@ -167,6 +167,12 @@ export const apiSlice = createApi({
         method: 'POST',
       }),
     }),
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/api/admin/user/${userId}`,
+        method: 'DELETE',
+      }),
+    }),
 
     // Admin Listing Management
     updateListingStatus: builder.mutation({
@@ -524,6 +530,7 @@ export const {
   useGetAdminUserDetailsQuery,
   useBanUserMutation,
   useUnbanUserMutation,
+  useDeleteUserMutation,
   useUpdateListingStatusMutation,
   useDeleteAdminListingMutation,
   useGetSubscriptionStatsQuery,
