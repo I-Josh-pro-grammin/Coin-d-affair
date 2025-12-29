@@ -9,7 +9,7 @@ import { Page } from "@/components/common/Page";
 import { CartProvider } from "@/contexts/CartContext";
 
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { RequireAdmin } from "./components/admin/RequireAdmin";
+
 
 
 const Index = lazy(() => import("./pages/Index"));
@@ -66,89 +66,89 @@ const App = () => (
     <Sonner />
 
     <CartProvider>
-    <ScrollToTop />
-    <ErrorBoundary>
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-          <Route path="/" element={<Page title="Accueil"><Index /></Page>} />
-          {/* Auth Routes */}
-          <Route path="/connexion" element={<Page title="Connexion"><Login /></Page>} />
-          <Route path="/inscription" element={<Page title="Inscription"><Signup /></Page>} />
+      <ScrollToTop />
+      <ErrorBoundary>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<Page title="Accueil"><Index /></Page>} />
+            {/* Auth Routes */}
+            <Route path="/connexion" element={<Page title="Connexion"><Login /></Page>} />
+            <Route path="/inscription" element={<Page title="Inscription"><Signup /></Page>} />
 
-          {/* Legacy/Alternative Auth Routes mapped to unified pages */}
-          <Route path="/auth/role-selection" element={<Page title="Démarrer"><RoleSelection /></Page>} />
-          <Route path="/auth/get-started" element={<Page title="Démarrer"><RoleSelection /></Page>} />
-          <Route path="/auth/login" element={<Page title="Connexion"><Login /></Page>} />
-          <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><Signup /></Page>} />
-          <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
+            {/* Legacy/Alternative Auth Routes mapped to unified pages */}
+            <Route path="/auth/role-selection" element={<Page title="Démarrer"><RoleSelection /></Page>} />
+            <Route path="/auth/get-started" element={<Page title="Démarrer"><RoleSelection /></Page>} />
+            <Route path="/auth/login" element={<Page title="Connexion"><Login /></Page>} />
+            <Route path="/auth/signup/customer" element={<Page title="Inscription acheteur"><Signup /></Page>} />
+            <Route path="/auth/signup/seller" element={<Page title="Inscription vendeur"><SellerSignup /></Page>} />
 
-          <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
-          <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
-          <Route path="/auth/verify/:token" element={<Page title="Vérification Email"><VerifyEmail /></Page>} />
-          <Route path="/auth/verify-required" element={<Page title="Vérification requise"><EmailVerificationRequired /></Page>} />
-          <Route path="/seller/setup" element={<Page title="Configuration boutique"><SellerSetup /></Page>} />
+            <Route path="/auth/forgot-password" element={<Page title="Mot de passe oublié"><ForgotPassword /></Page>} />
+            <Route path="/auth/reset-password/:token" element={<Page title="Réinitialiser le mot de passe"><ResetPassword /></Page>} />
+            <Route path="/auth/verify/:token" element={<Page title="Vérification Email"><VerifyEmail /></Page>} />
+            <Route path="/auth/verify-required" element={<Page title="Vérification requise"><EmailVerificationRequired /></Page>} />
+            <Route path="/seller/setup" element={<Page title="Configuration boutique"><SellerSetup /></Page>} />
 
-          <Route path="/tableau-de-bord" element={<ProtectedRoute requiredRole="business"><Page title="Tableau de bord"><DashboardHome /></Page></ProtectedRoute>} />
-          {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute requiredRole="business"><Page title="Dashboard"><DashboardHome /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/products" element={<ProtectedRoute requiredRole="business"><Page title="Produits"><Products /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/products/new" element={<ProtectedRoute requiredRole="business"><Page title="Nouveau produit"><ProductForm /></Page></ProtectedRoute>} />
-          <Route path="/dashboard/products/:id/edit" element={<ProtectedRoute requiredRole="business"><Page title="Modifier produit"><ProductForm /></Page></ProtectedRoute>} />
+            <Route path="/tableau-de-bord" element={<ProtectedRoute requiredRole="business"><Page title="Tableau de bord"><DashboardHome /></Page></ProtectedRoute>} />
+            {/* Dashboard Routes */}
+            <Route path="/dashboard" element={<ProtectedRoute requiredRole="business"><Page title="Dashboard"><DashboardHome /></Page></ProtectedRoute>} />
+            <Route path="/dashboard/products" element={<ProtectedRoute requiredRole="business"><Page title="Produits"><Products /></Page></ProtectedRoute>} />
+            <Route path="/dashboard/products/new" element={<ProtectedRoute requiredRole="business"><Page title="Nouveau produit"><ProductForm /></Page></ProtectedRoute>} />
+            <Route path="/dashboard/products/:id/edit" element={<ProtectedRoute requiredRole="business"><Page title="Modifier produit"><ProductForm /></Page></ProtectedRoute>} />
 
-          <Route path="/dashboard/settings" element={<ProtectedRoute requiredRole="business"><Page title="Paramètres"><Settings /></Page></ProtectedRoute>} />
+            <Route path="/dashboard/settings" element={<ProtectedRoute requiredRole="business"><Page title="Paramètres"><Settings /></Page></ProtectedRoute>} />
 
-          {/* Product & Shopping Routes */}
-          <Route path="/produit/:id" element={<Page title="Détails du produit"><ProductDetail /></Page>} />
+            {/* Product & Shopping Routes */}
+            <Route path="/produit/:id" element={<Page title="Détails du produit"><ProductDetail /></Page>} />
 
-          <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
-          <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
+            <Route path="/boutique" element={<Page title="Boutique"><Search /></Page>} />
+            <Route path="/deposer" element={<Page title="Déposer une annonce"><Deposer /></Page>} />
 
-          <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
+            <Route path="/favoris" element={<Page title="Favoris"><Favorites /></Page>} />
 
 
-          {/* Category routes */}
-          <Route path="/categorie/:category/:subcategory" element={<Page title="Catégorie"><CategoryListing /></Page>} />
-          <Route path="/categorie/:category" element={<Page title="Catégorie"><CategoryListing /></Page>} />
+            {/* Category routes */}
+            <Route path="/categorie/:category/:subcategory" element={<Page title="Catégorie"><CategoryListing /></Page>} />
+            <Route path="/categorie/:category" element={<Page title="Catégorie"><CategoryListing /></Page>} />
 
-          {/* Placeholder pages */}
-          <Route path="/deposer-annonce" element={<ProtectedRoute><Page title="Déposer une annonce"><PlaceholderPage /></Page></ProtectedRoute>} />
-          <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><Products /></Page></ProtectedRoute>} />
-          <Route path="/profil" element={<ProtectedRoute><Page title="Profil"><Profile /></Page></ProtectedRoute>} />
-          <Route path="/recherche" element={<Page title="Recherche"><Search /></Page>} />
-          <Route path="/aide" element={<Page title="Aide"><Help /></Page>} />
-          <Route path="/a-propos" element={<Page title="À propos"><About /></Page>} />
-          <Route path="/contact" element={<Page title="Contact"><Contact /></Page>} />
-          <Route path="/mentions-legales" element={<Page title="Mentions légales"><LegalMentions /></Page>} />
-          <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
+            {/* Placeholder pages */}
+            <Route path="/deposer-annonce" element={<ProtectedRoute><Page title="Déposer une annonce"><PlaceholderPage /></Page></ProtectedRoute>} />
+            <Route path="/mes-annonces" element={<ProtectedRoute><Page title="Mes annonces"><Products /></Page></ProtectedRoute>} />
+            <Route path="/profil" element={<ProtectedRoute><Page title="Profil"><Profile /></Page></ProtectedRoute>} />
+            <Route path="/recherche" element={<Page title="Recherche"><Search /></Page>} />
+            <Route path="/aide" element={<Page title="Aide"><Help /></Page>} />
+            <Route path="/a-propos" element={<Page title="À propos"><About /></Page>} />
+            <Route path="/contact" element={<Page title="Contact"><Contact /></Page>} />
+            <Route path="/mentions-legales" element={<Page title="Mentions légales"><LegalMentions /></Page>} />
+            <Route path="/politique-confidentialite" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
 
-          {/* Redirects & Legacy */}
-          <Route path="/faq" element={<Page title="FAQ"><Help /></Page>} />
-          <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
-          <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
-          <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />
-          <Route path="/careers" element={<Page title="Carrières"><PlaceholderPage /></Page>} />
-          <Route path="/blog" element={<Page title="Blog"><PlaceholderPage /></Page>} />
+            {/* Redirects & Legacy */}
+            <Route path="/faq" element={<Page title="FAQ"><Help /></Page>} />
+            <Route path="/privacy" element={<Page title="Confidentialité"><PrivacyPolicy /></Page>} />
+            <Route path="/cookies" element={<Page title="Cookies"><PlaceholderPage /></Page>} />
+            <Route path="/press" element={<Page title="Presse"><PlaceholderPage /></Page>} />
+            <Route path="/careers" element={<Page title="Carrières"><PlaceholderPage /></Page>} />
+            <Route path="/blog" element={<Page title="Blog"><PlaceholderPage /></Page>} />
 
-          <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><CGU /></Page>} />
-          <Route path="/cgu" element={<Page title="Conditions Générales d'Utilisation"><CGU /></Page>} />
+            <Route path="/conditions-utilisation" element={<Page title="Conditions d'utilisation"><CGU /></Page>} />
+            <Route path="/cgu" element={<Page title="Conditions Générales d'Utilisation"><CGU /></Page>} />
 
-          {/* Admin Routes */}
-          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><Page title="Admin Dashboard"><AdminDashboard /></Page></ProtectedRoute>} />
-          <Route path="/admin/categories" element={<ProtectedRoute requiredRole="admin"><Page title="Gestion Catégories"><AdminCategories /></Page></ProtectedRoute>} />
-          <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><Page title="Gestion Utilisateurs"><AdminUsers /></Page></ProtectedRoute>} />
-          <Route path="/admin/verification" element={<ProtectedRoute requiredRole="admin"><Page title="Vérification Vendeurs"><SellerVerification /></Page></ProtectedRoute>} />
-          <Route path="/admin/products" element={<ProtectedRoute requiredRole="admin"><Page title="Modération Produits"><AdminProducts /></Page></ProtectedRoute>} />
-          <Route path="/admin/analytics" element={<ProtectedRoute requiredRole="admin"><Page title="Analyses"><AdminAnalytics /></Page></ProtectedRoute>} />
-          <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
+            {/* Admin Routes */}
+            <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><Page title="Admin Dashboard"><AdminDashboard /></Page></ProtectedRoute>} />
+            <Route path="/admin/categories" element={<ProtectedRoute requiredRole="admin"><Page title="Gestion Catégories"><AdminCategories /></Page></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><Page title="Gestion Utilisateurs"><AdminUsers /></Page></ProtectedRoute>} />
+            <Route path="/admin/verification" element={<ProtectedRoute requiredRole="admin"><Page title="Vérification Vendeurs"><SellerVerification /></Page></ProtectedRoute>} />
+            <Route path="/admin/products" element={<ProtectedRoute requiredRole="admin"><Page title="Modération Produits"><AdminProducts /></Page></ProtectedRoute>} />
+            <Route path="/admin/analytics" element={<ProtectedRoute requiredRole="admin"><Page title="Analyses"><AdminAnalytics /></Page></ProtectedRoute>} />
+            <Route path="/admin/settings" element={<ProtectedRoute requiredRole="admin"><Page title="Paramètres Admin"><AdminSettings /></Page></ProtectedRoute>} />
 
-          <Route path="/cart" element={<Page title="Votre Panier"><Cart /></Page>} />
-          <Route path="/panier" element={<Page title="Votre Panier"><Cart /></Page>} />
+            <Route path="/cart" element={<Page title="Votre Panier"><Cart /></Page>} />
+            <Route path="/panier" element={<Page title="Votre Panier"><Cart /></Page>} />
 
-          {/* Catch-all */}
-          <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
-        </Routes>
-      </Suspense>
-    </ErrorBoundary>
+            {/* Catch-all */}
+            <Route path="*" element={<Page title="Page introuvable"><NotFound /></Page>} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </CartProvider>
 
   </>

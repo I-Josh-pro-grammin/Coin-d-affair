@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const currencyFmt = (v: number) =>
-  new Intl.NumberFormat('fr-RW', { style: 'currency', currency: 'RWF', maximumFractionDigits: 0 }).format(v);
+  new Intl.NumberFormat('fr-BI', { style: 'currency', currency: 'BIF', maximumFractionDigits: 0 }).format(v);
 
 // Resolve image source from multiple possible shapes used in API responses or local mocks.
 export function resolveImageSource(src: any): string {

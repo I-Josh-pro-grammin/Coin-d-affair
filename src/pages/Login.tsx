@@ -14,7 +14,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
-  const {user} = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
@@ -66,7 +66,7 @@ const Login = () => {
 
         <div className="relative z-10 max-w-lg">
           <h2 className="text-4xl font-bold mb-6 font-poppins leading-tight">
-            La référence des bonnes affaires en France
+            La référence des bonnes affaires au Burundi
           </h2>
           <p className="text-blue-100 text-lg leading-relaxed">
             Rejoignez notre communauté grandissante d'acheteurs et de vendeurs.

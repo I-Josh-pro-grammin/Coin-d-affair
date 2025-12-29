@@ -10,7 +10,7 @@ export default function Help() {
         },
         {
             question: "Quels sont les délais de livraison ?",
-            answer: "La livraison prend généralement entre 24h et 48h pour Kigali, et 2-3 jours pour les autres provinces."
+            answer: "La livraison prend généralement entre 24h et 48h pour Bujumbura, et 2-3 jours pour les autres provinces."
         },
         {
             question: "Puis-je retourner un produit ?",

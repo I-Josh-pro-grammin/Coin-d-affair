@@ -8,7 +8,7 @@ export default function SellerSetup() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         // Save business info and redirect to dashboard
         navigate('/dashboard');
     };
@@ -119,11 +119,11 @@ export default function SellerSetup() {
                                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                             >
                                 <option value="">Sélectionnez votre ville</option>
-                                <option value="kigali">Kigali</option>
-                                <option value="butare">Butare</option>
-                                <option value="gisenyi">Gisenyi</option>
-                                <option value="ruhengeri">Ruhengeri</option>
-                                <option value="cyangugu">Cyangugu</option>
+                                <option value="bujumbura">Bujumbura</option>
+                                <option value="gitega">Gitega</option>
+                                <option value="ngozi">Ngozi</option>
+                                <option value="rumonge">Rumonge</option>
+                                <option value="kayanza">Kayanza</option>
                             </select>
                         </div>
 

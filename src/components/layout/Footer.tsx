@@ -58,7 +58,7 @@ export function Footer() {
               </div>
             </div>
             <p className="text-secondary-foreground/80 text-lg leading-relaxed mb-8">
-              La marketplace française où découvrir, acheter et vendre devient un plaisir.
+              La marketplace burundaise où découvrir, acheter et vendre devient un plaisir.
               Des milliers d'articles uniques vous attendent.
             </p>
 
@@ -74,7 +74,7 @@ export function Footer() {
               </div>
               <div className="flex items-center text-secondary-foreground/80">
                 <Phone className="h-5 w-5 mr-3 text-secondary-foreground" />
-                <span>+33 1 23 45 67 89</span>
+                <span>+257 70 000 000</span>
               </div>
             </div>
           </div>

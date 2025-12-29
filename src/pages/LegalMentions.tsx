@@ -26,9 +26,9 @@ export default function LegalMentions() {
                             <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
                                 <p className="text-gray-700 leading-relaxed">
                                     <strong>Dénomination :</strong> Akaguriro SAS<br />
-                                    <strong>Siège social :</strong> 123 Avenue du Commerce, Kigali, Rwanda<br />
+                                    <strong>Siège social :</strong> 123 Avenue du Commerce, Bujumbura, Burundi<br />
                                     <strong>Capital social :</strong> 1 000 000 BIF<br />
-                                    <strong>RCS :</strong> Kigali B 123 456 789<br />
+                                    <strong>RCS :</strong> Bujumbura B 123 456 789<br />
                                     <strong>Directeur de la publication :</strong> John Doe
                                 </p>
                             </div>
@@ -61,7 +61,7 @@ export default function LegalMentions() {
                             </p>
                             <ul className="list-disc pl-5 space-y-2 text-gray-700">
                                 <li>Par email : <a href="mailto:contact@akaguriro.com" className="text-blue-600 hover:underline">contact@akaguriro.com</a></li>
-                                <li>Par téléphone : +250 700 000 000</li>
+                                <li>Par téléphone : +257 70 000 000</li>
                                 <li>Via notre formulaire de contact</li>
                             </ul>
                         </section>

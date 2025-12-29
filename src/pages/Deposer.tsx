@@ -48,7 +48,7 @@ export default function Deposer() {
                                 <CheckCircle className="text-green-500 flex-shrink-0 mt-1" size={20} />
                                 <div>
                                     <h3 className="font-semibold text-gray-900 mb-1">Touchez plus de clients</h3>
-                                    <p className="text-sm text-gray-600">Vendez à travers tout le Rwanda</p>
+                                    <p className="text-sm text-gray-600">Vendez à travers tout le Burundi</p>
                                 </div>
                             </div>
                         </div>
