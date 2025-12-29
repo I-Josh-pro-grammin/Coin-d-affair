@@ -18,6 +18,8 @@ import { RouteFallback } from '@/components/common/RouteFallback';
 import { useAuth } from '@/contexts/AuthContext';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+import { toast } from 'sonner';
+
 export default function DashboardHome() {
     const { user } = useAuth();
     const { data: businessProfile, isLoading: profileLoading } = useGetBusinessProfileQuery({});
@@ -132,7 +134,10 @@ export default function DashboardHome() {
                         <p className="text-sm text-white/80">Créez une nouvelle annonce</p>
                     </Link>
                 ) : (
-                    <div className="bg-gray-100 text-gray-400 rounded-2xl shadow-sm p-6 flex flex-col items-start cursor-not-allowed opacity-75">
+                    <div
+                        onClick={() => toast.info("Veuillez patienter, votre compte est en cours de vérification.")}
+                        className="bg-gray-100 text-gray-400 rounded-2xl shadow-sm p-6 flex flex-col items-start cursor-not-allowed opacity-75 hover:bg-gray-200 transition-colors"
+                    >
                         <Plus size={24} className="mb-3" />
                         <h3 className="text-lg font-bold mb-1">Ajouter un produit</h3>
                         <p className="text-sm">Vérification requise pour publier</p>
