@@ -15,7 +15,7 @@ export function RequireAdmin({ children }: { children: JSX.Element }) {
     // }
     console.log(authUser);
 
-    if (authUser?.accountType == 'admin') {
+    if (authUser?.account_type == 'admin') {
         return children;
     } else {
         return <Navigate to="/" state={{ from: location }} replace />;
