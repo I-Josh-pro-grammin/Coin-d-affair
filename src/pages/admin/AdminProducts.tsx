@@ -40,8 +40,9 @@ export default function AdminProducts() {
             await updateListingStatus({ listingId: id, action }).unwrap();
             toast.success(`Statut du produit mis à jour (${action})`);
             refetch();
-        } catch (error) {
-            toast.error("Erreur lors de la mise à jour du statut");
+        } catch (error: any) {
+            const msg = error?.data?.message || "Erreur lors de la mise à jour du statut";
+            toast.error(msg);
         }
     };
 
@@ -78,7 +79,7 @@ export default function AdminProducts() {
         return matchesStatus;
     }) || [];
 
-    if(isLoading) {
+    if (isLoading) {
         return (
             <AdminLayout>
                 <div className="flex items-center justify-center h-64">
