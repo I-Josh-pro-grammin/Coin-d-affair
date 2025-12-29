@@ -67,7 +67,7 @@ export function HeroSection() {
     },
     {
       id: 4,
-      title: "85%",
+      title: "95%",
       subtitle: "de satisfaction client depuis 2020",
       position: 'center',
       bgColor: 'bg-[#000435]',

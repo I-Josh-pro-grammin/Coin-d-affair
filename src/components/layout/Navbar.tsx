@@ -61,6 +61,18 @@ export function Navbar({
     }
   }, [isOpen]);
 
+  const getDashboardRoute = (accountType: string) => {
+    switch (accountType) {
+      case "business":
+        return "/dashboard";
+      case "admin":
+        return "/admin";
+      default:
+        return "/";
+    }
+  };
+  
+  console.log(getDashboardRoute(user?.accountType));
   const handleLogout = () => {
     if (logout) logout();
     navigate("/");
@@ -162,13 +174,17 @@ export function Navbar({
                         )}
                       </div>
                       <Link
-                        to="/dashboard"
+                        to={
+                          getDashboardRoute(user.accountType)
+                        }
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
                         Tableau de bord
                       </Link>
                       <Link
-                        to="/profil"
+                        to={
+                          user.account_type === "business" ? "/dashboard/profil" : "/admin/profil"
+                        }
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
                         Mon profil
