@@ -46,7 +46,7 @@ export default function Categories() {
 
     const handleCreateCategory = () => {
         setEditingCategory(null);
-        setFormData({ name: '', nameFr: '', icon: '', description: '', parentId: null });
+        setFormData({ name: '', nameFr: '', description: '', parentId: null });
         setShowModal(true);
     };
 
@@ -55,7 +55,6 @@ export default function Categories() {
         setFormData({
             name: category.name,
             nameFr: category.nameFr,
-            icon: category.icon,
             description: category.description || '',
             parentId: category.parentId || null
         });

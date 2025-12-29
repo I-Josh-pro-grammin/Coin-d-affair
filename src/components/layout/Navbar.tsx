@@ -61,7 +61,7 @@ export function Navbar({
     }
   }, [isOpen]);
 
-  const getDashboardRoute = (accountType: string) => {
+  const getDashboardRoute = (accountType?: string) => {
     switch (accountType) {
       case "business":
         return "/dashboard";
@@ -71,8 +71,8 @@ export function Navbar({
         return "/";
     }
   };
-  
-  console.log(getDashboardRoute(user?.accountType));
+
+  console.log(getDashboardRoute(user?.account_type));
   const handleLogout = () => {
     if (logout) logout();
     navigate("/");
@@ -174,16 +174,14 @@ export function Navbar({
                         )}
                       </div>
                       <Link
-                        to={
-                          getDashboardRoute(user.accountType)
-                        }
+                        to={getDashboardRoute(user.account_type)}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
                         Tableau de bord
                       </Link>
                       <Link
                         to={
-                          user.account_type === "business" ? "/dashboard/profil" : "/admin/profil"
+                          user.account_type === "business" ? "/dashboard/profil" : "/profil"
                         }
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
@@ -308,7 +306,7 @@ export function Navbar({
                 {isLoggedIn ? (
                   <div className="pt-4 border-t border-gray-200 space-y-2">
                     <Link
-                      to="/dashboard"
+                      to={getDashboardRoute(user?.account_type)}
                       onClick={closeMenu}
                       className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-[#000435] hover:bg-gray-100"
                     >
