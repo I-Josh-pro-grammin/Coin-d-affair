@@ -15,7 +15,7 @@ interface User {
   phone?: string;
   account_type?: 'user' | 'business' | 'admin';
   isVerified?: boolean;
-  verificationStatus?: 'pending' | 'approved' | 'rejected';
+  verification_status?: 'pending' | 'approved' | 'rejected';
 }
 
 interface SignupPayload {

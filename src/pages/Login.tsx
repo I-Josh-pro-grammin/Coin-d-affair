@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,7 +18,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  console.log("Current user in Login page:", user);
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -27,25 +26,18 @@ const Login = () => {
       const user = await login({ email, password });
       toast.success("Connexion réussie");
 
-      // Route based on account type
-      // Route based on account type
-      // Route based on account type (Safe Reload ensures fresh state)
+      // Important: Navigate and don't update state here to avoid DOM mismatches during unmount
       if (user.account_type === 'admin') {
         navigate("/admin", { replace: true });
-        // window.location.reload();
       } else if (user.account_type === 'business') {
         navigate("/dashboard", { replace: true });
-        // window.location.reload();
       } else {
         navigate("/", { replace: true });
-        // window.location.reload();
       }
     } catch (err: any) {
-      // Check if error is due to unverified email
       if (err?.status === 403 || err?.data?.isVerified === false) {
         const message = err?.data?.message || "Veuillez vérifier votre email avant de vous connecter.";
         toast.error(message);
-        // Redirect to email verification required page
         navigate(`/auth/verify-required?email=${encodeURIComponent(email)}`);
         return;
       }
@@ -57,7 +49,6 @@ const Login = () => {
         "Une erreur est survenue lors de la connexion.";
       setError(message);
       toast.error(message);
-    } finally {
       setSubmitting(false);
     }
   };
@@ -184,17 +175,7 @@ const Login = () => {
               className="w-full bg-[#000435] hover:bg-[#000435]/90 text-white h-11 text-base shadow-lg hover:shadow-xl transition-all duration-300"
               disabled={submitting}
             >
-              {submitting ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Connexion...
-                </>
-              ) : (
-                "Se connecter"
-              )}
+              {submitting ? "Connexion..." : "Se connecter"}
             </Button>
           </form>
 

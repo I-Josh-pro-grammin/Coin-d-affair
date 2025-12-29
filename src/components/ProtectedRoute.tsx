@@ -28,20 +28,6 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   //   // Redirect to home or reasonable default if role mismatch.
   //   return <Navigate to="/" replace />;
   // }
-    console.log("ProtectedRoute - Current user:", user.account_type);
-
-  useEffect(() => {
-    if (user.account_type === 'admin') {
-        navigate("/admin", { replace: true });
-        // window.location.reload();
-      } else if (user.account_type === 'business') {
-        navigate("/dashboard", { replace: true });
-        // window.location.reload();
-      } else {
-        navigate("/", { replace: true });
-        // window.location.reload();
-      }
-  }, [user, navigate]);
 
   return children;
   // return children;
