@@ -12,12 +12,12 @@ export default function ProductForm() {
     const navigate = useNavigate();
     const isEditing = !!id;
 
-    // const { data: productData, isLoading: isFetching } = useGetListingQuery(id, { skip: !isEditing });
-    // const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
-    const productData = { listing: null };
-    const isFetching = false;
-    const addProduct = async (data: any) => { return { unwrap: async () => ({}) }; };
-    const isAdding = false;
+    const { data: productData, isLoading: isFetching } = useGetListingQuery(id, { skip: !isEditing });
+    const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
+    // const productData = { listing: null };
+    // const isFetching = false;
+    // const addProduct = async (data: any) => { return { unwrap: async () => ({}) }; };
+    // const isAdding = false;
 
     const [formData, setFormData] = useState({
         title: '',
@@ -36,10 +36,10 @@ export default function ProductForm() {
     const [images, setImages] = useState<File[]>([]);
     const [existingImages, setExistingImages] = useState<any[]>([]);
 
-    // const { data: categories } = useGetCategoriesQuery();
-    // const { data: locationsData } = useGetLocationsQuery();
-    const categories = { categories: [{ id: '1', name: 'Électronique' }, { id: '2', name: 'Mode' }] };
-    const locationsData = { locations: [{ id: '1', name: 'Paris' }, { id: '2', name: 'Lyon' }] };
+    const { data: categories } = useGetCategoriesQuery({});
+    const { data: locationsData } = useGetLocationsQuery({});
+    // const categories = { categories: [{ id: '1', name: 'Électronique' }, { id: '2', name: 'Mode' }] };
+    // const locationsData = { locations: [{ id: '1', name: 'Paris' }, { id: '2', name: 'Lyon' }] };
     // console.log(locationsData)
 
     useEffect(() => {
@@ -76,24 +76,47 @@ export default function ProductForm() {
 
     // ... existing hooks
 
-    if (user?.accountType?.startsWith('seller_') && user?.verificationStatus !== 'approved') {
+    const handleRefreshStatus = async () => {
+        // If refetchUser is available in useAuth, use it. Otherwise, reload window.
+        // Assuming simple reload for now as per plan, or invalidating tags if using RTK Query
+        window.location.reload();
+    };
+
+    if (user?.account_type === 'business' && user?.verification_status !== 'approved') {
+        const isPending = user?.verification_status === 'pending';
         return (
             <DashboardLayout>
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="bg-yellow-100 p-4 rounded-full mb-4">
-                        <Loader2 className="w-8 h-8 text-yellow-600 animate-spin" />
+                    <div className={`${isPending ? 'bg-yellow-100' : 'bg-red-100'} p-4 rounded-full mb-4`}>
+                        {isPending ? (
+                            <Loader2 className="w-8 h-8 text-yellow-600 animate-spin" />
+                        ) : (
+                            <X className="w-8 h-8 text-red-600" />
+                        )}
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Compte en attente de validation</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                        {isPending ? 'Compte en attente de validation' : 'Vérification refusée'}
+                    </h2>
                     <p className="text-gray-600 max-w-md mb-6">
-                        Votre compte vendeur est actuellement en cours d'examen par nos administrateurs.
-                        Vous pourrez publier des produits une fois votre compte approuvé.
+                        {isPending
+                            ? "Votre compte vendeur est actuellement en cours d'examen par nos administrateurs. Vous pourrez publier des produits une fois votre compte approuvé."
+                            : "Votre demande a été refusée. Veuillez contacter le support."
+                        }
                     </p>
-                    <button
-                        onClick={() => navigate('/dashboard')}
-                        className="px-6 py-2 bg-[#000435] text-white rounded-full hover:bg-[#000435]/90 transition-colors"
-                    >
-                        Retour au tableau de bord
-                    </button>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="px-6 py-2 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+                        >
+                            Retour au tableau de bord
+                        </button>
+                        <button
+                            onClick={handleRefreshStatus}
+                            className="px-6 py-2 bg-[#000435] text-white rounded-full hover:bg-[#000435]/90 transition-colors"
+                        >
+                            Actualiser le statut
+                        </button>
+                    </div>
                 </div>
             </DashboardLayout>
         );
@@ -158,7 +181,7 @@ export default function ProductForm() {
                 {/* Images Upload */}
                 <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
                     <h2 className="text-lg font-semibold text-gray-900 mb-4">Images du produit</h2>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-[#000435] transition-colors cursor-pointer">
+                    <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-[#000435] transition-colors cursor-pointer">
                         <Upload size={48} className="mx-auto text-gray-400 mb-4" />
                         <p className="text-gray-600 mb-2">Cliquez pour télécharger ou glissez-déposez</p>
                         <p className="text-sm text-gray-500">PNG, JPG jusqu'à 10MB</p>
