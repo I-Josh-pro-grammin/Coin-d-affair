@@ -154,7 +154,7 @@ export function Navbar({
                       </span>
                     </button>
 
-                    <div className="absolute right-0 w-98 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div className="absolute right-0 w-96 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <p className="font-medium text-gray-900">{user.name}</p>
                         {user.email && (

@@ -97,8 +97,21 @@ Primary: White, Secondary: Blue with gradients, Clean & Modern
     @apply border-border;
   }
 
+  html,
   body {
     @apply bg-background text-foreground font-inter;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Responsive media defaults */
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
   }
 
   h1,

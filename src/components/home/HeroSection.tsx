@@ -93,7 +93,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="relative bg-gray-50  md:w-full -mt-24 pt-32 pb-8 md:pb-12">
+    <section className="relative bg-gray-50 md:w-full -mt-24 pt-32 pb-8 md:pb-12 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-6">
