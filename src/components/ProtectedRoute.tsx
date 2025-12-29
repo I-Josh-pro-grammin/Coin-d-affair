@@ -12,7 +12,7 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   const { user, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  // if (loading) return <RouteFallback />;
+  if (loading) return <RouteFallback />;
 
   if (!user) {
     // Redirect them to the /connexion page, but save the current location they were
@@ -23,11 +23,11 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
 
 
   // // Strict Role Check if requiredRole is provided
-  // if (requiredRole && user.accountType !== requiredRole && user.accountType !== 'admin') {
-  //   // Allow admin to access everything, otherwise restrict.
-  //   // Redirect to home or reasonable default if role mismatch.
-  //   return <Navigate to="/" replace />;
-  // }
+  if (requiredRole && user.accountType !== requiredRole && user.accountType !== 'admin') {
+    // Allow admin to access everything, otherwise restrict.
+    // Redirect to home or reasonable default if role mismatch.
+    return <Navigate to="/" replace />;
+  }
 
   return children;
   // return children;

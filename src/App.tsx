@@ -133,12 +133,12 @@ const App = () => (
           <Route path="/cgu" element={<Page title="Conditions Générales d'Utilisation"><CGU /></Page>} />
 
           {/* Admin Routes */}
-          <Route path="/admin" element={<RequireAdmin><Page title="Admin Dashboard"><AdminDashboard /></Page></RequireAdmin>} />
-          <Route path="/admin/categories" element={<RequireAdmin><Page title="Gestion Catégories"><AdminCategories /></Page></RequireAdmin>} />
-          <Route path="/admin/users" element={<RequireAdmin><Page title="Gestion Utilisateurs"><AdminUsers /></Page></RequireAdmin>} />
-          <Route path="/admin/verification" element={<RequireAdmin><Page title="Vérification Vendeurs"><SellerVerification /></Page></RequireAdmin>} />
-          <Route path="/admin/products" element={<RequireAdmin><Page title="Modération Produits"><AdminProducts /></Page></RequireAdmin>} />
-          <Route path="/admin/analytics" element={<RequireAdmin><Page title="Analyses"><AdminAnalytics /></Page></RequireAdmin>} />
+          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><Page title="Admin Dashboard"><AdminDashboard /></Page></ProtectedRoute>} />
+          <Route path="/admin/categories" element={<ProtectedRoute requiredRole="admin"><Page title="Gestion Catégories"><AdminCategories /></Page></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><Page title="Gestion Utilisateurs"><AdminUsers /></Page></ProtectedRoute>} />
+          <Route path="/admin/verification" element={<ProtectedRoute requiredRole="admin"><Page title="Vérification Vendeurs"><SellerVerification /></Page></ProtectedRoute>} />
+          <Route path="/admin/products" element={<ProtectedRoute requiredRole="admin"><Page title="Modération Produits"><AdminProducts /></Page></ProtectedRoute>} />
+          <Route path="/admin/analytics" element={<ProtectedRoute requiredRole="admin"><Page title="Analyses"><AdminAnalytics /></Page></ProtectedRoute>} />
           <Route path="/admin/settings" element={<RequireAdmin><Page title="Paramètres Admin"><AdminSettings /></Page></RequireAdmin>} />
 
           <Route path="/cart" element={<Page title="Votre Panier"><Cart /></Page>} />
