@@ -135,8 +135,8 @@ export default function AdminProducts() {
                 </div>
             </div>
 
-            {/* Products table */}
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            {/* Products table (Desktop) */}
+            <div className="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-200">
@@ -235,6 +235,92 @@ export default function AdminProducts() {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* Mobile View (Cards) */}
+            <div className="md:hidden grid grid-cols-1 gap-4">
+                {filtered.map((p: AdminProduct) => (
+                    <div key={p.listings_id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-3">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h3 className="font-semibold text-gray-900">{p.title}</h3>
+                                <p className="text-sm text-gray-500">{p.business_name || 'N/A'}</p>
+                            </div>
+                            <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatus(p) === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : getStatus(p) === 'approved'
+                                        ? 'bg-green-100 text-green-800'
+                                        : getStatus(p) === 'rejected'
+                                            ? 'bg-red-100 text-red-800'
+                                            : 'bg-gray-100 text-gray-800'
+                                    }`}
+                            >
+                                {getStatus(p) === 'pending' && 'En attente'}
+                                {getStatus(p) === 'approved' && 'Approuvé'}
+                                {getStatus(p) === 'rejected' && 'Rejeté'}
+                                {getStatus(p) === 'hidden' && 'Masqué'}
+                            </span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">{p.category_id || 'N/A'}</span>
+                            <span className="font-semibold text-gray-900">{p.price} {p.currency}</span>
+                        </div>
+
+                        <div className="pt-3 border-t border-gray-100 flex justify-end gap-2">
+                            <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg" title="Voir">
+                                <Eye size={20} />
+                            </button>
+                            {getStatus(p) !== 'approved' && (
+                                <button
+                                    onClick={() => handleUpdateStatus(p.listings_id, 'approve')}
+                                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                                    title="Approuver"
+                                >
+                                    <CheckCircle2 size={20} />
+                                </button>
+                            )}
+                            {getStatus(p) !== 'rejected' && (
+                                <button
+                                    onClick={() => handleUpdateStatus(p.listings_id, 'reject')}
+                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                                    title="Rejeter"
+                                >
+                                    <XCircle size={20} />
+                                </button>
+                            )}
+                            {getStatus(p) !== 'hidden' ? (
+                                <button
+                                    onClick={() => handleUpdateStatus(p.listings_id, 'hide')}
+                                    className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                                    title="Masquer"
+                                >
+                                    <EyeOff size={20} />
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => handleUpdateStatus(p.listings_id, 'unhide')}
+                                    className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+                                    title="Rendre visible"
+                                >
+                                    <Eye size={20} />
+                                </button>
+                            )}
+                            <button
+                                onClick={() => handleDelete(p.listings_id)}
+                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg"
+                            >
+                                <MoreVertical size={20} />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                {filtered.length === 0 && (
+                    <div className="p-8 text-center text-gray-500 text-sm bg-white rounded-xl">
+                        Aucun produit trouvé.
+                    </div>
+                )}
             </div>
         </AdminLayout>
     );

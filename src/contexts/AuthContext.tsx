@@ -6,6 +6,7 @@ import {
   useRegisterMutation,
   useLazyGetCurrentUserQuery,
 } from '@/redux/api/apiSlice';
+import { toast } from 'sonner';
 
 
 interface User {
@@ -101,6 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     dispatch(logoutAction());
     localStorage.removeItem('auth_user');
     localStorage.removeItem('auth_token');
+    toast.success("Vous avez été déconnecté avec succès");
   };
 
 
