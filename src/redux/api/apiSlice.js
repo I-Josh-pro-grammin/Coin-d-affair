@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://coin-d-affair-backend.onrender.com";
+const API_BASE_URL = "http://localhost:5000" || import.meta.env.VITE_API_URL || "https://coin-d-affair-backend.onrender.com";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -126,6 +126,13 @@ export const apiSlice = createApi({
         url: '/api/admin/listings',
         method: 'GET',
       }),
+      providesTags: (result) =>
+        result?.listings
+          ? [
+            ...result.listings.map((l) => ({ type: 'Listings', id: l.listings_id })),
+            { type: 'Listings', id: 'ADMIN_LIST' },
+          ]
+          : [{ type: 'Listings', id: 'ADMIN_LIST' }],
     }),
     getAdminOrders: builder.query({
       query: (params) => ({
@@ -181,12 +188,24 @@ export const apiSlice = createApi({
         method: 'POST',
         body: { action },
       }),
+      invalidatesTags: (result, error, { listingId }) => [
+        { type: 'Listings', id: listingId },
+        { type: 'Listings', id: 'ADMIN_LIST' },
+        { type: 'Listings', id: 'LIST' },
+        { type: 'Listings', id: 'BUSINESS' },
+      ],
     }),
     deleteAdminListing: builder.mutation({
       query: (listingId) => ({
         url: `/api/admin/listing/${listingId}`,
         method: 'DELETE',
       }),
+      invalidatesTags: (result, error, listingId) => [
+        { type: 'Listings', id: listingId },
+        { type: 'Listings', id: 'ADMIN_LIST' },
+        { type: 'Listings', id: 'LIST' },
+        { type: 'Listings', id: 'BUSINESS' },
+      ],
     }),
 
     // Admin Subscriptions
@@ -315,10 +334,10 @@ export const apiSlice = createApi({
     }),
 
     updateProduct: builder.mutation({
-      query: ({ productId, ...data }) => ({
+      query: ({ productId, formData }) => ({
         url: `/api/business/update-product/${productId}`,
         method: 'POST',
-        body: data,
+        body: formData,
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Listings', id: arg.productId }],
     }),
@@ -341,6 +360,7 @@ export const apiSlice = createApi({
         url: '/api/business/business-products-post',
         method: 'GET',
       }),
+      transformResponse: (response) => response.listings || [],
       providesTags: (result) =>
         result?.length
           ? [

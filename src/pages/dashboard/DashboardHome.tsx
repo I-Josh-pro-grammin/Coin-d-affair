@@ -68,6 +68,7 @@ export default function DashboardHome() {
     ];
 
     const recentProducts = actualProducts.slice(0, 5);
+    console.log(recentProducts);
 
     return (
         <DashboardLayout>
@@ -179,7 +180,17 @@ export default function DashboardHome() {
                                     <td className="py-4 px-4">
                                         <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden">
                                             {/* Image placeholder or component */}
-                                            <Package className="w-full h-full p-2 text-gray-400" />
+                                            {
+                                                product?.media?.length > 0 ? (
+                                                    <img
+                                                        src={product?.media[0]?.url}
+                                                        alt={product.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <Package className="w-full h-full p-2 text-gray-400" />
+                                                )
+                                            }
                                         </div>
                                     </td>
                                     <td className="py-4 px-4 text-sm font-medium text-gray-900">{product.title}</td>
