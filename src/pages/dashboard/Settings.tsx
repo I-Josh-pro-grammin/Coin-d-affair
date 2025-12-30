@@ -16,12 +16,13 @@ import { toast } from 'sonner';
 
 export default function Settings() {
     const [activeTab, setActiveTab] = useState('shop');
+    const [contactEmail, setContactEmail] = useState('');
+    const [whatsappPhone, setWhatsappPhone] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [updateProfile, { isLoading: isProfileLoading }] = useUpdateProfileMutation();
     const [updateBusiness, { isLoading: isBusinessLoading }] = useUpdateBusinessMutation();
     const { data: user } = useGetCurrentUserQuery();
     const { data: business } = useGetBusinessProfileQuery();
-    console.log(user);
 
     const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -34,27 +35,35 @@ export default function Settings() {
         try {
             await updateProfile(data).unwrap();
             toast.success('Profil mis à jour avec succès');
-        } catch (error) {
-            toast.error('Erreur lors de la mise à jour du profil');
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Erreur lors de la mise à jour du profil');
         }
     };
 
     const handleBusinessUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const data = {
-            user_id: user.userId,
+
+        const businessData = {
             business_name: formData.get('businessName'),
-            whatsapp: formData.get('whatsapp'),
-            website_url: formData.get('websiteUrl'),
-            subscription_plan: 'basic', // Default or from form
+            contact_phone: formData.get('phone'),
+            contact_email: formData.get('contactEmail'),
+        };
+
+        const userData = {
+            sellerWhatsapp: formData.get('whatsapp'),
+            sellerContactEmail: formData.get('contactEmail'),
+            phone: formData.get('phone'), // keep phone synced
         };
 
         try {
-            await updateBusiness(data).unwrap();
+            await Promise.all([
+                updateBusiness(businessData).unwrap(),
+                updateProfile(userData).unwrap()
+            ]);
             toast.success('Informations de la boutique mises à jour');
-        } catch (error) {
-            toast.error('Erreur lors de la mise à jour de la boutique');
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Erreur lors de la mise à jour de la boutique');
         }
     };
 
@@ -136,7 +145,7 @@ export default function Settings() {
                                     />
                                 </div>
 
-                                {/* Description */}
+                                {/* Description
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Description
@@ -146,7 +155,7 @@ export default function Settings() {
                                         defaultValue={user?.shop?.description}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all resize-none"
                                     />
-                                </div>
+                                </div> */}
 
                                 {/* Contact Info */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -157,6 +166,7 @@ export default function Settings() {
                                         <input
                                             type="email"
                                             defaultValue={user?.user?.email}
+                                            onChange={(e) => setContactEmail(e.target.value)}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                             readOnly
                                         />
@@ -182,19 +192,20 @@ export default function Settings() {
                                             type="tel"
                                             name="whatsapp"
                                             placeholder="+257..."
-                                            defaultValue={business?.business?.whatsapp}
+                                            defaultValue={user?.user?.seller_whatsapp}
+                                            onChange={(e) => setWhatsappPhone(e.target.value)}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Site Web / Réseau Social
+                                            Email de Contact (Affiché publiquement)
                                         </label>
                                         <input
-                                            type="url"
-                                            name="websiteUrl"
-                                            placeholder="https://..."
-                                            defaultValue={business?.business?.website_url}
+                                            type="email"
+                                            name="contactEmail"
+                                            placeholder="...@gmail.com"
+                                            defaultValue={user?.user?.seller_contact_email || business?.business?.contact_email}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>

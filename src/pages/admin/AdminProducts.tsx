@@ -39,7 +39,7 @@ export default function AdminProducts() {
         try {
             await updateListingStatus({ listingId: id, action }).unwrap();
             toast.success(`Statut du produit mis à jour (${action})`);
-            refetch();
+            // refetch() removed - handled by tags
         } catch (error: any) {
             const msg = error?.data?.message || "Erreur lors de la mise à jour du statut";
             toast.error(msg);
@@ -51,7 +51,7 @@ export default function AdminProducts() {
         try {
             await deleteListing(id).unwrap();
             toast.success('Produit supprimé');
-            refetch();
+            // refetch() removed - handled by tags
         } catch (error) {
             toast.error("Erreur lors de la suppression");
         }
@@ -150,40 +150,47 @@ export default function AdminProducts() {
                                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-gray-100" key={`tbody-${statusFilter}-${search}`}>
                             {filtered.map((p: AdminProduct) => (
                                 <tr key={p.listings_id} className="hover:bg-gray-50 transition-colors">
                                     <td className="py-4 px-6">
                                         <p className="font-semibold text-gray-900">{p.title}</p>
                                     </td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{p.business_name || 'N/A'}</td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{p.category_id || 'N/A'}</td>
-                                    <td className="py-4 px-6 font-semibold text-gray-900">{p.price} {p.currency}</td>
-                                    <td className="py-4 px-6">
-                                        <span
-                                            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatus(p) === 'pending'
-                                                ? 'bg-yellow-100 text-yellow-800'
-                                                : getStatus(p) === 'approved'
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : getStatus(p) === 'rejected'
-                                                        ? 'bg-red-100 text-red-800'
-                                                        : 'bg-gray-100 text-gray-800'
-                                                }`}
-                                        >
-                                            {getStatus(p) === 'pending' && 'En attente'}
-                                            {getStatus(p) === 'approved' && 'Approuvé'}
-                                            {getStatus(p) === 'rejected' && 'Rejeté'}
-                                            {getStatus(p) === 'hidden' && 'Masqué'}
-                                        </span>
+                                    <td className="py-4 px-6 text-sm text-gray-700">
+                                        <span key="seller">{p.business_name || 'N/A'}</span>
                                     </td>
-                                    <td className="py-4 px-6 text-sm text-gray-700">{new Date(p.created_at).toLocaleDateString()}</td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">
+                                        <span key="category">{p.category_id || 'N/A'}</span>
+                                    </td>
+                                    <td className="py-4 px-6 font-semibold text-gray-900">
+                                        <span key="price">{p.price} {p.currency}</span>
+                                    </td>
                                     <td className="py-4 px-6">
-                                        <div className="flex items-center gap-2">
+                                        <div className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatus(p) === 'pending'
+                                            ? 'bg-yellow-100 text-yellow-800'
+                                            : getStatus(p) === 'approved'
+                                                ? 'bg-green-100 text-green-800'
+                                                : getStatus(p) === 'rejected'
+                                                    ? 'bg-red-100 text-red-800'
+                                                    : 'bg-gray-100 text-gray-800'
+                                            }`}>
+                                            {getStatus(p) === 'pending' ? 'En attente' :
+                                                getStatus(p) === 'approved' ? 'Approuvé' :
+                                                    getStatus(p) === 'rejected' ? 'Rejeté' :
+                                                        getStatus(p) === 'hidden' ? 'Masqué' : 'N/A'}
+                                        </div>
+                                    </td>
+                                    <td className="py-4 px-6 text-sm text-gray-700">
+                                        <span key="created">{new Date(p.created_at).toLocaleDateString()}</span>
+                                    </td>
+                                    <td className="py-4 px-6">
+                                        <div className="flex items-center gap-2" key={`actions-${p.listings_id}`}>
                                             <button className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors" title="Voir">
                                                 <Eye size={18} />
                                             </button>
                                             {getStatus(p) !== 'approved' && (
                                                 <button
+                                                    key={`approve-${p.listings_id}`}
                                                     onClick={() => handleUpdateStatus(p.listings_id, 'approve')}
                                                     className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                                                     title="Approuver"
@@ -193,6 +200,7 @@ export default function AdminProducts() {
                                             )}
                                             {getStatus(p) !== 'rejected' && (
                                                 <button
+                                                    key={`reject-${p.listings_id}`}
                                                     onClick={() => handleUpdateStatus(p.listings_id, 'reject')}
                                                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                     title="Rejeter"
@@ -202,6 +210,7 @@ export default function AdminProducts() {
                                             )}
                                             {getStatus(p) !== 'hidden' ? (
                                                 <button
+                                                    key={`hide-${p.listings_id}`}
                                                     onClick={() => handleUpdateStatus(p.listings_id, 'hide')}
                                                     className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                                                     title="Masquer"
@@ -210,6 +219,7 @@ export default function AdminProducts() {
                                                 </button>
                                             ) : (
                                                 <button
+                                                    key={`unhide-${p.listings_id}`}
                                                     onClick={() => handleUpdateStatus(p.listings_id, 'unhide')}
                                                     className="p-2 text-gray-600 hover:text-[#000435] hover:bg-gray-100 rounded-lg transition-colors"
                                                     title="Rendre visible"
@@ -218,6 +228,7 @@ export default function AdminProducts() {
                                                 </button>
                                             )}
                                             <button
+                                                key={`delete-${p.listings_id}`}
                                                 onClick={() => handleDelete(p.listings_id)}
                                                 className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Supprimer définitivement"
@@ -242,15 +253,19 @@ export default function AdminProducts() {
             </div>
 
             {/* Mobile View (Cards) */}
-            <div className="md:hidden grid grid-cols-1 gap-4">
+            <div className="md:hidden grid grid-cols-1 gap-4" key={`mobile-list-${statusFilter}-${search}`}>
                 {filtered.map((p: AdminProduct) => (
                     <div key={p.listings_id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-3">
                         <div className="flex justify-between items-start">
                             <div>
-                                <h3 className="font-semibold text-gray-900">{p.title}</h3>
-                                <p className="text-sm text-gray-500">{p.business_name || 'N/A'}</p>
+                                <h3 className="font-semibold text-gray-900">
+                                    <span key="title">{p.title}</span>
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                    <span key="biz">{p.business_name || 'N/A'}</span>
+                                </p>
                             </div>
-                            <span
+                            <div
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${getStatus(p) === 'pending'
                                     ? 'bg-yellow-100 text-yellow-800'
                                     : getStatus(p) === 'approved'
@@ -260,24 +275,25 @@ export default function AdminProducts() {
                                             : 'bg-gray-100 text-gray-800'
                                     }`}
                             >
-                                {getStatus(p) === 'pending' && 'En attente'}
-                                {getStatus(p) === 'approved' && 'Approuvé'}
-                                {getStatus(p) === 'rejected' && 'Rejeté'}
-                                {getStatus(p) === 'hidden' && 'Masqué'}
-                            </span>
+                                {getStatus(p) === 'pending' ? 'En attente' :
+                                    getStatus(p) === 'approved' ? 'Approuvé' :
+                                        getStatus(p) === 'rejected' ? 'Rejeté' :
+                                            getStatus(p) === 'hidden' ? 'Masqué' : 'N/A'}
+                            </div>
                         </div>
 
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">{p.category_id || 'N/A'}</span>
-                            <span className="font-semibold text-gray-900">{p.price} {p.currency}</span>
+                            <span className="text-gray-600" key="mobile-cat">{p.category_id || 'N/A'}</span>
+                            <span className="font-semibold text-gray-900" key="mobile-price">{p.price} {p.currency}</span>
                         </div>
 
-                        <div className="pt-3 border-t border-gray-100 flex justify-end gap-2">
+                        <div className="pt-3 border-t border-gray-100 flex justify-end gap-2" key={`mobile-actions-${p.listings_id}`}>
                             <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg" title="Voir">
                                 <Eye size={20} />
                             </button>
                             {getStatus(p) !== 'approved' && (
                                 <button
+                                    key={`mobile-approve-${p.listings_id}`}
                                     onClick={() => handleUpdateStatus(p.listings_id, 'approve')}
                                     className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
                                     title="Approuver"
@@ -287,6 +303,7 @@ export default function AdminProducts() {
                             )}
                             {getStatus(p) !== 'rejected' && (
                                 <button
+                                    key={`mobile-reject-${p.listings_id}`}
                                     onClick={() => handleUpdateStatus(p.listings_id, 'reject')}
                                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
                                     title="Rejeter"
@@ -296,6 +313,7 @@ export default function AdminProducts() {
                             )}
                             {getStatus(p) !== 'hidden' ? (
                                 <button
+                                    key={`mobile-hide-${p.listings_id}`}
                                     onClick={() => handleUpdateStatus(p.listings_id, 'hide')}
                                     className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
                                     title="Masquer"
@@ -304,6 +322,7 @@ export default function AdminProducts() {
                                 </button>
                             ) : (
                                 <button
+                                    key={`mobile-unhide-${p.listings_id}`}
                                     onClick={() => handleUpdateStatus(p.listings_id, 'unhide')}
                                     className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg"
                                     title="Rendre visible"
@@ -312,6 +331,7 @@ export default function AdminProducts() {
                                 </button>
                             )}
                             <button
+                                key={`mobile-delete-${p.listings_id}`}
                                 onClick={() => handleDelete(p.listings_id)}
                                 className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
                                 title="Supprimer définitivement"
