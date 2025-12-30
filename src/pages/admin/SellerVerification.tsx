@@ -31,7 +31,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useGetAdminVerificationsQuery, useUpdateVerificationActionMutation } from "@/redux/api/apiSlice";
 
 interface SellerVerificationRequest {
-    verification_id: string;
     user_id: string;
     status: string;
     id_type: string;
@@ -82,7 +81,7 @@ const SellerVerification = () => {
 
         try {
             await updateStatus({
-                id: selectedRequest.verification_id,
+                id: selectedRequest.user_id,
                 action: actionType,
                 reason: rejectReason
             }).unwrap();
@@ -160,7 +159,7 @@ const SellerVerification = () => {
                                 </TableRow>
                             ) : (
                                 filteredRequests.map((req: SellerVerificationRequest) => (
-                                    <TableRow key={req.verification_id} className="hover:bg-gray-50/50">
+                                    <TableRow key={req.user_id} className="hover:bg-gray-50/50">
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 <Avatar className="h-9 w-9 bg-primary/10 text-primary">
