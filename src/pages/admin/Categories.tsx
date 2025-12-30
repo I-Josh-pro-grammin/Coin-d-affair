@@ -14,9 +14,11 @@ import { toast } from 'sonner';
 import {
     useGetCategoriesQuery,
     useCreateCategoryMutation,
-    useCreateSubCategoryMutation
+    useCreateSubCategoryMutation,
+    useDeleteCategoryMutation
 } from '@/redux/api/apiSlice';
 import { RouteFallback } from '@/components/common/RouteFallback';
+import Swal from 'sweetalert2';
 
 export default function Categories() {
     const [showModal, setShowModal] = useState(false);
@@ -32,6 +34,7 @@ export default function Categories() {
     const { data: categoriesData, isLoading, refetch } = useGetCategoriesQuery({});
     const [createCategory] = useCreateCategoryMutation();
     const [createSubCategory] = useCreateSubCategoryMutation();
+    const [deleteCategory] = useDeleteCategoryMutation();
 
     const categories = categoriesData?.categories || [];
     const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
@@ -59,11 +62,30 @@ export default function Categories() {
         }
     };
 
-    const handleBulkDelete = () => {
-        toast.error(`Suppression de ${selectedCategories.length} éléments non implémentée`);
-    };
+    const handleBulkDelete = async () => {
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: `Vous allez supprimer ${selectedCategories.length} catégories. Cette action est irréversible.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer !',
+            cancelButtonText: 'Annuler'
+        });
 
-    // ... handleCreateCategory, handleEditCategory, handleDeleteCategory ... (unchanged)
+        if (result.isConfirmed) {
+            try {
+                await Promise.all(selectedCategories.map(id => deleteCategory(id).unwrap()));
+                toast.success('Catégories supprimées avec succès');
+                setSelectedCategories([]);
+                refetch();
+            } catch (error) {
+                console.error("Delete error:", error);
+                toast.error("Erreur lors de la suppression de certaines catégories");
+            }
+        }
+    };
 
     const handleCreateCategory = () => {
         setEditingCategory(null);
@@ -82,8 +104,28 @@ export default function Categories() {
         setShowModal(true);
     };
 
-    const handleDeleteCategory = (category: any) => {
-        toast.error("Suppression non implémentée dans l'API pour le moment");
+    const handleDeleteCategory = async (category: any) => {
+        const result = await Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: `Vous allez supprimer la catégorie "${category.nameFr}".`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer !',
+            cancelButtonText: 'Annuler'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await deleteCategory(category.id).unwrap();
+                toast.success('Catégorie supprimée avec succès');
+                refetch();
+            } catch (error) {
+                console.error("Delete error:", error);
+                toast.error("Erreur lors de la suppression");
+            }
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -170,18 +212,18 @@ export default function Categories() {
                         <div key={category.id}>
                             <div className={`p-6 transition-colors ${selectedCategories.includes(category.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4 flex-1">
+                                    <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <input
                                             type="checkbox"
                                             checked={selectedCategories.includes(category.id)}
                                             onChange={() => toggleSelect(category.id)}
-                                            className="w-5 h-5 rounded border-gray-300 text-[#000435] focus:ring-[#000435]"
+                                            className="w-5 h-5 rounded border-gray-300 text-[#000435] focus:ring-[#000435] flex-shrink-0"
                                         />
 
                                         {category.subcategories?.length > 0 && (
                                             <button
                                                 onClick={() => toggleExpand(category.id)}
-                                                className="p-1 hover:bg-gray-200 rounded transition-colors"
+                                                className="p-1 hover:bg-gray-200 rounded transition-colors flex-shrink-0"
                                             >
                                                 <ChevronRight
                                                     size={20}
@@ -189,15 +231,15 @@ export default function Categories() {
                                                 />
                                             </button>
                                         )}
-                                        <div className="w-12 h-12 bg-[#000435]/10 text-[#000435] rounded-xl flex items-center justify-center text-xl font-bold uppercase">
+                                        <div className="w-12 h-12 bg-[#000435]/10 text-[#000435] rounded-xl flex items-center justify-center text-xl font-bold uppercase flex-shrink-0">
                                             {category.nameFr.charAt(0)}
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-1">
-                                                <h3 className="text-lg font-bold text-gray-900">{category.nameFr}</h3>
-                                                <span className="text-sm text-gray-500">({category.name})</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                                <h3 className="text-lg font-bold text-gray-900 truncate">{category.nameFr}</h3>
+                                                <span className="text-sm text-gray-500 whitespace-nowrap">({category.name})</span>
                                             </div>
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-sm text-gray-600 truncate">
                                                 {category.productCount || 0} produits
                                                 {category.subcategories?.length > 0 && ` • ${category.subcategories.length} sous-catégories`}
                                             </p>
