@@ -246,16 +246,17 @@ export const apiSlice = createApi({
     }),
     getAdminVerifications: builder.query({
       query: (params) => ({
-        url: '/api/admin/verifications',
+        url: '/api/admin/sellers/pending',
         method: 'GET',
         params,
       }),
+      transformResponse: (response) => response.sellers,
     }),
     updateVerificationAction: builder.mutation({
       query: ({ id, action, reason }) => ({
-        url: `/api/admin/verification/${id}/action`,
+        url: `/api/admin/seller/${id}/verification`,
         method: 'POST',
-        body: { action, reason },
+        body: { action },
       }),
       invalidatesTags: ['Users'],
     }),
