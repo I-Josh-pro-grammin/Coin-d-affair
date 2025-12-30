@@ -1,6 +1,6 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { useState } from 'react';
-import { Search, Filter, Eye, EyeOff, CheckCircle2, XCircle, MoreVertical } from 'lucide-react';
+import { Search, Filter, Eye, EyeOff, CheckCircle2, XCircle, MoreVertical, Trash2 } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
 import {
@@ -217,8 +217,12 @@ export default function AdminProducts() {
                                                     <Eye size={18} />
                                                 </button>
                                             )}
-                                            <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                                                <MoreVertical size={18} />
+                                            <button
+                                                onClick={() => handleDelete(p.listings_id)}
+                                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Supprimer définitivement"
+                                            >
+                                                <Trash2 size={18} />
                                             </button>
                                         </div>
                                     </td>
@@ -309,9 +313,10 @@ export default function AdminProducts() {
                             )}
                             <button
                                 onClick={() => handleDelete(p.listings_id)}
-                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg"
+                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                                title="Supprimer définitivement"
                             >
-                                <MoreVertical size={20} />
+                                <Trash2 size={20} />
                             </button>
                         </div>
                     </div>
