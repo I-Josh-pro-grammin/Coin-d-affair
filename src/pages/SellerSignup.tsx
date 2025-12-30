@@ -104,9 +104,9 @@ const SellerSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white md:grid md:grid-cols-2">
+    <div className="h-screen w-full bg-white md:grid md:grid-cols-2 overflow-hidden">
       {/* Left Column - Branding (Seller Specific) */}
-      <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden">
+      <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden h-full">
         <div className="relative z-10">
           <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
             <h1 className="text-3xl font-bold font-poppins text-white">Akaguriro</h1>
@@ -137,7 +137,7 @@ const SellerSignup = () => {
       </div>
 
       {/* Right Column - Seller Signup Form */}
-      <div className="flex flex-col px-4 pt-24 pb-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50 overflow-y-auto h-screen">
+      <div className="flex flex-col px-4 pt-24 pb-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50 overflow-y-auto h-full">
         <div className="w-full max-w-md mx-auto">
           {/* Mobile Back Link & Logo */}
           <div className="mb-6">

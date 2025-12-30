@@ -34,7 +34,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         { icon: Users, label: 'Utilisateurs', path: '/admin/users' },
         { icon: UserCheck, label: 'Vérifications', path: '/admin/verification' }, // Added
         { icon: Package, label: 'Produits', path: '/admin/products' },
-        { icon: ShoppingCart, label: 'Commandes', path: '/admin/orders' },
         { icon: BarChart3, label: 'Analyses', path: '/admin/analytics' },
         { icon: Settings, label: 'Paramètres', path: '/admin/settings' },
     ];
