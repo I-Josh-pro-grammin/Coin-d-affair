@@ -82,7 +82,7 @@ const RoleSelection = () => {
         <div className="text-center mt-8">
           <p className="text-gray-600">
             Vous avez déjà un compte?{" "}
-            <Link to="/auth/login" className="text-[#000435] hover:underline font-medium">
+            <Link to="/connexion" className="text-[#000435] hover:underline font-medium">
               Se connecter
             </Link>
           </p>
