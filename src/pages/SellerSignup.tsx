@@ -137,13 +137,13 @@ const SellerSignup = () => {
       </div>
 
       {/* Right Column - Seller Signup Form */}
-      <div className="flex flex-col justify-center px-4 py-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50 overflow-y-auto h-screen">
-        <div className="w-full max-w-md mx-auto my-auto py-8">
+      <div className="flex flex-col px-4 pt-24 pb-8 md:px-12 lg:px-24 xl:px-32 bg-gray-50/50 overflow-y-auto h-screen">
+        <div className="w-full max-w-md mx-auto">
           {/* Mobile Back Link & Logo */}
           <div className="mb-6">
             <Link
               to="/"
-              className="inline-flex items-center text-gray-500 hover:text-[#000435] transition-colors mb-6 md:absolute md:top-8 md:right-8"
+              className="inline-flex items-center text-gray-500 hover:text-[#000435] transition-colors mb-6 md:absolute md:top-8 md:left-8"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour
@@ -403,7 +403,7 @@ const SellerSignup = () => {
               disabled={!formData.acceptTerms || submitting || !isPasswordValid}
             >
               {submitting ? (
-                  "Traitement..."
+                "Traitement..."
               ) : (
                 "Créer ma boutique"
               )}

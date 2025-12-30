@@ -452,6 +452,13 @@ export const apiSlice = createApi({
         method: 'GET',
       }),
     }),
+    deleteCategory: builder.mutation({
+      query: (categoryId) => ({
+        url: `/api/category/delete-category/${categoryId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Categories'],
+    }),
 
     // Order Endpoints
     createOrder: builder.mutation({
@@ -534,6 +541,7 @@ export const {
   useCreateSubCategoryMutation,
   useGetSubCategoryQuery,
   useGetSubcategoriesByCategorySlugQuery,
+  useDeleteCategoryMutation,
   // Order
   useCreateOrderMutation,
   useGetOrdersQuery,

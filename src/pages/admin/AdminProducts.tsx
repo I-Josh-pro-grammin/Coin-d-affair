@@ -123,9 +123,9 @@ export default function AdminProducts() {
                             <button
                                 key={tab.key}
                                 onClick={() => setStatusFilter(tab.key as any)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${statusFilter === tab.key
-                                    ? 'bg-[#000435] text-white border-[#000435]'
-                                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${statusFilter === tab.key
+                                    ? 'bg-[#000435]/10 text-[#000435] border-[#000435]/20'
+                                    : 'border-gray-200 text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
                                 {tab.label}

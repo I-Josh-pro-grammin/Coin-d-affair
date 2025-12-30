@@ -252,7 +252,7 @@ export default function Users() {
                             <button
                                 key={t.k}
                                 onClick={() => setRoleFilter(t.k as any)}
-                                className={`px-4 py-2 rounded-full border transition-all ${roleFilter === t.k ? 'bg-[#000435] text-white border-[#000435]' : 'border-gray-300 hover:bg-gray-50'}`}
+                                className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${roleFilter === t.k ? 'bg-[#000435]/10 text-[#000435] border-[#000435]/20' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                             >
                                 {t.l}
                             </button>
@@ -303,7 +303,7 @@ export default function Users() {
                                     </td>
                                     <td className="py-4 px-6">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.account_type === 'admin' ? 'bg-purple-100 text-purple-800' :
-                                                user.account_type === 'business' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                                            user.account_type === 'business' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
                                             }`}>
                                             {user.account_type === 'admin' && <Shield className="w-3 h-3 mr-1" />}
                                             {user.account_type === 'business' ? 'Vendeur' : user.account_type === 'admin' ? 'Admin' : 'Acheteur'}
