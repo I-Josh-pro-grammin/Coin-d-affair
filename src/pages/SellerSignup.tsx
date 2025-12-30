@@ -104,7 +104,7 @@ const SellerSignup = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-white md:grid md:grid-cols-2 overflow-hidden">
+    <div className="fixed inset-0 w-full bg-white md:grid md:grid-cols-2 overflow-hidden">
       {/* Left Column - Branding (Seller Specific) */}
       <div className="hidden md:flex flex-col justify-between bg-[#000435] p-12 text-white relative overflow-hidden h-full">
         <div className="relative z-10">
