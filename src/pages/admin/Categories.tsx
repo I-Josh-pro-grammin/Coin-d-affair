@@ -35,6 +35,7 @@ export default function Categories() {
 
     const categories = categoriesData?.categories || [];
     const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
     if (isLoading) return <RouteFallback />;
 
@@ -43,6 +44,26 @@ export default function Categories() {
             prev.includes(id) ? prev.filter(catId => catId !== id) : [...prev, id]
         );
     };
+
+    const toggleSelect = (id: number) => {
+        setSelectedCategories(prev =>
+            prev.includes(id) ? prev.filter(catId => catId !== id) : [...prev, id]
+        );
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedCategories.length === categories.length) {
+            setSelectedCategories([]);
+        } else {
+            setSelectedCategories(categories.map((c: any) => c.id));
+        }
+    };
+
+    const handleBulkDelete = () => {
+        toast.error(`Suppression de ${selectedCategories.length} éléments non implémentée`);
+    };
+
+    // ... handleCreateCategory, handleEditCategory, handleDeleteCategory ... (unchanged)
 
     const handleCreateCategory = () => {
         setEditingCategory(null);
@@ -101,23 +122,45 @@ export default function Categories() {
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestion des Catégories</h1>
                     <p className="text-gray-600">{categories.length} catégories principales</p>
                 </div>
-                <button
-                    onClick={handleCreateCategory}
-                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all shadow-md hover:shadow-lg"
-                >
-                    <Plus size={20} />
-                    Nouvelle Catégorie
-                </button>
+                <div className="flex gap-4">
+                    {selectedCategories.length > 0 && (
+                        <button
+                            onClick={handleBulkDelete}
+                            className="flex items-center gap-2 bg-red-100 text-red-600 px-6 py-3 rounded-full font-medium hover:bg-red-200 transition-all"
+                        >
+                            <Trash2 size={20} />
+                            Supprimer ({selectedCategories.length})
+                        </button>
+                    )}
+                    <button
+                        onClick={handleCreateCategory}
+                        className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all shadow-md hover:shadow-lg"
+                    >
+                        <Plus size={20} />
+                        Nouvelle Catégorie
+                    </button>
+                </div>
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm p-4 mb-6">
-                <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <input
-                        type="text"
-                        placeholder="Rechercher une catégorie..."
-                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
-                    />
+                <div className="flex items-center gap-4">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Rechercher une catégorie..."
+                            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2 px-4">
+                        <input
+                            type="checkbox"
+                            checked={selectedCategories.length === categories.length && categories.length > 0}
+                            onChange={toggleSelectAll}
+                            className="w-5 h-5 rounded border-gray-300 text-[#000435] focus:ring-[#000435]"
+                        />
+                        <span className="text-gray-600 font-medium">Tout sélectionner</span>
+                    </div>
                 </div>
             </div>
 
@@ -125,9 +168,16 @@ export default function Categories() {
                 <div className="divide-y divide-gray-200">
                     {categories.map((category: any) => (
                         <div key={category.id}>
-                            <div className="p-6 hover:bg-gray-50 transition-colors">
+                            <div className={`p-6 transition-colors ${selectedCategories.includes(category.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4 flex-1">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedCategories.includes(category.id)}
+                                            onChange={() => toggleSelect(category.id)}
+                                            className="w-5 h-5 rounded border-gray-300 text-[#000435] focus:ring-[#000435]"
+                                        />
+
                                         {category.subcategories?.length > 0 && (
                                             <button
                                                 onClick={() => toggleExpand(category.id)}
@@ -139,8 +189,8 @@ export default function Categories() {
                                                 />
                                             </button>
                                         )}
-                                        <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-2xl">
-                                            {category.icon}
+                                        <div className="w-12 h-12 bg-[#000435]/10 text-[#000435] rounded-xl flex items-center justify-center text-xl font-bold uppercase">
+                                            {category.nameFr.charAt(0)}
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-1">
@@ -173,7 +223,7 @@ export default function Categories() {
                             {expandedCategories.includes(category.id) && category.subcategories?.length > 0 && (
                                 <div className="bg-gray-50 border-t border-gray-200">
                                     {category.subcategories.map((sub: any) => (
-                                        <div key={sub.id} className="pl-20 pr-6 py-4 flex items-center justify-between hover:bg-gray-100 transition-colors">
+                                        <div key={sub.id} className="pl-24 pr-6 py-4 flex items-center justify-between hover:bg-gray-100 transition-colors">
                                             <div className="flex items-center gap-4 flex-1">
                                                 <FolderTree size={18} className="text-gray-400" />
                                                 <div>
