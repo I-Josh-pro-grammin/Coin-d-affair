@@ -157,9 +157,9 @@ export default function ProductDetail() {
             name: productData.business_name || productData.seller_name || 'Vendeur',
             rating: 4.5,
             totalSales: 0,
-            phone: productData.phone,
-            whatsapp: productData.whatsapp,
-            website: productData.website_url
+            phone: productData.seller_phone || productData.phone,
+            whatsapp: productData.business_whatsapp || productData.whatsapp,
+            website: productData.business_website || productData.website_url
         },
         description: productData.description,
         stock: productData.stock,

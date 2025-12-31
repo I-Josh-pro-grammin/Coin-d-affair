@@ -48,6 +48,7 @@ export default function Settings() {
             business_name: formData.get('businessName'),
             contact_phone: formData.get('phone'),
             contact_email: formData.get('contactEmail'),
+            website: formData.get('website'),
         };
 
         const userData = {
@@ -209,7 +210,20 @@ export default function Settings() {
                                             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                     </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Site Web
+                                        </label>
+                                        <input
+                                            type="url"
+                                            name="website"
+                                            placeholder="https://..."
+                                            defaultValue={business?.business?.website}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
+                                        />
+                                    </div>
                                 </div>
+
 
                                 {/* Address */}
                                 <div>
@@ -386,7 +400,7 @@ export default function Settings() {
 
 
                 </div>
-            </div>
-        </DashboardLayout>
+            </div >
+        </DashboardLayout >
     );
 }
