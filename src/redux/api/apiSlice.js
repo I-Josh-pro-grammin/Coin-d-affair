@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://coin-d-affair-backend.onrender.com";
+const API_BASE_URL = "http://localhost:5000" || import.meta.env.VITE_API_URL || "https://coin-d-affair-backend.onrender.com";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -360,14 +360,7 @@ export const apiSlice = createApi({
         url: '/api/business/business-products-post',
         method: 'GET',
       }),
-      transformResponse: (response) => response.listings || [],
-      providesTags: (result) =>
-        result?.length
-          ? [
-            ...result.map((p) => ({ type: 'Listings', id: p.listings_id })),
-            { type: 'Listings', id: 'BUSINESS' },
-          ]
-          : [{ type: 'Listings', id: 'BUSINESS' }],
+      
     }),
     getBusinessTransactions: builder.query({
       query: () => ({

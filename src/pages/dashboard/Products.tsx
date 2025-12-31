@@ -25,7 +25,7 @@ export default function Products() {
     const { data, isLoading } = useGetBusinessProductsQuery({});
     const [deleteProduct] = useDeleteProductMutation();
 
-    const products = Array.isArray(data) ? data : [];
+    const products = Array.isArray(data?.allProducts?.rows) ? data?.allProducts?.rows : [];
 
     const handleDelete = async (id: string) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {

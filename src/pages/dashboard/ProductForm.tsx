@@ -153,7 +153,10 @@ export default function ProductForm() {
       navigate('/dashboard/products');
       toast.success(isEditing ? 'Produit mis à jour avec succès' : 'Produit créé avec succès');
     } catch (err: any) {
-      console.error('Product save error:', err);
+      console.error('Product save error trace:', err);
+      // Log more details if available
+      if (err.data) console.error('Error data:', err.data);
+
       toast.error(err?.data?.message || 'Erreur lors de l\'enregistrement du produit');
     }
   };

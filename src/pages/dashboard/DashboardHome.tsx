@@ -33,7 +33,7 @@ export default function DashboardHome() {
         return <RouteFallback />;
     }
     // Calculate stats
-    const actualProducts = Array.isArray(products) ? products : [];
+    const actualProducts = Array.isArray(products?.allProducts?.rows) ? products?.allProducts?.rows : [];
 
     // Placeholder stats for non-commerce metrics
     const activeProducts = actualProducts?.length || 0;
@@ -68,7 +68,7 @@ export default function DashboardHome() {
     ];
 
     const recentProducts = actualProducts.slice(0, 5);
-    console.log(recentProducts);
+    console.log(products);
 
     return (
         <DashboardLayout>
