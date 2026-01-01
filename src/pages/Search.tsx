@@ -26,6 +26,7 @@ export default function Search() {
     const { data, isLoading: listingsLoading } = useGetListingsQuery();
     const { data: categories } = useGetCategoriesQuery();
     const products = data?.listings || [];
+    console.log(products);
     const getId = (p: any, idx?: number) =>
         String(
             p?.business_id ??
@@ -168,7 +169,7 @@ export default function Search() {
                         {results?.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {results?.map((product, idx) => {
-                                    const pid = getId(product, idx) || `idx-${idx}`;
+                                    const pid = product?.listings_id || getId(product, idx) || `idx-${idx}`;
                                     const title = product?.title || product?.name || 'Produit';
                                     return (
                                         <Link key={String(idx)} to={`/produit/${encodeURIComponent(pid)}`} className="group">
