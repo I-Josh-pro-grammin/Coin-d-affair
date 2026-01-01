@@ -11,7 +11,7 @@ import {
     EyeOff
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { useUpdateProfileMutation, useUpdateBusinessMutation, useGetBusinessProfileQuery, useGetCurrentUserQuery } from '@/redux/api/apiSlice';
+import { useUpdateProfileMutation, useUpdateBusinessMutation, useUpdatePasswordMutation, useGetBusinessProfileQuery, useGetCurrentUserQuery } from '@/redux/api/apiSlice';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -21,6 +21,7 @@ export default function Settings() {
     const [showPassword, setShowPassword] = useState(false);
     const [updateProfile, { isLoading: isProfileLoading }] = useUpdateProfileMutation();
     const [updateBusiness, { isLoading: isBusinessLoading }] = useUpdateBusinessMutation();
+    const [updatePassword, { isLoading: isPasswordLoading }] = useUpdatePasswordMutation();
     const { data: user } = useGetCurrentUserQuery();
     const { data: business } = useGetBusinessProfileQuery();
 
@@ -65,6 +66,26 @@ export default function Settings() {
             toast.success('Informations de la boutique mises à jour');
         } catch (error: any) {
             toast.error(error?.data?.message || 'Erreur lors de la mise à jour de la boutique');
+        }
+    };
+
+    const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const currentPassword = formData.get('currentPassword') as string;
+        const newPassword = formData.get('newPassword') as string;
+        const confirmPassword = formData.get('confirmPassword') as string;
+
+        if (newPassword !== confirmPassword) {
+            return toast.error('Les nouveaux mots de passe ne correspondent pas');
+        }
+
+        try {
+            await updatePassword({ currentPassword, newPassword }).unwrap();
+            toast.success('Mot de passe mis à jour avec succès');
+            (e.target as HTMLFormElement).reset();
+        } catch (error: any) {
+            toast.error(error?.data?.message || 'Erreur lors de la mise à jour du mot de passe');
         }
     };
 
@@ -240,10 +261,11 @@ export default function Settings() {
                                 {/* Save Button */}
                                 <button
                                     type="submit"
-                                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all"
+                                    disabled={isBusinessLoading}
+                                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all disabled:opacity-50"
                                 >
                                     <Save size={20} />
-                                    Enregistrer les modifications
+                                    {isBusinessLoading ? 'Enregistrement...' : 'Enregistrer les modifications'}
                                 </button>
                             </form>
                         </div>
@@ -317,10 +339,11 @@ export default function Settings() {
 
                                 <button
                                     type="submit"
-                                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all"
+                                    disabled={isProfileLoading}
+                                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all disabled:opacity-50"
                                 >
                                     <Save size={20} />
-                                    Enregistrer les modifications
+                                    {isProfileLoading ? 'Enregistrement...' : 'Enregistrer les modifications'}
                                 </button>
                             </form>
                         </div>
@@ -331,7 +354,7 @@ export default function Settings() {
                         <div className="bg-white rounded-2xl shadow-sm p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-6">Sécurité</h2>
 
-                            <form className="space-y-6">
+                            <form className="space-y-6" onSubmit={handlePasswordUpdate}>
                                 {/* Current Password */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -340,6 +363,8 @@ export default function Settings() {
                                     <div className="relative">
                                         <input
                                             type={showPassword ? 'text' : 'password'}
+                                            name="currentPassword"
+                                            required
                                             className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                         />
                                         <button
@@ -359,6 +384,8 @@ export default function Settings() {
                                     </label>
                                     <input
                                         type="password"
+                                        name="newPassword"
+                                        required
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                     />
                                 </div>
@@ -370,16 +397,19 @@ export default function Settings() {
                                     </label>
                                     <input
                                         type="password"
+                                        name="confirmPassword"
+                                        required
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                                     />
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all"
+                                    disabled={isPasswordLoading}
+                                    className="flex items-center gap-2 bg-[#000435] text-white px-6 py-3 rounded-full font-medium hover:bg-[#000435]/90 transition-all disabled:opacity-50"
                                 >
                                     <Save size={20} />
-                                    Mettre à jour le mot de passe
+                                    {isPasswordLoading ? 'Mise à jour...' : 'Mettre à jour le mot de passe'}
                                 </button>
                             </form>
 

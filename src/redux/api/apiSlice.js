@@ -295,6 +295,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Auth'],
     }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: '/api/auth/update-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
     createCheckoutSession: builder.mutation({
       query: (data) => ({
         url: '/api/checkout-session',
@@ -360,7 +367,7 @@ export const apiSlice = createApi({
         url: '/api/business/business-products-post',
         method: 'GET',
       }),
-      
+
     }),
     getBusinessTransactions: builder.query({
       query: () => ({
@@ -514,6 +521,7 @@ export const {
   // Auth
   useVerifyEmailQuery,
   useUpdateProfileMutation,
+  useUpdatePasswordMutation,
   useCreateCheckoutSessionMutation,
   // Business
   useCreateBusinessMutation,
