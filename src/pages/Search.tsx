@@ -26,7 +26,6 @@ export default function Search() {
     const { data, isLoading: listingsLoading } = useGetListingsQuery();
     const { data: categories } = useGetCategoriesQuery();
     const products = data?.listings || [];
-    console.log(products);
     const getId = (p: any, idx?: number) =>
         String(
             p?.business_id ??

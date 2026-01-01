@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone, ArrowRight } from "lucide-react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone, ArrowRight, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
+  const handleRegister = () => {
+    navigate("/auth/role-selection");
+  }
 
   return (
     <footer className="relative bg-secondary text-secondary-foreground overflow-hidden">
@@ -26,14 +29,10 @@ export function Footer() {
           </p>
 
           {/* Newsletter signup */}
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-12">
-            <Input
-              placeholder="Votre email"
-              className="bg-white/10 border-white/20 text-secondary-foreground placeholder:text-secondary-foreground/60 backdrop-blur-sm"
-            />
-            <Button className="bg-secondary-foreground hover:bg-secondary-foreground/90 text-secondary border-0 font-medium">
-              S'abonner
-              <ArrowRight className="ml-2 h-4 w-4" />
+          <div className="flex items-center gap-2 px-6 py-2.5 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all duration-300 focus:ring-2 focus:ring-[#000435]">
+            <Button onClick={handleRegister} className="bg-secondary-foreground hover:bg-secondary-foreground/90 mx-auto text-secondary border-0 font-medium">
+                <User size={20} />
+                Registre
             </Button>
           </div>
         </div>

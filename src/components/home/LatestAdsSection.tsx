@@ -128,7 +128,7 @@ export function LatestAdsSection() {
                 
                 {/* Price */}
                 <div className="mb-4">
-<p className="text-2xl font-bold text-[#000435]">
+                  <p className="text-2xl font-bold text-[#000435]">{ad.price}</p>
                 </div>
                 
                 {/* Buttons */}
