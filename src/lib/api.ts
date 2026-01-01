@@ -8,6 +8,10 @@ const getApiUrl = () => {
     const url = import.meta.env.VITE_API_URL;
 
     if (!url) {
+        if (import.meta.env.DEV) {
+            console.warn("VITE_API_URL not found, defaulting to localhost:5000 for development");
+            return "http://localhost:5000";
+        }
         console.error(
             "%cCRITICAL ERROR: VITE_API_URL is missing in environment variables!",
             "background: red; color: white; padding: 4px; font-weight: bold;"
