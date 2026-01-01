@@ -68,7 +68,6 @@ export default function DashboardHome() {
     ];
 
     const recentProducts = actualProducts.slice(0, 5);
-    console.log(products);
 
     return (
         <DashboardLayout>

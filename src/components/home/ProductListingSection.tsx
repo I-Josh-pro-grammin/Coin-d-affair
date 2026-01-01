@@ -111,7 +111,6 @@ export function ProductListingSection() {
   const { data: trendingData, isLoading: isLoadingTrends, isError: errorLoadingTrends } = useGetListingsQuery({ limit: 6 });
   const { data: latestData } = useGetListingsQuery({ limit: 6 });
 
-  // console.log(latestData?.listings);
   const trendingProducts = trendingData?.listings || [];
   const latestProducts = latestData?.listings || [];
 

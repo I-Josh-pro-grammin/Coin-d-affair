@@ -72,7 +72,6 @@ export function Navbar({
     }
   };
 
-  console.log(getDashboardRoute(user?.account_type));
   const handleLogout = () => {
     if (logout) logout();
     navigate("/");
