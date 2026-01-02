@@ -70,9 +70,6 @@ export default function ProductForm() {
     setExistingImages(p.media ?? []);
   }, [productData?.listing]);
 
-  console.log(formData);
-  console.log(categories);
-
   /* ---------- Image handling ---------- */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -146,6 +143,12 @@ export default function ProductForm() {
     formDt.append('canDeliver', String(formData.canDeliver));
 
     images.forEach(img => formDt.append('images', img));
+
+    console.log("DEBUG: Submitting product to:", import.meta.env.VITE_API_URL || "fallback");
+    console.log("DEBUG: FormData values:");
+    for (let [key, value] of formDt.entries()) {
+      console.log(`- ${key}:`, value instanceof File ? `File(${value.name}, ${value.type})` : value);
+    }
 
     try {
       if (isEditing) {
