@@ -252,9 +252,13 @@ export default function ProductForm() {
                 <select
                   required
                   value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                  onChange={(e) => {
+                    console.log("DEBUG: Category changed to:", e.target.value);
+                    setFormData({ ...formData, categoryId: e.target.value });
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
                 >
+                  <option value="">Sélectionner une catégorie</option>
                   {
                     categories?.categories?.map((category) => (
                       <option key={category.id} value={category.id}>
@@ -331,10 +335,13 @@ export default function ProductForm() {
               <select
                 required
                 value={formData.locationId}
-                onChange={(e) => setFormData({ ...formData, locationId: e.target.value })}
+                onChange={(e) => {
+                  console.log("DEBUG: Location changed to:", e.target.value);
+                  setFormData({ ...formData, locationId: e.target.value });
+                }}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#000435] focus:border-transparent transition-all"
               >
-                <option value="">Sélectionner une ville</option>
+                <option value="">Sélectionner une ville / quartier</option>
                 {locationsData?.locations?.map((loc: any) => (
                   <option key={loc.id} value={loc.id}>
                     {loc.name}
