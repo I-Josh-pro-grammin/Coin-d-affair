@@ -157,6 +157,7 @@ export default function ProductForm() {
         await addProduct(formDt).unwrap();
       }
       navigate('/dashboard/products');
+      window.location.reload();
       toast.success(isEditing ? 'Produit mis à jour avec succès' : 'Produit créé avec succès');
     } catch (err: any) {
       console.error('Product save error trace:', err);
