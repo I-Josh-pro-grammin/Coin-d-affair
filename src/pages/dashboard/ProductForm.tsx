@@ -70,6 +70,9 @@ export default function ProductForm() {
     setExistingImages(p.media ?? []);
   }, [productData?.listing]);
 
+  console.log(formData);
+  console.log(categories);
+
   /* ---------- Image handling ---------- */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
