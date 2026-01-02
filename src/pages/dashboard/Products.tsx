@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 export default function Products() {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterOpen, setFilterOpen] = useState(false);
-    const { data, isLoading } = useGetBusinessProductsQuery({});
+    const { data, isLoading, refetch: refetchProducts } = useGetBusinessProductsQuery({});
     const [deleteProduct] = useDeleteProductMutation();
 
     const products = Array.isArray(data?.allProducts?.rows) ? data?.allProducts?.rows : [];
@@ -31,6 +31,7 @@ export default function Products() {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
             try {
                 await deleteProduct(id).unwrap();
+                refetchProducts();
                 toast.success('Produit supprimé avec succès');
             } catch (error) {
                 toast.error('Erreur lors de la suppression du produit');
