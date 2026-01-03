@@ -355,6 +355,17 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Listings'],
     }),
+    rateProduct: builder.mutation({
+      query: ({ listingId, rating, comment }) => ({
+        url: `/api/products/${listingId}/rate`,
+        method: 'POST',
+        body: { rating, comment },
+      }),
+      invalidatesTags: (result, error, { listingId }) => [
+        { type: 'Listings', id: listingId },
+        { type: 'Listings', id: 'LIST' },
+      ],
+    }),
     getBusinessProfile: builder.query({
       query: () => ({
         url: '/api/business/business-profile',
@@ -529,6 +540,7 @@ export const {
   useAddProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useRateProductMutation,
   useGetBusinessProfileQuery,
   useGetBusinessProductsQuery,
   // Cart

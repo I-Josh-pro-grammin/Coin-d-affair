@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -156,6 +156,19 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 <h3 className="text-sm md:text-lg font-semibold text-gray-900 mb-1 md:mb-2 line-clamp-2 group-hover:text-[#000435] transition-colors">
                     {title}
                 </h3>
+
+                {/* Rating */}
+                {product.rating && (
+                    <div className="flex items-center gap-1 mb-2">
+                        {[...Array(5)].map((_, i) => (
+                            <Star
+                                key={i}
+                                className={`w-3 h-3 ${i < (product.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                            />
+                        ))}
+                        <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
+                    </div>
+                )}
 
                 {/* Location */}
                 {product.location && (

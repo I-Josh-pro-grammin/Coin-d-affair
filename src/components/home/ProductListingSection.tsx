@@ -109,10 +109,10 @@ export function ProductListingSection() {
 
   // Use public listings endpoint for homepage visibility (supports sortBy: price_asc, price_desc)
   const { data: trendingData, isLoading: isLoadingTrends, isError: errorLoadingTrends } = useGetListingsQuery({ limit: 6 });
-  const { data: latestData } = useGetListingsQuery({ limit: 6 });
+  const { data: ratedData } = useGetListingsQuery({ limit: 6, sortBy: 'rating' });
 
   const trendingProducts = trendingData?.listings || [];
-  const latestProducts = latestData?.listings || [];
+  const ratedProducts = ratedData?.listings || [];
 
   if (isLoadingTrends) {
     return <Loader />;
@@ -207,12 +207,12 @@ export function ProductListingSection() {
                   )}
                 </div>
 
-                {/* Dernières sur CoinD'affaires Section */}
+                {/* Most Rated Section */}
                 <div className="mb-16">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-3xl font-bold text-gray-900">Dernières sur Akaguriro</h2>
+                    <h2 className="text-3xl font-bold text-gray-900">Les Mieux Notés</h2>
                     <Link
-                      to="/boutique?section=dernieres"
+                      to="/boutique?section=most_rated"
                       className="flex items-center gap-2 text-[#000435] font-medium hover:gap-3 transition-all"
                     >
                       Voir tout
@@ -220,9 +220,9 @@ export function ProductListingSection() {
                     </Link>
                   </div>
 
-                  {latestProducts.length > 0 ? (
+                  {ratedProducts.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-                      {latestProducts.map((product: any) => (
+                      {ratedProducts.map((product: any) => (
                         <ProductCard key={product.listings_id} product={product} />
                       ))}
                     </div>
