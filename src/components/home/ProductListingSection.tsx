@@ -124,7 +124,7 @@ export function ProductListingSection() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <div className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-24">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar">
               <h3 className="text-lg font-bold text-gray-900 mb-6">Catégories</h3>
 
               {/* All Products Filter */}

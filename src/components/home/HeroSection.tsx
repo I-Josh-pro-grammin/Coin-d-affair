@@ -1,9 +1,10 @@
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetBusinessesQuery, useGetCustomersQuery } from '@/redux/api/apiSlice'
+import { useGetBusinessesQuery, useGetCustomersQuery, useGetListingsQuery } from '@/redux/api/apiSlice'
+import { resolveImageSource, currencyFmt } from "@/lib/utils";
 import card1 from "@/assets/card1.jpg";
 import card2 from "@/assets/card2.jpg";
 import card3 from "@/assets/card3.jpg";
@@ -31,15 +32,56 @@ interface HeroCard {
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
   const { data: businesses } = useGetBusinessesQuery();
   const { data: customers } = useGetCustomersQuery();
   const navigate = useNavigate();
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Fetch results when debounced query changes
+  const { data: searchResults, isFetching: isSearching } = useGetListingsQuery(
+    // We fetch a decent number to ensure we have matches if the API doesn't filter perfectly, 
+    // but ideally the API handles 'search' or 'q' param. 
+    // We'll pass 'search' as it's common.
+    { search: debouncedQuery, limit: 8 },
+    { skip: !debouncedQuery || debouncedQuery.length < 1 }
+  );
+
+  // Filter client-side as a fallback if needed, or just use results
+  const products = searchResults?.listings || [];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setShowDropdown(false);
       navigate(`/recherche?q=${encodeURIComponent(searchQuery.trim())}`);
     }
+  };
+
+  const handleProductClick = (id: string | number) => {
+    navigate(`/produit/${id}`);
+    setShowDropdown(false);
   };
 
   const heroCards: HeroCard[] = [
@@ -106,25 +148,100 @@ export function HeroSection() {
           </p>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-lg md:max-w-xl mx-auto mb-6 md:mb-8">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="Rechercher des produits, catégories..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-11 pr-4 h-12 md:h-14 text-sm md:text-base rounded-full border-gray-300 focus:ring-2 focus:ring-[#000435] focus:border-transparent"
-                aria-label="Rechercher sur Akaguriro"
-              />
-              <Button
-                type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full px-4 md:px-6 text-sm"
-              >
-                Rechercher
-              </Button>
-            </div>
-          </form>
+          <div ref={searchContainerRef} className="max-w-lg md:max-w-xl mx-auto mb-6 md:mb-8 relative z-50">
+            <form onSubmit={handleSearch} className="relative">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Rechercher des produits, catégories..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (e.target.value.trim().length > 0) setShowDropdown(true);
+                  }}
+                  onFocus={() => {
+                    if (searchQuery.trim().length > 0) setShowDropdown(true);
+                  }}
+                  className="pl-11 pr-12 h-12 md:h-14 text-sm md:text-base rounded-full border-gray-300 focus:ring-2 focus:ring-[#000435] focus:border-transparent shadow-sm bg-white/90 backdrop-blur-sm"
+                  aria-label="Rechercher sur Akaguriro"
+                />
+
+                {isSearching ? (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-[#000435] rounded-full p-2">
+                    <Loader2 className="h-4 w-4 text-white animate-spin" />
+                  </div>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full px-4 md:px-6 text-sm"
+                  >
+                    Rechercher
+                  </Button>
+                )}
+              </div>
+            </form>
+
+            {/* Instant Search Dropdown */}
+            {showDropdown && searchQuery.trim().length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white/90 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                {isSearching ? (
+                  <div className="p-4 text-center text-gray-500">
+                    <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2 text-[#000435]" />
+                    <p className="text-sm">Recherche en cours...</p>
+                  </div>
+                ) : products.length > 0 ? (
+                  <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    <div className="p-2 space-y-1">
+                      {products.map((product: any) => (
+                        <div
+                          key={product.listings_id || product.id}
+                          onClick={() => handleProductClick(product.listings_id || product.id)}
+                          className="flex items-center gap-4 p-3 hover:bg-blue-50/80 rounded-xl cursor-pointer transition-all duration-200 group"
+                        >
+                          <div className="relative h-12 w-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-100">
+                            <img
+                              src={resolveImageSource(product)}
+                              alt={product.title}
+                              className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              onError={(e) => {
+                                e.currentTarget.src = '/placeholder.svg';
+                              }}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-[#000435]">
+                              {product.title || product.name}
+                            </h4>
+                            <div className="flex items-center justify-between mt-1">
+                              <p className="text-xs text-gray-500 truncate">
+                                {product.category_name || product.category || 'Catégorie'}
+                              </p>
+                              <span className="text-xs font-bold text-[#000435] bg-blue-100 px-2 py-0.5 rounded-full">
+                                {currencyFmt(product.price)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-3 bg-gray-50/50 border-t border-gray-100 text-center">
+                      <button
+                        onClick={(e) => handleSearch(e)}
+                        className="text-sm text-[#000435] font-medium hover:underline"
+                      >
+                        Voir tous les résultats
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-gray-500">
+                    <p>Aucun résultat trouvé pour "{searchQuery}"</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Mobile View: Carousel Layout */}

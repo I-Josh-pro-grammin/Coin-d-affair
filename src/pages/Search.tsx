@@ -4,7 +4,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import Loader from '@/components/common/Loader';
 import { Search as SearchIcon, Filter, SlidersHorizontal } from 'lucide-react';
-import { currencyFmt } from '@/lib/utils';
+import { currencyFmt, resolveImageSource } from '@/lib/utils';
 import { useGetListingsQuery, useGetCategoriesQuery } from '@/redux/api/apiSlice'
 
 // Mock data for search results
@@ -17,71 +17,70 @@ const MOCK_PRODUCTS = [
 ];
 
 export default function Search() {
-    // const [searchParams] = useSearchParams();
-    // const query = searchParams.get('q') || '';
-    const [results, setResults] = useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const query = searchParams.get('q') || '';
+    const categoryParam = searchParams.get('category') || 'all';
+
     const [priceRange, setPriceRange] = useState([0, 2000000]);
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    // Initialize local selectedCategory from URL param or default
+    const [selectedCategory, setSelectedCategory] = useState(categoryParam);
 
-    const { data, isLoading: listingsLoading } = useGetListingsQuery();
-    const { data: categories } = useGetCategoriesQuery();
-    const products = data?.listings || [];
-    const getId = (p: any, idx?: number) =>
-        String(
-            p?.business_id ??
-            p?.listing_id ??
-            p?.id ??
-            p?.category_id ??
-            p?.external_id ??
-            `no-id-${idx ?? 'unknown'}`
-        );
+    // Sync selectedCategory with URL when URL changes explicitly (e.g. navigation)
+    useEffect(() => {
+        setSelectedCategory(categoryParam);
+    }, [categoryParam]);
 
-    // Normalize categories into { key, label, value } where value is a slug string
-    const rawCategories = categories?.categories ?? categories ?? [];
+    // Update URL when local filter changes
+    const handleCategoryChange = (val: string) => {
+        setSelectedCategory(val);
+        setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            if (val === 'all') {
+                newParams.delete('category');
+            } else {
+                newParams.set('category', val);
+            }
+            return newParams;
+        });
+    };
+
+    const { data: categoriesData } = useGetCategoriesQuery();
+    // Normalize categories to find IDs
+    const rawCategories = categoriesData?.categories ?? categoriesData ?? [];
     const normalizedCategories = [
-        { key: 'all', label: 'Toutes', value: 'all' },
-        ...rawCategories.map((c: any, idx: number) => {
+        { key: 'all', label: 'Toutes', value: 'all', id: undefined },
+        ...rawCategories.map((c: any) => {
             const name = c?.name ?? c?.nameFr ?? c?.category_name ?? c?.title ?? String(c ?? '');
-            const slug =
-                c?.slug || c?.category_slug || (name || '').toLowerCase().replace(/\s+/g, '-');
-            const key = c?.id ?? c?.category_id ?? slug ?? `cat-${idx}`;
-            return { key, label: name, value: slug };
+            const slug = c?.slug || c?.category_slug || (name || '').toLowerCase().replace(/\s+/g, '-');
+            const id = c?.category_id ?? c?.id;
+            return { key: id || slug, label: name, value: slug, id };
         }),
     ];
 
-    const productTitle = (p: any) => (p?.title || p?.name || '').toString();
-    const productCategorySlug = (p: any) =>
-        p?.category_slug || p?.slug || (p?.category_name || p?.category || '').toString().toLowerCase().replace(/\s+/g, '-');
+    // Find active category ID for API
+    const activeCategory = normalizedCategories.find(c => c.value === selectedCategory);
+    const activeCategoryId = activeCategory?.id;
 
-    // Avoid updating results on every render with a new array reference — only update when contents change
-    useEffect(() => {
-        if (!products || products.length === 0) {
-            // Only clear if results currently non-empty to avoid ping-pong
-            setResults((prev) => (prev.length ? [] : prev));
-            return;
-        }
+    // Construct API Query Args
+    const queryArgs = {
+        limit: 100, // Increase limit to show more products
+        search: query || undefined,
+        categoryId: activeCategoryId,
+        minPrice: priceRange[0] > 0 ? priceRange[0] : undefined,
+        maxPrice: priceRange[1] < 2000000 ? priceRange[1] : undefined,
+    };
 
-        const filtered = products.filter((p: any) => {
-            const title = productTitle(p).toLowerCase();
-            // const matchesQuery = query ? title.includes(query.toLowerCase()) : true;
-            const prodSlug = productCategorySlug(p);
-            const matchesCategory = selectedCategory === 'all' || prodSlug === selectedCategory;
-            const price = Number(p?.price ?? p?.amount ?? 0);
-            const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-            return matchesCategory && matchesPrice;
-        });
+    const { data, isLoading: listingsLoading, isFetching } = useGetListingsQuery(queryArgs);
+    const products = data?.listings || [];
 
-        // shallow compare by id and length (use index-aware stable ids)
-        setResults((prev) => {
-            if (
-                prev.length === filtered.length &&
-                prev.every((it: any, i: number) => getId(it, i) === getId(filtered[i], i))
-            ) {
-                return prev; // no change
-            }
-            return filtered;
-        });
-    }, [products, selectedCategory, priceRange]);
+    // We can still keep correct getId and other helpers
+    const getId = (p: any, idx?: number) =>
+        String(
+            p?.listings_id ??
+            p?.listing_id ??
+            p?.id ??
+            `idx-${idx}`
+        );
 
 
     if (listingsLoading) {
@@ -121,7 +120,7 @@ export default function Search() {
                                                 name="category"
                                                 value={cat.value}
                                                 checked={selectedCategory === cat.value}
-                                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                                onChange={() => handleCategoryChange(cat.value)}
                                                 className="text-[#000435] focus:ring-[#000435]"
                                             />
                                             <span className="text-sm text-gray-600">{String(cat.label)}</span>
@@ -156,7 +155,7 @@ export default function Search() {
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6">
                             <h1 className="text-xl font-bold text-gray-900">
-                                {/* {results.length} résultat{results.length !== 1 ? 's' : ''} pour "{String(query)}" */}
+                                {products.length} résultat{products.length !== 1 ? 's' : ''} {query ? `pour "${String(query)}"` : ''}
                             </h1>
 
                             <button className="flex items-center gap-2 text-gray-600 hover:text-[#000435] md:hidden">
@@ -165,19 +164,22 @@ export default function Search() {
                             </button>
                         </div>
 
-                        {results?.length > 0 ? (
+                        {products.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {results?.map((product, idx) => {
-                                    const pid = product?.listings_id || getId(product, idx) || `idx-${idx}`;
+                                {products.map((product: any, idx: number) => {
+                                    const pid = product?.listings_id || getId(product, idx);
                                     const title = product?.title || product?.name || 'Produit';
                                     return (
-                                        <Link key={String(idx)} to={`/produit/${encodeURIComponent(pid)}`} className="group">
+                                        <Link key={pid} to={`/produit/${encodeURIComponent(pid)}`} className="group">
                                             <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all">
                                                 <div className="aspect-square bg-gray-100 relative overflow-hidden">
                                                     <img
-                                                        src={product?.media?.[0]?.url || product.image || 'https://via.placeholder.com/400'}
+                                                        src={resolveImageSource(product)}
                                                         alt={title}
                                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = '/placeholder.svg';
+                                                        }}
                                                     />
                                                 </div>
                                                 <div className="p-4">

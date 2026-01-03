@@ -168,7 +168,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 </div>
 
                 {/* Buttons */}
-                <div className="hidden md:flex w-full py-2.5 px-4 bg-[#000435]/5 text-[#000435] font-medium rounded-full hover:bg-[#000435] hover:text-white transition-all duration-300 items-center justify-center">
+                <div className="hidden md:flex w-full py-2.5 px-4 bg-gray-100 text-[#000435] font-medium rounded-full group-hover:bg-[#000435] group-hover:text-white transition-all duration-300 items-center justify-center">
                     Voir les détails
                 </div>
             </div>
