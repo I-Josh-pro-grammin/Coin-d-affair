@@ -28,11 +28,14 @@ export function Footer() {
             Votre prochaine grande trouvaille n'est qu'à un clic
           </p>
 
-          {/* Newsletter signup */}
-          <div className="flex items-center gap-2 px-6 py-2.5 border-2 border-[#000435] text-[#000435] rounded-full font-medium hover:bg-[#000435] hover:text-white transition-all duration-300 focus:ring-2 focus:ring-[#000435]">
-            <Button onClick={handleRegister} className="bg-secondary-foreground hover:bg-secondary-foreground/90 mx-auto text-secondary border-0 font-medium">
-                <User size={20} />
-                Registre
+          {/* Newsletter signup - actually Registration CTA */}
+          <div className="flex justify-center">
+            <Button
+              onClick={handleRegister}
+              className="flex items-center gap-2 px-8 py-6 bg-white hover:bg-gray-50 text-[#000435] rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
+            >
+              <User size={20} />
+              S'inscrire
             </Button>
           </div>
         </div>
