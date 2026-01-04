@@ -137,7 +137,7 @@ export default function ProductDetail() {
         location: productData.location || 'Non spécifié',
         seller: {
             name: productData.business_name || productData.seller_name || 'Vendeur',
-            rating: 4.5,
+            rating: Number(productData.seller_rating) || 0,
             totalSales: 0,
             phone: productData.seller_phone || productData.phone,
             whatsapp: productData.business_whatsapp || productData.whatsapp,
@@ -231,12 +231,17 @@ export default function ProductDetail() {
                                 <MapPin size={20} className="text-[#000435]" />
                                 <p className="text-gray-900 font-medium">{product.location}</p>
                             </div>
-                            {product.rating > 0 && (
+                            {product.rating > 0 ? (
                                 <div className="flex items-center gap-1">
                                     <Star size={20} className="fill-yellow-400 text-yellow-400" />
                                     <span className="font-bold text-gray-900">{product.rating.toFixed(1)}</span>
                                     <span className="text-sm text-gray-500">({product.reviewCount} avis)</span>
                                 </div>
+                            ) : (
+                                <span className="text-yellow-600 font-medium bg-yellow-50 px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                                    <Star size={14} className="text-yellow-600" />
+                                    Not rated yet
+                                </span>
                             )}
                         </div>
 
@@ -254,7 +259,7 @@ export default function ProductDetail() {
                                 </div>
                                 <div className="flex items-center gap-1 bg-white px-3 py-1 rounded-full shadow-sm">
                                     <Star size={16} className="fill-yellow-400 text-yellow-400" />
-                                    <span className="font-semibold">{product.seller.rating}</span>
+                                    <span className="font-semibold">{product.seller.rating > 0 ? product.seller.rating.toFixed(1) : 'New'}</span>
                                 </div>
                             </div>
 

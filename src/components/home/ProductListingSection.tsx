@@ -162,11 +162,9 @@ export function ProductListingSection() {
                           }`}
                       >
                         <span className="font-medium text-gray-800">{label}</span>
-                        {category.subcategories?.length && (
-                          <span className="text-sm text-gray-500">
-                            ({category.subcategories.length})
-                          </span>
-                        )}
+                        <span className="text-sm text-gray-500">
+                          {category.productCount || 0}
+                        </span>
                       </button>
                     );
                   })}
