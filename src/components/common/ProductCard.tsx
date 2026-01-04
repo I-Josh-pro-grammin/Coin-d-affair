@@ -166,7 +166,7 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                                 className={`w-3 h-3 ${i < (product.rating || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                             />
                         ))}
-                        <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
+                        <span className="text-xs text-gray-500 ml-1">({product.rating.toFixed(1)})</span>
                     </div>
                 )}
 
