@@ -15,7 +15,8 @@ interface AdminProduct {
     listings_id: string;
     title: string;
     business_name: string; // from join
-    category_id: string; // or category name if joined
+    category_id: string;
+    category_name?: string; // from join
     price: number;
     currency: string;
     is_approved: boolean;
@@ -160,7 +161,7 @@ export default function AdminProducts() {
                                         <span key="seller">{p.business_name || 'N/A'}</span>
                                     </td>
                                     <td className="py-4 px-6 text-sm text-gray-700">
-                                        <span key="category">{p.category_id || 'N/A'}</span>
+                                        <span key="category">{p.category_name || p.category_id || 'N/A'}</span>
                                     </td>
                                     <td className="py-4 px-6 font-semibold text-gray-900">
                                         <span key="price">{p.price} {p.currency}</span>
@@ -283,7 +284,7 @@ export default function AdminProducts() {
                         </div>
 
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600" key="mobile-cat">{p.category_id || 'N/A'}</span>
+                            <span className="text-gray-600" key="mobile-cat">{p.category_name || p.category_id || 'N/A'}</span>
                             <span className="font-semibold text-gray-900" key="mobile-price">{p.price} {p.currency}</span>
                         </div>
 
