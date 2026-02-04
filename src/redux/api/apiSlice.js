@@ -279,6 +279,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Users'],
     }),
+    getPendingVerificationsCount: builder.query({
+      query: () => ({
+        url: '/api/admin/verifications/count',
+        method: 'GET',
+      }),
+      providesTags: ['Users'],
+    }),
 
     // Auth Endpoints (Verify Email)
     verifyEmail: builder.query({
@@ -593,4 +600,5 @@ export const {
   useGetVerificationStatusQuery,
   useGetAdminVerificationsQuery,
   useUpdateVerificationActionMutation,
+  useGetPendingVerificationsCountQuery,
 } = apiSlice;

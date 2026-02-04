@@ -51,7 +51,10 @@ interface SellerVerificationRequest {
 
 const SellerVerification = () => {
     // Queries
-    const { data: verifications = [], isLoading, refetch } = useGetAdminVerificationsQuery({ status: 'pending' });
+    const { data: verifications = [], isLoading, refetch } = useGetAdminVerificationsQuery({ status: 'pending' }, {
+        pollingInterval: 5000,
+        refetchOnMountOrArgChange: true
+    });
     const [updateStatus, { isLoading: isUpdating }] = useUpdateVerificationActionMutation();
 
     const [searchQuery, setSearchQuery] = useState("");

@@ -17,6 +17,7 @@ import {
     ChevronDown,
     UserCheck
 } from 'lucide-react';
+import { useGetPendingVerificationsCountQuery } from '@/redux/api/apiSlice';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -39,6 +40,13 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     ];
 
     const isActive = (path: string) => location.pathname === path;
+
+    const { data: verificationData } = useGetPendingVerificationsCountQuery(undefined, {
+        pollingInterval: 5000,
+        refetchOnMountOrArgChange: true,
+    });
+
+    const pendingCount = verificationData?.count || 0;
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -120,18 +128,27 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const active = isActive(item.path);
+                        const isVerification = item.path === '/admin/verification';
+
                         return (
                             <Link
                                 key={item.path}
                                 to={item.path}
                                 onClick={() => setSidebarOpen(false)}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${active
+                                className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${active
                                     ? 'bg-primary text-primary-foreground shadow-md'
                                     : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                             >
-                                <Icon size={20} />
-                                <span className="font-medium">{item.label}</span>
+                                <div className="flex items-center gap-3">
+                                    <Icon size={20} />
+                                    <span className="font-medium">{item.label}</span>
+                                </div>
+                                {isVerification && pendingCount > 0 && (
+                                    <span className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full">
+                                        {pendingCount}
+                                    </span>
+                                )}
                             </Link>
                         );
                     })}

@@ -28,15 +28,18 @@ interface AdminUser {
 }
 
 const UserDetailsModal = ({ userId, onClose }: { userId: string | null; onClose: () => void }) => {
+    // Increase polling frequency for real-time status updates
     const { data, isLoading } = useGetAdminUserDetailsQuery(userId || '', {
-        skip: !userId
+        skip: !userId,
+        pollingInterval: 3000,
+        refetchOnMountOrArgChange: true
     });
 
     if (!userId) return null;
 
     return (
         <Dialog open={!!userId} onOpenChange={() => onClose()}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Détails de l'utilisateur</DialogTitle>
                 </DialogHeader>
@@ -46,44 +49,83 @@ const UserDetailsModal = ({ userId, onClose }: { userId: string | null; onClose:
                         <Loader />
                     </div>
                 ) : data?.user ? (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-600">
+                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-600 shrink-0">
                                 {data.user.full_name?.charAt(0).toUpperCase()}
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg">{data.user.full_name}</h3>
                                 <p className="text-gray-500">{data.user.email}</p>
-                                <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium mt-1 ${data.user.account_type === 'business' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                                    }`}>
-                                    {data.user.account_type === 'business' ? 'Vendeur' : 'Acheteur'}
-                                </span>
+                                <div className="flex gap-2 mt-1">
+                                    <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${data.user.account_type === 'business' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                                        }`}>
+                                        {data.user.account_type === 'business' ? 'Vendeur' : 'Acheteur'}
+                                    </span>
+                                    <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${data.user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                        {data.user.is_active ? 'Actif' : 'Banni'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-gray-100">
+                        <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
+                            <div>
+                                <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Contact</p>
+                                <p>{data.user.phone || 'Non renseigné'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Inscrit le</p>
+                                <p>{new Date(data.user.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                            </div>
+                        </div>
+
+                        {data.user.account_type === 'business' && (
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="font-semibold text-gray-900">Produits en vente ({data.stats?.listings?.total_listings || 0})</h4>
+                                </div>
+
+                                {data.stats?.listings?.items?.length > 0 ? (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {data.stats.listings.items.map((item: any) => (
+                                            <div key={item.listings_id} className="border border-gray-100 rounded-lg overflow-hidden group">
+                                                <div className="aspect-square bg-gray-100 relative">
+                                                    {item.image ? (
+                                                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                            <CheckSquare size={24} />
+                                                        </div>
+                                                    )}
+                                                    {!item.is_approved && (
+                                                        <div className="absolute top-1 right-1 bg-yellow-100 text-yellow-800 text-[10px] px-1.5 py-0.5 rounded font-bold">
+                                                            En attente
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="p-2">
+                                                    <p className="font-medium text-xs truncate" title={item.title}>{item.title}</p>
+                                                    <p className="text-xs text-blue-600 font-bold mt-0.5">{Number(item.price).toLocaleString()} F</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic text-center py-4 bg-gray-50 rounded">
+                                        Aucun produit publié.
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Only show order stats if they have orders */}
+                        {data.stats?.orders?.total_orders > 0 && (
                             <div className="text-center p-3 bg-gray-50 rounded-lg">
-                                <p className="text-sm text-gray-500">Commandes</p>
+                                <p className="text-sm text-gray-500">Commandes effectuées</p>
                                 <p className="text-xl font-bold">{data.stats?.orders?.total_orders || 0}</p>
                             </div>
-                            <div className="text-center p-3 bg-gray-50 rounded-lg">
-                                <p className="text-sm text-gray-500">Dépensé</p>
-                                <p className="text-xl font-bold">{data.stats?.orders?.total_spent || 0} €</p>
-                            </div>
-                            {data.user.account_type === 'business' && (
-                                <div className="text-center p-3 bg-gray-50 rounded-lg col-span-2">
-                                    <p className="text-sm text-gray-500">Produits en vente</p>
-                                    <p className="text-xl font-bold">{data.stats?.listings?.total_listings || 0}</p>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="text-sm text-gray-500 space-y-2">
-                            <p><strong>ID:</strong> {data.user.user_id}</p>
-                            <p><strong>Téléphone:</strong> {data.user.phone || 'Non renseigné'}</p>
-                            <p><strong>Inscrit le:</strong> {new Date(data.user.created_at).toLocaleDateString()}</p>
-                            <p><strong>Statut:</strong> {data.user.is_active ? 'Actif' : 'Banni'} • {data.user.is_verified ? 'Vérifié' : 'Non vérifié'}</p>
-                        </div>
+                        )}
                     </div>
                 ) : (
                     <p className="text-center text-red-500">Utilisateur introuvable</p>
